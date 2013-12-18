@@ -67,7 +67,7 @@ public:
      * @param len Length of text to wrap (default is -1 for all).
      * @return a KWordWrap instance. The caller is responsible for storing and deleting the result.
      */
-    static KWordWrap* formatText( QFontMetrics &fm, const QRect & r, int flags, const QString & str, int len = -1 ); // KDE5 TODO: return a value, not a pointer, and use QSharedDataPointer.
+    static KWordWrap *formatText(QFontMetrics &fm, const QRect &r, int flags, const QString &str, int len = -1);     // KDE5 TODO: return a value, not a pointer, and use QSharedDataPointer.
 
     /**
      * @return the bounding rect, calculated by formatText. The width is the
@@ -88,7 +88,7 @@ public:
      * If @p dots was set, '...' is appended in case the string was truncated.
      * Bug: Note that the '...' come out of the bounding rect.
      */
-    QString truncatedString( bool dots = true ) const;
+    QString truncatedString(bool dots = true) const;
 
     /**
      * Draw the text that has been previously wrapped, at position x,y.
@@ -102,7 +102,7 @@ public:
      *              does not fit (the @p painter's background must be set
      *              accordingly)
      */
-    void drawText( QPainter *painter, int x, int y, int flags = Qt::AlignLeft ) const;
+    void drawText(QPainter *painter, int x, int y, int flags = Qt::AlignLeft) const;
 
     /**
      * Destructor.
@@ -120,8 +120,8 @@ public:
      *             effect)
      * @param t the text to draw
      */
-    static void drawFadeoutText( QPainter *p, int x, int y, int maxW,
-                                 const QString &t );
+    static void drawFadeoutText(QPainter *p, int x, int y, int maxW,
+                                const QString &t);
 
     /**
      * Draws the string @p t at the given coordinates, if it does not
@@ -132,13 +132,13 @@ public:
      * @param maxW the maximum width of the text (including the '...')
      * @param t the text to draw
      */
-    static void drawTruncateText( QPainter *p, int x, int y, int maxW,
-                                  const QString &t );
+    static void drawTruncateText(QPainter *p, int x, int y, int maxW,
+                                 const QString &t);
 
 private:
-    Q_DISABLE_COPY( KWordWrap )
-    KWordWrap( const QRect & r );
-    class KWordWrapPrivate* const d;
+    Q_DISABLE_COPY(KWordWrap)
+    KWordWrap(const QRect &r);
+    class KWordWrapPrivate *const d;
 };
 
 #endif

@@ -52,7 +52,7 @@ public:
      * @return true if the key is pressed, false if it isn't.
      */
     bool isKeyPressed(Qt::Key key) const;
-    
+
     /**
      * Detect if a key is latched.
      * @param key Modifier key to query
@@ -67,7 +67,7 @@ public:
      * @return true if the key is known, false else
      */
     bool setKeyLatched(Qt::Key key, bool latched);
-    
+
     /**
      * Detect if a key is locked.
      * @param key Modifier key to query
@@ -89,7 +89,7 @@ public:
      * @return true if pressed, false else
      */
     bool isButtonPressed(Qt::MouseButton button) const;
-    
+
     /**
      * Check if a key is known/can be queried
      * @param key Modifier key to check
@@ -112,7 +112,7 @@ Q_SIGNALS:
     void buttonPressed(Qt::MouseButton button, bool state);
     void keyAdded(Qt::Key key);
     void keyRemoved(Qt::Key key);
-    
+
 protected:
     void xkbUpdateModifierMapping();
     void xkbModifierStateChanged(unsigned char mods, unsigned char latched_mods,

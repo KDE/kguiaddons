@@ -23,7 +23,7 @@
 #include <QDebug>
 #include <QUrl>
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
     if (app.arguments().count() <= 1 || app.arguments().last() == QStringLiteral("--help")) {

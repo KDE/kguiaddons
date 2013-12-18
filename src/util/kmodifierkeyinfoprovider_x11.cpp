@@ -31,13 +31,13 @@
 #include <X11/keysymdef.h>
 #include <xcb/xcb.h>
 
-struct ModifierDefinition
-{
-    ModifierDefinition( Qt::Key _key, unsigned int _mask, const char * _name, KeySym _keysym ) {
-       key = _key;
-       mask = _mask;
-       name = _name;
-       keysym = _keysym;
+struct ModifierDefinition {
+    ModifierDefinition(Qt::Key _key, unsigned int _mask, const char *_name, KeySym _keysym)
+    {
+        key = _key;
+        mask = _mask;
+        name = _name;
+        keysym = _keysym;
     }
     Qt::Key key;
     unsigned int mask;
@@ -71,11 +71,13 @@ unsigned int xkbVirtualModifier(XkbDescPtr xkb, const char *name)
 // same as QX11Info::display, reimplemented to not have to link QtX11Extras
 Display *display()
 {
-    if (!qApp)
+    if (!qApp) {
         return NULL;
+    }
     QPlatformNativeInterface *native = qApp->platformNativeInterface();
-    if (!native)
+    if (!native) {
         return NULL;
+    }
 
     void *display = native->nativeResourceForScreen(QByteArray("display"), QGuiApplication::primaryScreen());
     return reinterpret_cast<Display *>(display);
@@ -133,7 +135,9 @@ KModifierKeyInfoProvider::~KModifierKeyInfoProvider()
 
 bool KModifierKeyInfoProvider::setKeyLatched(Qt::Key key, bool latched)
 {
-    if (!m_xkbModifiers.contains(key)) return false;
+    if (!m_xkbModifiers.contains(key)) {
+        return false;
+    }
 
     return XkbLatchModifiers(display(), XkbUseCoreKbd,
                              m_xkbModifiers[key], latched ? m_xkbModifiers[key] : 0);
@@ -141,79 +145,82 @@ bool KModifierKeyInfoProvider::setKeyLatched(Qt::Key key, bool latched)
 
 bool KModifierKeyInfoProvider::setKeyLocked(Qt::Key key, bool locked)
 {
-    if (!m_xkbModifiers.contains(key)) return false;
+    if (!m_xkbModifiers.contains(key)) {
+        return false;
+    }
 
     return XkbLockModifiers(display(), XkbUseCoreKbd,
                             m_xkbModifiers[key], locked ? m_xkbModifiers[key] : 0);
 }
 
 // HACK: xcb-xkb is not yet a public part of xcb. Because of that we have to include the event structure.
-namespace {
-    typedef struct _xcb_xkb_map_notify_event_t {
-        uint8_t         response_type;
-        uint8_t         xkbType;
-        uint16_t        sequence;
+namespace
+{
+typedef struct _xcb_xkb_map_notify_event_t {
+    uint8_t         response_type;
+    uint8_t         xkbType;
+    uint16_t        sequence;
+    xcb_timestamp_t time;
+    uint8_t         deviceID;
+    uint8_t         ptrBtnActions;
+    uint16_t        changed;
+    xcb_keycode_t   minKeyCode;
+    xcb_keycode_t   maxKeyCode;
+    uint8_t         firstType;
+    uint8_t         nTypes;
+    xcb_keycode_t   firstKeySym;
+    uint8_t         nKeySyms;
+    xcb_keycode_t   firstKeyAct;
+    uint8_t         nKeyActs;
+    xcb_keycode_t   firstKeyBehavior;
+    uint8_t         nKeyBehavior;
+    xcb_keycode_t   firstKeyExplicit;
+    uint8_t         nKeyExplicit;
+    xcb_keycode_t   firstModMapKey;
+    uint8_t         nModMapKeys;
+    xcb_keycode_t   firstVModMapKey;
+    uint8_t         nVModMapKeys;
+    uint16_t        virtualMods;
+    uint8_t         pad0[2];
+} _xcb_xkb_map_notify_event_t;
+typedef struct _xcb_xkb_state_notify_event_t {
+    uint8_t         response_type;
+    uint8_t         xkbType;
+    uint16_t        sequence;
+    xcb_timestamp_t time;
+    uint8_t         deviceID;
+    uint8_t         mods;
+    uint8_t         baseMods;
+    uint8_t         latchedMods;
+    uint8_t         lockedMods;
+    uint8_t         group;
+    int16_t         baseGroup;
+    int16_t         latchedGroup;
+    uint8_t         lockedGroup;
+    uint8_t         compatState;
+    uint8_t         grabMods;
+    uint8_t         compatGrabMods;
+    uint8_t         lookupMods;
+    uint8_t         compatLoockupMods;
+    uint16_t        ptrBtnState;
+    uint16_t        changed;
+    xcb_keycode_t   keycode;
+    uint8_t         eventType;
+    uint8_t         requestMajor;
+    uint8_t         requestMinor;
+} _xcb_xkb_state_notify_event_t;
+typedef union {
+    /* All XKB events share these fields. */
+    struct {
+        uint8_t response_type;
+        uint8_t xkbType;
+        uint16_t sequence;
         xcb_timestamp_t time;
-        uint8_t         deviceID;
-        uint8_t         ptrBtnActions;
-        uint16_t        changed;
-        xcb_keycode_t   minKeyCode;
-        xcb_keycode_t   maxKeyCode;
-        uint8_t         firstType;
-        uint8_t         nTypes;
-        xcb_keycode_t   firstKeySym;
-        uint8_t         nKeySyms;
-        xcb_keycode_t   firstKeyAct;
-        uint8_t         nKeyActs;
-        xcb_keycode_t   firstKeyBehavior;
-        uint8_t         nKeyBehavior;
-        xcb_keycode_t   firstKeyExplicit;
-        uint8_t         nKeyExplicit;
-        xcb_keycode_t   firstModMapKey;
-        uint8_t         nModMapKeys;
-        xcb_keycode_t   firstVModMapKey;
-        uint8_t         nVModMapKeys;
-        uint16_t        virtualMods;
-        uint8_t         pad0[2];
-    } _xcb_xkb_map_notify_event_t;
-    typedef struct _xcb_xkb_state_notify_event_t {
-        uint8_t         response_type;
-        uint8_t         xkbType;
-        uint16_t        sequence;
-        xcb_timestamp_t time;
-        uint8_t         deviceID;
-        uint8_t         mods;
-        uint8_t         baseMods;
-        uint8_t         latchedMods;
-        uint8_t         lockedMods;
-        uint8_t         group;
-        int16_t         baseGroup;
-        int16_t         latchedGroup;
-        uint8_t         lockedGroup;
-        uint8_t         compatState;
-        uint8_t         grabMods;
-        uint8_t         compatGrabMods;
-        uint8_t         lookupMods;
-        uint8_t         compatLoockupMods;
-        uint16_t        ptrBtnState;
-        uint16_t        changed;
-        xcb_keycode_t   keycode;
-        uint8_t         eventType;
-        uint8_t         requestMajor;
-        uint8_t         requestMinor;
-    } _xcb_xkb_state_notify_event_t;
-    typedef union {
-        /* All XKB events share these fields. */
-        struct {
-            uint8_t response_type;
-            uint8_t xkbType;
-            uint16_t sequence;
-            xcb_timestamp_t time;
-            uint8_t deviceID;
-        } any;
-        _xcb_xkb_map_notify_event_t map_notify;
-        _xcb_xkb_state_notify_event_t state_notify;
-    } _xkb_event;
+        uint8_t deviceID;
+    } any;
+    _xcb_xkb_map_notify_event_t map_notify;
+    _xcb_xkb_state_notify_event_t state_notify;
+} _xkb_event;
 }
 
 bool KModifierKeyInfoProvider::nativeEventFilter(const QByteArray &eventType, void *message, long int *result)
@@ -222,7 +229,7 @@ bool KModifierKeyInfoProvider::nativeEventFilter(const QByteArray &eventType, vo
     if (!m_xkbAvailable || eventType != "xcb_generic_event_t") {
         return false;
     }
-    xcb_generic_event_t *event = static_cast<xcb_generic_event_t*>(message);
+    xcb_generic_event_t *event = static_cast<xcb_generic_event_t *>(message);
     if ((event->response_type & ~0x80) == m_xkbEv + XkbEventCode) {
         _xkb_event *kbevt = reinterpret_cast<_xkb_event *>(event);
         unsigned int stateMask = XkbModifierStateMask | XkbModifierBaseMask |
@@ -242,17 +249,19 @@ bool KModifierKeyInfoProvider::nativeEventFilter(const QByteArray &eventType, vo
 }
 
 void KModifierKeyInfoProvider::xkbModifierStateChanged(unsigned char mods,
-                                                       unsigned char latched_mods,
-                                                       unsigned char locked_mods)
+        unsigned char latched_mods,
+        unsigned char locked_mods)
 {
     // detect keyboard modifiers
     ModifierStates oldState;
     ModifierStates newState;
-    
+
     QHash<Qt::Key, unsigned int>::const_iterator it;
     QHash<Qt::Key, unsigned int>::const_iterator end = m_xkbModifiers.constEnd();
     for (it = m_xkbModifiers.constBegin(); it != end; ++it) {
-        if (!m_modifierStates.contains(it.key())) continue;
+        if (!m_modifierStates.contains(it.key())) {
+            continue;
+        }
         newState = Nothing;
         oldState = m_modifierStates[it.key()];
 
@@ -308,7 +317,7 @@ void KModifierKeyInfoProvider::xkbUpdateModifierMapping()
 
     QList<ModifierDefinition> srcModifiers;
     srcModifiers << ModifierDefinition(Qt::Key_Shift, ShiftMask, 0, 0)
-                 << ModifierDefinition( Qt::Key_Control, ControlMask, 0, 0)
+                 << ModifierDefinition(Qt::Key_Control, ControlMask, 0, 0)
                  << ModifierDefinition(Qt::Key_Alt, 0, "Alt", XK_Alt_L)
                  // << { 0, 0, I18N_NOOP("Win"), "superkey", "" }
                  << ModifierDefinition(Qt::Key_Meta, 0, "Meta", XK_Meta_L)
@@ -317,7 +326,7 @@ void KModifierKeyInfoProvider::xkbUpdateModifierMapping()
                  << ModifierDefinition(Qt::Key_AltGr, 0, "AltGr", 0)
                  << ModifierDefinition(Qt::Key_NumLock, 0, "NumLock", XK_Num_Lock)
                  << ModifierDefinition(Qt::Key_CapsLock, LockMask, 0, 0)
-                 << ModifierDefinition( Qt::Key_ScrollLock, 0, "ScrollLock", XK_Scroll_Lock);
+                 << ModifierDefinition(Qt::Key_ScrollLock, 0, "ScrollLock", XK_Scroll_Lock);
 
     XkbDescPtr xkb = XkbGetKeyboard(display(), XkbAllComponentsMask, XkbUseCoreKbd);
 

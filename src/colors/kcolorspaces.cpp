@@ -51,12 +51,12 @@ qreal KHCY::gamma(qreal n)
 
 qreal KHCY::igamma(qreal n)
 {
-    return pow(normalize(n), 1.0/2.2);
+    return pow(normalize(n), 1.0 / 2.2);
 }
 
 qreal KHCY::lumag(qreal r, qreal g, qreal b)
 {
-    return r*yc[0] + g*yc[1] + b*yc[2];
+    return r * yc[0] + g * yc[1] + b * yc[2];
 }
 
 KHCY::KHCY(qreal h_, qreal c_, qreal y_, qreal a_)
@@ -67,7 +67,7 @@ KHCY::KHCY(qreal h_, qreal c_, qreal y_, qreal a_)
     a = a_;
 }
 
-KHCY::KHCY(const QColor& color)
+KHCY::KHCY(const QColor &color)
 {
     qreal r = gamma(color.redF());
     qreal g = gamma(color.greenF());
@@ -81,20 +81,22 @@ KHCY::KHCY(const QColor& color)
     qreal p = qMax(qMax(r, g), b);
     qreal n = qMin(qMin(r, g), b);
     qreal d = 6.0 * (p - n);
-    if (n == p)
+    if (n == p) {
         h = 0.0;
-    else if (r == p)
+    } else if (r == p) {
         h = ((g - b) / d);
-    else if (g == p)
+    } else if (g == p) {
         h = ((b - r) / d) + (1.0 / 3.0);
-    else
+    } else {
         h = ((r - g) / d) + (2.0 / 3.0);
+    }
 
     // chroma component
-    if (r == g && g == b)
+    if (r == g && g == b) {
         c = 0.0;
-    else
-        c = qMax( (y - n) / y, (p - y) / (1 - y) );
+    } else {
+        c = qMax((y - n) / y, (p - y) / (1 - y));
+    }
 }
 
 QColor KHCY::qColor() const
@@ -109,24 +111,19 @@ QColor KHCY::qColor() const
     if (_hs < 1.0) {
         th = _hs;
         tm = yc[0] + yc[1] * th;
-    }
-    else if (_hs < 2.0) {
+    } else if (_hs < 2.0) {
         th = 2.0 - _hs;
         tm = yc[1] + yc[0] * th;
-    }
-    else if (_hs < 3.0) {
+    } else if (_hs < 3.0) {
         th = _hs - 2.0;
         tm = yc[1] + yc[2] * th;
-    }
-    else if (_hs < 4.0) {
+    } else if (_hs < 4.0) {
         th = 4.0 - _hs;
         tm = yc[2] + yc[1] * th;
-    }
-    else if (_hs < 5.0) {
+    } else if (_hs < 5.0) {
         th = _hs - 4.0;
         tm = yc[2] + yc[0] * th;
-    }
-    else {
+    } else {
         th = 6.0 - _hs;
         tm = yc[0] + yc[2] * th;
     }
@@ -137,33 +134,32 @@ QColor KHCY::qColor() const
         tp = _y + _y * _c * (1.0 - tm) / tm;
         to = _y + _y * _c * (th - tm) / tm;
         tn = _y - (_y * _c);
-    }
-    else {
+    } else {
         tp = _y + (1.0 - _y) * _c;
         to = _y + (1.0 - _y) * _c * (th - tm) / (1.0 - tm);
         tn = _y - (1.0 - _y) * _c * tm / (1.0 - tm);
     }
 
     // return RGB channels in appropriate order
-    if (_hs < 1.0)
+    if (_hs < 1.0) {
         return QColor::fromRgbF(igamma(tp), igamma(to), igamma(tn), a);
-    else if (_hs < 2.0)
+    } else if (_hs < 2.0) {
         return QColor::fromRgbF(igamma(to), igamma(tp), igamma(tn), a);
-    else if (_hs < 3.0)
+    } else if (_hs < 3.0) {
         return QColor::fromRgbF(igamma(tn), igamma(tp), igamma(to), a);
-    else if (_hs < 4.0)
+    } else if (_hs < 4.0) {
         return QColor::fromRgbF(igamma(tn), igamma(to), igamma(tp), a);
-    else if (_hs < 5.0)
+    } else if (_hs < 5.0) {
         return QColor::fromRgbF(igamma(to), igamma(tn), igamma(tp), a);
-    else
+    } else {
         return QColor::fromRgbF(igamma(tp), igamma(tn), igamma(to), a);
+    }
 }
 
-qreal KHCY::luma(const QColor& color)
+qreal KHCY::luma(const QColor &color)
 {
     return lumag(gamma(color.redF()),
                  gamma(color.greenF()),
                  gamma(color.blueF()));
 }
 
-// kate: space-indent on; indent-width 4; replace-tabs on; auto-insert-doxygen on;

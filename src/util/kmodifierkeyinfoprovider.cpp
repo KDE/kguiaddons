@@ -20,7 +20,6 @@
 
 #include "kmodifierkeyinfoprovider_p.h"
 
-
 bool KModifierKeyInfoProvider::isKeyPressed(Qt::Key key) const
 {
     if (m_modifierStates.contains(key)) {

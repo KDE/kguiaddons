@@ -37,14 +37,16 @@ public Q_SLOTS:
     void openHelp(const QUrl &url)
     {
         QUrl u(url);
-        if (u.path() == QLatin1String("/"))
+        if (u.path() == QLatin1String("/")) {
             u.setPath(QCoreApplication::applicationName());
+        }
 
         QString helpcenter = QStandardPaths::findExecutable(QLatin1String("khelpcenter"));
-        if (helpcenter.isEmpty())
+        if (helpcenter.isEmpty()) {
             QDesktopServices::openUrl(u);
-        else
+        } else {
             QProcess::startDetached(helpcenter, QStringList(u.toString()));
+        }
     }
 };
 

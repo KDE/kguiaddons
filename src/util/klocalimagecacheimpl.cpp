@@ -35,8 +35,8 @@ class KLocalImageCacheImplementation::Private : public QObject
 {
     Q_OBJECT
 
-    public:
-        Private(QObject *parent = 0)
+public:
+    Private(QObject *parent = 0)
         : QObject(parent)
         , timestamp(QDateTime::currentDateTime())
         , enablePixmapCaching(true)
@@ -55,19 +55,19 @@ class KLocalImageCacheImplementation::Private : public QObject
             // "cost" parameter is based on both image size and depth to make cost
             // based on size in bytes instead of area on-screen.
             return pixmapCache.insert(key, pixmap,
-                pixmap->width() * pixmap->height() * pixmap->depth() / 8);
+                                      pixmap->width() * pixmap->height() * pixmap->depth() / 8);
         }
 
         return false;
     }
 
-    public Q_SLOTS:
+public Q_SLOTS:
     void clearPixmaps()
     {
         pixmapCache.clear();
     }
 
-    public:
+public:
     QDateTime timestamp;
 
     /**

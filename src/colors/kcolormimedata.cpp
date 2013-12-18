@@ -35,13 +35,14 @@ KColorMimeData::populateMimeData(QMimeData *mimeData, const QColor &color)
 bool
 KColorMimeData::canDecode(const QMimeData *mimeData)
 {
-    if (mimeData->hasColor())
+    if (mimeData->hasColor()) {
         return true;
-    if (mimeData->hasText())
-    {
-        const QString colorName=mimeData->text();
-        if ((colorName.length() >= 4) && (colorName[0] == QLatin1Char('#')))
+    }
+    if (mimeData->hasText()) {
+        const QString colorName = mimeData->text();
+        if ((colorName.length() >= 4) && (colorName[0] == QLatin1Char('#'))) {
             return true;
+        }
     }
     return false;
 }
@@ -49,28 +50,29 @@ KColorMimeData::canDecode(const QMimeData *mimeData)
 QColor
 KColorMimeData::fromMimeData(const QMimeData *mimeData)
 {
-    if (mimeData->hasColor())
+    if (mimeData->hasColor()) {
         return mimeData->colorData().value<QColor>();
-    if (canDecode(mimeData))
+    }
+    if (canDecode(mimeData)) {
         return QColor(mimeData->text());
+    }
     return QColor();
 }
 
-
-QDrag*
+QDrag *
 KColorMimeData::createDrag(const QColor &color, QObject *dragsource)
 {
-    QDrag *drag=new QDrag(dragsource);
-    QMimeData *mime=new QMimeData;
-    populateMimeData(mime,color);
+    QDrag *drag = new QDrag(dragsource);
+    QMimeData *mime = new QMimeData;
+    populateMimeData(mime, color);
     drag->setMimeData(mime);
-    QPixmap colorpix( 25, 20 );
-    colorpix.fill( color );
-    QPainter p( &colorpix );
-    p.setPen( Qt::black );
-    p.drawRect(0,0,24,19);
+    QPixmap colorpix(25, 20);
+    colorpix.fill(color);
+    QPainter p(&colorpix);
+    p.setPen(Qt::black);
+    p.drawRect(0, 0, 24, 19);
     p.end();
     drag->setPixmap(colorpix);
-    drag->setHotSpot(QPoint(-5,-7));
+    drag->setHotSpot(QPoint(-5, -7));
     return drag;
 }

@@ -56,7 +56,7 @@
 template<class T>
 class KSharedPixmapCacheMixin : public T, private KLocalImageCacheImplementation
 {
-    public:
+public:
     /**
      * Constructs an image cache, named by @p cacheName, with a default
      * size of @p defaultCacheSize.
@@ -71,8 +71,8 @@ class KSharedPixmapCacheMixin : public T, private KLocalImageCacheImplementation
      *  item size.
      */
     KSharedPixmapCacheMixin(const QString &cacheName,
-                unsigned defaultCacheSize,
-                unsigned expectedItemSize = 0)
+                            unsigned defaultCacheSize,
+                            unsigned expectedItemSize = 0)
         : T(cacheName, defaultCacheSize, expectedItemSize),
           KLocalImageCacheImplementation(defaultCacheSize) {}
 
@@ -130,8 +130,9 @@ class KSharedPixmapCacheMixin : public T, private KLocalImageCacheImplementation
      */
     bool findPixmap(const QString &key, QPixmap *destination) const
     {
-        if (findLocalPixmap(key, destination))
+        if (findLocalPixmap(key, destination)) {
             return true;
+        }
 
         QByteArray cachedData;
         if (!this->find(key, &cachedData) || cachedData.isNull()) {

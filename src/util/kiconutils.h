@@ -25,27 +25,28 @@
 
 #include <QIcon>
 
-namespace KIconUtils {
+namespace KIconUtils
+{
 
-    /**
-     * Adds the \a overlay over the \a icon in the specified \a position
-     *
-     * The \a overlay icon is scaled down approx. to 1/3 or 1/4 (depending on the icon size)
-     * and placed in one of the corners of the base icon.
-     */
-    KGUIADDONS_EXPORT QIcon addOverlay(const QIcon &icon, const QIcon &overlay, Qt::Corner position);
+/**
+ * Adds the \a overlay over the \a icon in the specified \a position
+ *
+ * The \a overlay icon is scaled down approx. to 1/3 or 1/4 (depending on the icon size)
+ * and placed in one of the corners of the base icon.
+ */
+KGUIADDONS_EXPORT QIcon addOverlay(const QIcon &icon, const QIcon &overlay, Qt::Corner position);
 
-    /**
-     * Adds \a overlays over the \a icon
-     *
-     * The \a overlays is a QHash of Qt::Corner and QIcon. The Qt::Corner value
-     * decides where the overlay icon will be painted, the QIcon value
-     * is the overlay icon to be painted.
-     *
-     * The overlay icon is scaled down to 1/3 or 1/4 (depending on the icon size)
-     * and placed in one of the corners of the base icon.
-     */
-    KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays);
+/**
+ * Adds \a overlays over the \a icon
+ *
+ * The \a overlays is a QHash of Qt::Corner and QIcon. The Qt::Corner value
+ * decides where the overlay icon will be painted, the QIcon value
+ * is the overlay icon to be painted.
+ *
+ * The overlay icon is scaled down to 1/3 or 1/4 (depending on the icon size)
+ * and placed in one of the corners of the base icon.
+ */
+KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays);
 }
 
 #endif // KICONUTILS_H

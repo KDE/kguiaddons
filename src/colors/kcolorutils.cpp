@@ -60,10 +60,11 @@ void KColorUtils::getHcy(const QColor &color, qreal *h, qreal *c, qreal *y, qrea
 
 static qreal contrastRatioForLuma(qreal y1, qreal y2)
 {
-    if (y1 > y2)
+    if (y1 > y2) {
         return (y1 + 0.05) / (y2 + 0.05);
-    else
+    } else {
         return (y2 + 0.05) / (y1 + 0.05);
+    }
 }
 
 qreal KColorUtils::contrastRatio(const QColor &c1, const QColor &c2)
@@ -105,32 +106,45 @@ static QColor tintHelper(const QColor &base, qreal baseLuma, const QColor &color
 
 QColor KColorUtils::tint(const QColor &base, const QColor &color, qreal amount)
 {
-    if (amount <= 0.0) return base;
-    if (amount >= 1.0) return color;
-    if (isnan(amount)) return base;
+    if (amount <= 0.0) {
+        return base;
+    }
+    if (amount >= 1.0) {
+        return color;
+    }
+    if (isnan(amount)) {
+        return base;
+    }
 
     qreal baseLuma = luma(base); //cache value because luma call is expensive
     double ri = contrastRatioForLuma(baseLuma, luma(color));
     double rg = 1.0 + ((ri + 1.0) * amount * amount * amount);
     double u = 1.0, l = 0.0;
     QColor result;
-    for (int i = 12 ; i ; --i) {
-        double a = 0.5 * (l+u);
+    for (int i = 12; i; --i) {
+        double a = 0.5 * (l + u);
         result = tintHelper(base, baseLuma, color, a);
         double ra = contrastRatioForLuma(baseLuma, luma(result));
-        if (ra > rg)
+        if (ra > rg) {
             u = a;
-        else
+        } else {
             l = a;
+        }
     }
     return result;
 }
 
 QColor KColorUtils::mix(const QColor &c1, const QColor &c2, qreal bias)
 {
-    if (bias <= 0.0) return c1;
-    if (bias >= 1.0) return c2;
-    if (isnan(bias)) return c1;
+    if (bias <= 0.0) {
+        return c1;
+    }
+    if (bias >= 1.0) {
+        return c2;
+    }
+    if (isnan(bias)) {
+        return c1;
+    }
 
     qreal r = mixQreal(c1.redF(),   c2.redF(),   bias);
     qreal g = mixQreal(c1.greenF(), c2.greenF(), bias);
@@ -155,4 +169,3 @@ QColor KColorUtils::overlayColors(const QColor &base, const QColor &paint,
     p.end();
     return img.pixel(0, 0);
 }
-// kate: space-indent on; indent-width 4; replace-tabs on; auto-insert-doxygen on;

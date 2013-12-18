@@ -16,10 +16,10 @@ void tst_KColorUtils::testOverlay()
     QColor previous;
     // check that when altering the alpha of color2 to be less and less transparent this
     // means we are moving more and more towards color2
-    for(int i= 10; i <= 255; i+=10) {
+    for (int i = 10; i <= 255; i += 10) {
         color2.setAlpha(i);
         blended = KColorUtils::overlayColors(color1, color2);
-        if(previous.isValid()) {
+        if (previous.isValid()) {
             QCOMPARE(previous.red(), 10);
             QCOMPARE(previous.green(), 10);
             QVERIFY(previous.blue() <= blended.blue());
@@ -52,25 +52,25 @@ void tst_KColorUtils::testOverlay()
 void tst_KColorUtils::testMix()
 {
     int r, g, b, k;
-    for ( r = 0; r < 52 ; r++ ) {
-        for ( g = 0; g < 52 ; g++ ) {
-            for ( b = 0; b < 52 ; b++ ) {
-                QColor color( r*5, g*5, b*5 );
+    for (r = 0; r < 52; r++) {
+        for (g = 0; g < 52; g++) {
+            for (b = 0; b < 52; b++) {
+                QColor color(r * 5, g * 5, b * 5);
                 // Test blend-to-black spectrum
-                for ( k = 5; k >= 0 ; k-- ) {
-                    QColor result = KColorUtils::mix( Qt::black, color, k * 0.2 );
-                    compareColors( result, QColor( r*k, g*k, b*k ) );
+                for (k = 5; k >= 0; k--) {
+                    QColor result = KColorUtils::mix(Qt::black, color, k * 0.2);
+                    compareColors(result, QColor(r * k, g * k, b * k));
                 }
                 // Test blend-to-white spectrum
-                for ( k = 5; k >= 0 ; k-- ) {
-                    int n = 51*(5-k);
-                    QColor result = KColorUtils::mix( Qt::white, color, k * 0.2 );
-                    compareColors( result, QColor( n+r*k, n+g*k, n+b*k ) );
+                for (k = 5; k >= 0; k--) {
+                    int n = 51 * (5 - k);
+                    QColor result = KColorUtils::mix(Qt::white, color, k * 0.2);
+                    compareColors(result, QColor(n + r * k, n + g * k, n + b * k));
                 }
                 // Test blend-to-self across a couple bias values
-                for ( k = 5; k >= 0 ; k-- ) {
-                    QColor result = KColorUtils::mix( color, color, k * 0.2 );
-                    compareColors( result, color );
+                for (k = 5; k >= 0; k--) {
+                    QColor result = KColorUtils::mix(color, color, k * 0.2);
+                    compareColors(result, color);
                 }
             }
         }
@@ -80,12 +80,12 @@ void tst_KColorUtils::testMix()
 void tst_KColorUtils::testHCY()
 {
     int r, g, b;
-    for ( r = 0; r < 256 ; r+=5 ) {
-        for ( g = 0; g < 256 ; g+=5 ) {
-            for ( b = 0; b < 256 ; b+=5 ) {
-                QColor color( r, g, b );
-                KColorSpaces::KHCY hcy( color );
-                compareColors( hcy.qColor(), color );
+    for (r = 0; r < 256; r += 5) {
+        for (g = 0; g < 256; g += 5) {
+            for (b = 0; b < 256; b += 5) {
+                QColor color(r, g, b);
+                KColorSpaces::KHCY hcy(color);
+                compareColors(hcy.qColor(), color);
             }
         }
     }
@@ -93,42 +93,43 @@ void tst_KColorUtils::testHCY()
 
 void tst_KColorUtils::testContrast()
 {
-    QCOMPARE( KColorUtils::contrastRatio(Qt::black, Qt::white), qreal(21.0) );
-    QCOMPARE( KColorUtils::contrastRatio(Qt::white, Qt::black), qreal(21.0) );
-    QCOMPARE( KColorUtils::contrastRatio(Qt::black, Qt::black), qreal(1.0) );
-    QCOMPARE( KColorUtils::contrastRatio(Qt::white, Qt::white), qreal(1.0) );
+    QCOMPARE(KColorUtils::contrastRatio(Qt::black, Qt::white), qreal(21.0));
+    QCOMPARE(KColorUtils::contrastRatio(Qt::white, Qt::black), qreal(21.0));
+    QCOMPARE(KColorUtils::contrastRatio(Qt::black, Qt::black), qreal(1.0));
+    QCOMPARE(KColorUtils::contrastRatio(Qt::white, Qt::white), qreal(1.0));
 
     // TODO better tests :-)
 }
 
 void checkIsGray(const QColor &color, int line)
 {
-    KColorSpaces::KHCY hcy( color );
-    if ( hcy.c != qreal(0.0) )
-        fprintf( stderr, "%08x has chroma %g, expected gray!\n", color.rgb(), hcy.c );
-    QTest::qCompare( hcy.c, qreal(0.0), "hcy.c", "0.0", __FILE__, line );
+    KColorSpaces::KHCY hcy(color);
+    if (hcy.c != qreal(0.0)) {
+        fprintf(stderr, "%08x has chroma %g, expected gray!\n", color.rgb(), hcy.c);
+    }
+    QTest::qCompare(hcy.c, qreal(0.0), "hcy.c", "0.0", __FILE__, line);
 }
 
 void tst_KColorUtils::testShading()
 {
-    const QColor testGray( 128, 128, 128 ); // Qt::gray isn't pure gray!
+    const QColor testGray(128, 128, 128);   // Qt::gray isn't pure gray!
 
     // Test that KHCY gets chroma correct for white/black, grays
-    checkIsGray( Qt::white, __LINE__ );
-    checkIsGray( testGray,  __LINE__ );
-    checkIsGray( Qt::black, __LINE__ );
+    checkIsGray(Qt::white, __LINE__);
+    checkIsGray(testGray,  __LINE__);
+    checkIsGray(Qt::black, __LINE__);
 
     // Test that lighten/darken/shade don't change chroma for grays
-    checkIsGray( KColorUtils::shade( Qt::white, -0.1 ), __LINE__ );
-    checkIsGray( KColorUtils::shade( Qt::black,  0.1 ), __LINE__ );
-    checkIsGray( KColorUtils::darken( Qt::white,  0.1 ), __LINE__ );
-    checkIsGray( KColorUtils::darken( testGray,   0.1 ), __LINE__ );
-    checkIsGray( KColorUtils::darken( testGray,  -0.1 ), __LINE__ );
-    checkIsGray( KColorUtils::darken( Qt::black, -0.1 ), __LINE__ );
-    checkIsGray( KColorUtils::lighten( Qt::black,  0.1 ), __LINE__ );
-    checkIsGray( KColorUtils::lighten( testGray,   0.1 ), __LINE__ );
-    checkIsGray( KColorUtils::lighten( testGray,  -0.1 ), __LINE__ );
-    checkIsGray( KColorUtils::lighten( Qt::white, -0.1 ), __LINE__ );
+    checkIsGray(KColorUtils::shade(Qt::white, -0.1), __LINE__);
+    checkIsGray(KColorUtils::shade(Qt::black,  0.1), __LINE__);
+    checkIsGray(KColorUtils::darken(Qt::white,  0.1), __LINE__);
+    checkIsGray(KColorUtils::darken(testGray,   0.1), __LINE__);
+    checkIsGray(KColorUtils::darken(testGray,  -0.1), __LINE__);
+    checkIsGray(KColorUtils::darken(Qt::black, -0.1), __LINE__);
+    checkIsGray(KColorUtils::lighten(Qt::black,  0.1), __LINE__);
+    checkIsGray(KColorUtils::lighten(testGray,   0.1), __LINE__);
+    checkIsGray(KColorUtils::lighten(testGray,  -0.1), __LINE__);
+    checkIsGray(KColorUtils::lighten(Qt::white, -0.1), __LINE__);
 }
 
 QTEST_MAIN(tst_KColorUtils)

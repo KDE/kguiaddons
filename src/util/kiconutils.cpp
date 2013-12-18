@@ -23,12 +23,13 @@
 #include <QIconEngine>
 #include <QPainter>
 
-class KOverlayIconEngine : public QIconEngine {
+class KOverlayIconEngine : public QIconEngine
+{
 public:
     KOverlayIconEngine(const QIcon &icon, const QIcon &overlay, Qt::Corner position);
     KOverlayIconEngine(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays);
     void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) Q_DECL_OVERRIDE;
-    QIconEngine* clone() const Q_DECL_OVERRIDE;
+    QIconEngine *clone() const Q_DECL_OVERRIDE;
 
     QSize actualSize(const QSize &size, QIcon::Mode mode, QIcon::State state) Q_DECL_OVERRIDE;
     QPixmap pixmap(const QSize &size, QIcon::Mode mode, QIcon::State state) Q_DECL_OVERRIDE;
@@ -126,18 +127,18 @@ void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode
 
         QPoint startPoint;
         switch (i.key()) {
-            case Qt::BottomLeftCorner:
-                startPoint = QPoint(2, height - overlaySize - 2);
-                break;
-            case Qt::BottomRightCorner:
-                startPoint = QPoint(width - overlaySize - 2, height - overlaySize - 2);
-                break;
-            case Qt::TopRightCorner:
-                startPoint = QPoint(width - overlaySize - 2, 2);
-                break;
-            case Qt::TopLeftCorner:
-                startPoint = QPoint(2, 2);
-                break;
+        case Qt::BottomLeftCorner:
+            startPoint = QPoint(2, height - overlaySize - 2);
+            break;
+        case Qt::BottomRightCorner:
+            startPoint = QPoint(width - overlaySize - 2, height - overlaySize - 2);
+            break;
+        case Qt::TopRightCorner:
+            startPoint = QPoint(width - overlaySize - 2, 2);
+            break;
+        case Qt::TopLeftCorner:
+            startPoint = QPoint(2, 2);
+            break;
         }
 
         // Draw the overlay pixmap
@@ -149,7 +150,8 @@ void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode
 
 // ============================================================================
 
-namespace KIconUtils {
+namespace KIconUtils
+{
 
 QIcon addOverlay(const QIcon &icon, const QIcon &overlay, Qt::Corner position)
 {

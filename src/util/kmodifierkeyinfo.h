@@ -52,7 +52,7 @@ public:
      * Default constructor
      */
     KModifierKeyInfo(QObject *parent = 0);
-    
+
     /**
      * Destructor
      */
@@ -81,7 +81,7 @@ public:
      * @see isKeyLatched, @see isKeyLocked, @see keyPressed
      */
     bool isKeyPressed(Qt::Key key) const;
-    
+
     /**
      * Synchronously check if a key is latched.
      *
@@ -138,7 +138,7 @@ Q_SIGNALS:
      * @param pressed true if the key is now pressed, false if is released.
      */
     void keyPressed(Qt::Key key, bool pressed);
-    
+
     /**
      * This signal is emitted whenever the latched state of a key changes.
      *
@@ -183,7 +183,7 @@ Q_SIGNALS:
 
 private:
     Q_DISABLE_COPY(KModifierKeyInfo)
-    KModifierKeyInfoProvider * const p; // krazy:exclude=dpointer
+    KModifierKeyInfoProvider *const p;  // krazy:exclude=dpointer
 };
 
 #endif

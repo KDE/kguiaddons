@@ -27,7 +27,7 @@
 class KDateValidator::KDateValidatorPrivate
 {
 public:
-    KDateValidatorPrivate( KDateValidator *q ): q( q )
+    KDateValidatorPrivate(KDateValidator *q): q(q)
     {
     }
 
@@ -38,20 +38,20 @@ public:
     KDateValidator *q;
 };
 
-KDateValidator::KDateValidator( QObject *parent ) : QValidator( parent ), d( 0 )
+KDateValidator::KDateValidator(QObject *parent) : QValidator(parent), d(0)
 {
 }
 
-QValidator::State KDateValidator::validate( QString &text, int &unused ) const
+QValidator::State KDateValidator::validate(QString &text, int &unused) const
 {
-    Q_UNUSED( unused );
+    Q_UNUSED(unused);
 
     QDate temp;
     // ----- everything is tested in date():
-    return date( text, temp );
+    return date(text, temp);
 }
 
-QValidator::State KDateValidator::date( const QString &text, QDate &d ) const
+QValidator::State KDateValidator::date(const QString &text, QDate &d) const
 {
     QLocale::FormatType formats[] = { QLocale::LongFormat, QLocale::ShortFormat, QLocale::NarrowFormat };
     QLocale locale;
@@ -67,7 +67,7 @@ QValidator::State KDateValidator::date( const QString &text, QDate &d ) const
     return QValidator::Intermediate;
 }
 
-void KDateValidator::fixup( QString& ) const
+void KDateValidator::fixup(QString &) const
 {
 }
 

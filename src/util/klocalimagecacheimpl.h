@@ -35,10 +35,10 @@ class QString;
  */
 class KGUIADDONS_EXPORT KLocalImageCacheImplementation
 {
-    private:
+private:
     KLocalImageCacheImplementation(unsigned defaultCacheSize);
 
-    public:
+public:
     virtual ~KLocalImageCacheImplementation();
 
     QDateTime lastModifiedTime() const;
@@ -49,7 +49,7 @@ class KGUIADDONS_EXPORT KLocalImageCacheImplementation
     int pixmapCacheLimit() const;
     void setPixmapCacheLimit(int size);
 
-    protected:
+protected:
     void updateModifiedTime();
     QByteArray serializeImage(const QImage &image) const;
 
@@ -57,7 +57,7 @@ class KGUIADDONS_EXPORT KLocalImageCacheImplementation
     bool findLocalPixmap(const QString &key, QPixmap *destination) const;
     void clearLocalCache();
 
-    private:
+private:
     class Private;
     Private *const d; ///< @internal
 

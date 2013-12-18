@@ -56,17 +56,19 @@ protected Q_SLOTS:
     void mouseButtonPressed(Qt::MouseButton button, bool state);
     void latch();
     void lock();
-    void keyAdded(Qt::Key) {
+    void keyAdded(Qt::Key)
+    {
         qDebug() << "Key added";
     }
-    void keyRemoved(Qt::Key) {
+    void keyRemoved(Qt::Key)
+    {
         qDebug() << "Key removed";
     }
 
 private:
     KModifierKeyInfo m_lock;
-    QMap<Qt::Key, Triple<QCheckBox*,QCheckBox*,QCheckBox*> > m_leds;
-    QMap<Qt::MouseButton, QCheckBox*> m_mouseLeds;
+    QMap<Qt::Key, Triple<QCheckBox *, QCheckBox *, QCheckBox *> > m_leds;
+    QMap<Qt::MouseButton, QCheckBox *> m_mouseLeds;
 };
 
 TestWidget::TestWidget() : QWidget(0), m_lock(this)
@@ -109,7 +111,7 @@ TestWidget::TestWidget() : QWidget(0), m_lock(this)
             pressed->setChecked(m_lock.isKeyPressed(it.key()));
             latched->setChecked(m_lock.isKeyLatched(it.key()));
             locked->setChecked(m_lock.isKeyLocked(it.key()));
-            m_leds.insert(it.key(), Triple<QCheckBox*,QCheckBox*,QCheckBox*>(pressed, latched, locked));
+            m_leds.insert(it.key(), Triple<QCheckBox *, QCheckBox *, QCheckBox *>(pressed, latched, locked));
             hlayout->addWidget(pressed);
             hlayout->addWidget(latched);
             hlayout->addWidget(locked);
@@ -138,7 +140,7 @@ TestWidget::TestWidget() : QWidget(0), m_lock(this)
     connect(&m_lock, SIGNAL(keyLatched(Qt::Key,bool)), SLOT(keyLatched(Qt::Key,bool)));
     connect(&m_lock, SIGNAL(keyLocked(Qt::Key,bool)), SLOT(keyLocked(Qt::Key,bool)));
     connect(&m_lock, SIGNAL(buttonPressed(Qt::MouseButton,bool)),
-                     SLOT(mouseButtonPressed(Qt::MouseButton,bool)));
+            SLOT(mouseButtonPressed(Qt::MouseButton,bool)));
     connect(&m_lock, SIGNAL(keyAdded(Qt::Key)), SLOT(keyAdded(Qt::Key)));
     connect(&m_lock, SIGNAL(keyRemoved(Qt::Key)), SLOT(keyRemoved(Qt::Key)));
 }

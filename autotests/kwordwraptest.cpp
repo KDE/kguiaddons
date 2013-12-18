@@ -41,19 +41,18 @@ private Q_SLOTS:
 
     void oldTruncationTest()
     {
-        QFont font( "helvetica", 12 ); // let's hope we all have the same...
-        QFontMetrics fm( font );
-        QRect r( 0, 0, 100, -1 );
+        QFont font("helvetica", 12);   // let's hope we all have the same...
+        QFontMetrics fm(font);
+        QRect r(0, 0, 100, -1);
         QString str = "test wadabada [/foo/bar/waba]";
-        KWordWrap* ww = KWordWrap::formatText( fm, r, 0, str );
+        KWordWrap *ww = KWordWrap::formatText(fm, r, 0, str);
         //qDebug() << str << " => " << ww->truncatedString();
         QVERIFY(ww->truncatedString().endsWith("..."));
         delete ww;
 
         str = "</p></p></p></p>";
-        for ( ; r.width() > 0 ; r.setWidth( r.width()-10 ) )
-        {
-            ww = KWordWrap::formatText( fm, r, 0, str );
+        for (; r.width() > 0; r.setWidth(r.width() - 10)) {
+            ww = KWordWrap::formatText(fm, r, 0, str);
             //qDebug() << str << " => " << ww->truncatedString();
             QVERIFY(ww->truncatedString().endsWith("..."));
             delete ww;
@@ -62,11 +61,11 @@ private Q_SLOTS:
 
     void testWithExistingNewlines() // when the input string has \n already
     {
-        QRect r( 0, 0, 1000, -1 ); // very wide
-        QFont font( "helvetica", 12 ); // let's hope we all have the same...
-        QFontMetrics fm( font );
+        QRect r(0, 0, 1000, -1);   // very wide
+        QFont font("helvetica", 12);   // let's hope we all have the same...
+        QFontMetrics fm(font);
         QString inputString = "The title here\nFoo (bar)\nFoo2 (bar2)";
-        KWordWrap* ww = KWordWrap::formatText( fm, r, 0, inputString );
+        KWordWrap *ww = KWordWrap::formatText(fm, r, 0, inputString);
         QString str = ww->wrappedString();
         QCOMPARE(str, inputString);
         delete ww;
