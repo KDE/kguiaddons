@@ -20,6 +20,17 @@
 #ifndef KIMAGECACHE_H
 #define KIMAGECACHE_H
 
+// check that KGUIADDONS_LIB is defined in case the application is not using CMake
+// (if KGUIADDONS_LIB is not defined, we cannot assume that KCOREADDONS_LIB not being
+// defined means that we are not linked against KCoreAddons)
+#if defined(KGUIADDONS_LIB) && !defined(KCOREADDONS_LIB)
+#ifdef __GNUC__
+#warning "KImageCache requires KF5CoreAddons (for kshareddatacache.h)"
+#else
+#pragma message("KImageCache requires KF5CoreAddons (for kshareddatacache.h)")
+#endif
+#endif
+
 #include <klocalimagecacheimpl.h>
 #include <kshareddatacache.h>
 #include <QPixmap>

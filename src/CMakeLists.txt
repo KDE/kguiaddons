@@ -38,6 +38,7 @@ set(kguiaddons_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/util
   )
 target_include_directories(KF5GuiAddons PUBLIC "$<BUILD_INTERFACE:${kguiaddons_INCLUDES}>")
+target_compile_definitions(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
 target_link_libraries(KF5GuiAddons PUBLIC Qt5::Gui)
 
 if(X11_FOUND AND X11_Xkb_FOUND)
