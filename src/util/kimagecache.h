@@ -21,6 +21,7 @@
 #define KIMAGECACHE_H
 
 #include <klocalimagecacheimpl.h>
+#include <kshareddatacache.h>
 #include <QPixmap>
 #include <QImage>
 
