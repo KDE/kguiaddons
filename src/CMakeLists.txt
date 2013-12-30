@@ -38,6 +38,7 @@ set(kguiaddons_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/util
   )
 target_include_directories(KF5GuiAddons PUBLIC "$<BUILD_INTERFACE:${kguiaddons_INCLUDES}>")
+target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/kguiaddons>" "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/KGuiAddons>" )
 target_compile_definitions(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
 target_link_libraries(KF5GuiAddons PUBLIC Qt5::Gui)
 
@@ -50,20 +51,15 @@ set_target_properties(KF5GuiAddons PROPERTIES VERSION   ${KGUIADDONS_VERSION_STR
                                               EXPORT_NAME GuiAddons
 )
 
+ecm_generate_headers(KColorUtils KColorCollection KColorMimeData RELATIVE colors REQUIRED_HEADERS KGuiAddons_HEADERS)
+ecm_generate_headers(KDateValidator KWordWrap RELATIVE text REQUIRED_HEADERS KGuiAddons_HEADERS)
+ecm_generate_headers(KFontUtils RELATIVE fonts REQUIRED_HEADERS KGuiAddons_HEADERS)
+ecm_generate_headers(KIconUtils KImageCache KLocalImageCacheImpl KModifierKeyInfo RELATIVE util REQUIRED_HEADERS KGuiAddons_HEADERS)
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/KGuiAddons DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel )
 
 install(TARGETS KF5GuiAddons EXPORT KF5GuiAddonsTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
-
 install( FILES
  ${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_export.h
- colors/kcolorutils.h
- colors/kcolorcollection.h
- colors/kcolormimedata.h
- text/kdatevalidator.h
- text/kwordwrap.h
- fonts/kfontutils.h
- util/kiconutils.h
- util/kimagecache.h
- util/klocalimagecacheimpl.h
- util/kmodifierkeyinfo.h
- DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel
+ ${KGuiAddons_HEADERS}
+ DESTINATION ${INCLUDE_INSTALL_DIR}/kguiaddons COMPONENT Devel
 )
