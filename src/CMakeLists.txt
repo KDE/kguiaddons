@@ -51,15 +51,41 @@ set_target_properties(KF5GuiAddons PROPERTIES VERSION   ${KGUIADDONS_VERSION_STR
                                               EXPORT_NAME GuiAddons
 )
 
-ecm_generate_headers(KColorUtils KColorCollection KColorMimeData RELATIVE colors REQUIRED_HEADERS KGuiAddons_HEADERS)
-ecm_generate_headers(KDateValidator KWordWrap RELATIVE text REQUIRED_HEADERS KGuiAddons_HEADERS)
-ecm_generate_headers(KFontUtils RELATIVE fonts REQUIRED_HEADERS KGuiAddons_HEADERS)
-ecm_generate_headers(KIconUtils KImageCache KLocalImageCacheImpl KModifierKeyInfo RELATIVE util REQUIRED_HEADERS KGuiAddons_HEADERS)
+ecm_generate_headers(
+  KColorUtils
+  KColorCollection
+  KColorMimeData
+
+  RELATIVE colors
+  REQUIRED_HEADERS KGuiAddons_HEADERS
+)
+ecm_generate_headers(
+  KDateValidator
+  KWordWrap
+
+  RELATIVE text
+  REQUIRED_HEADERS KGuiAddons_HEADERS
+)
+ecm_generate_headers(
+  KFontUtils
+
+  RELATIVE fonts
+  REQUIRED_HEADERS KGuiAddons_HEADERS
+)
+ecm_generate_headers(
+  KIconUtils
+  KImageCache
+  KModifierKeyInfo
+
+  RELATIVE util
+  REQUIRED_HEADERS KGuiAddons_HEADERS
+)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/KGuiAddons DESTINATION ${INCLUDE_INSTALL_DIR} COMPONENT Devel )
 
 install(TARGETS KF5GuiAddons EXPORT KF5GuiAddonsTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
-install( FILES
- ${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_export.h
- ${KGuiAddons_HEADERS}
- DESTINATION ${INCLUDE_INSTALL_DIR}/kguiaddons COMPONENT Devel
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_export.h
+  util/klocalimagecacheimpl.h # implementation detail, no forwarding header
+  ${KGuiAddons_HEADERS}
+  DESTINATION ${INCLUDE_INSTALL_DIR}/kguiaddons COMPONENT Devel
 )
