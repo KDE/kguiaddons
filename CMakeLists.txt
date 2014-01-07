@@ -16,6 +16,7 @@ find_package(X11 MODULE)
 find_package(XCB MODULE COMPONENTS XCB)
 
 include(FeatureSummary)
+include(GenerateExportHeader)
 include(ECMSetupVersion)
 include(ECMGenerateHeaders)
 set(KF5_VERSION "5.0.0")
