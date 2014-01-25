@@ -89,3 +89,7 @@ install(FILES
   ${KGuiAddons_HEADERS}
   DESTINATION ${INCLUDE_INSTALL_DIR}/KGuiAddons COMPONENT Devel
 )
+
+include(ECMGeneratePriFile)
+ecm_generate_pri_file(BASE_NAME KGuiAddons LIB_NAME KF5GuiAddons DEPS "core" FILENAME_VAR PRI_FILENAME)
+install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
