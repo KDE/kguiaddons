@@ -40,6 +40,7 @@ public:
 
 KDateValidator::KDateValidator(QObject *parent) : QValidator(parent), d(0)
 {
+    Q_UNUSED(d);
 }
 
 QValidator::State KDateValidator::validate(QString &text, int &unused) const
