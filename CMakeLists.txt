@@ -12,8 +12,10 @@ include(KDECMakeSettings)
 set(REQUIRED_QT_VERSION 5.2.0)
 find_package(Qt5Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
 
-find_package(X11 MODULE)
-find_package(XCB MODULE COMPONENTS XCB)
+if (NOT APPLE)
+    find_package(X11 MODULE)
+    find_package(XCB MODULE COMPONENTS XCB)
+endif()
 
 include(FeatureSummary)
 include(GenerateExportHeader)

@@ -14,7 +14,7 @@ set(kguiaddons_LIB_SRCS
  util/urlhandler.cpp
 )
 
-if (X11_FOUND AND X11_Xkb_FOUND AND XCB_XCB_FOUND)
+if (NOT APPLE AND X11_FOUND AND X11_Xkb_FOUND AND XCB_XCB_FOUND)
     include_directories (
         ${X11_Xkb_INCLUDE_PATH}
         ${X11_Xlib_INCLUDE_PATH}
