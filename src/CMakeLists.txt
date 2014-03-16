@@ -14,17 +14,20 @@ set(kguiaddons_LIB_SRCS
  util/urlhandler.cpp
 )
 
+set (kmodifierkeyinfoprovider_impl "dummy")
 if (NOT APPLE AND X11_FOUND AND X11_Xkb_FOUND AND XCB_XCB_FOUND)
-    include_directories (
-        ${X11_Xkb_INCLUDE_PATH}
-        ${X11_Xlib_INCLUDE_PATH}
-        ${XCB_XCB_INCLUDE_DIR}
-        ${Qt5Gui_PRIVATE_INCLUDE_DIRS}
-    )
-    set(kguiaddons_LIB_SRCS ${kguiaddons_LIB_SRCS} util/kmodifierkeyinfoprovider_x11.cpp)
-else ()
-    set (kguiaddons_LIB_SRCS ${kguiaddons_LIB_SRCS} util/kmodifierkeyinfoprovider_dummy.cpp)
+    find_package(Qt5X11Extras ${REQUIRED_QT_VERSION} NO_MODULE)
+    if (Qt5X11Extras_FOUND)
+        include_directories (
+            ${X11_Xkb_INCLUDE_PATH}
+            ${X11_Xlib_INCLUDE_PATH}
+            ${XCB_XCB_INCLUDE_DIR}
+        )
+        set (kmodifierkeyinfoprovider_impl "x11")
+    endif()
 endif ()
+
+set (kguiaddons_LIB_SRCS ${kguiaddons_LIB_SRCS} util/kmodifierkeyinfoprovider_${kmodifierkeyinfoprovider_impl}.cpp)
 
 add_library(KF5GuiAddons ${kguiaddons_LIB_SRCS})
 
@@ -42,8 +45,8 @@ target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${INCLUDE
 target_compile_definitions(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
 target_link_libraries(KF5GuiAddons PUBLIC Qt5::Gui)
 
-if(X11_FOUND AND X11_Xkb_FOUND)
-    target_link_libraries(KF5GuiAddons LINK_PRIVATE ${X11_LIBRARIES} ${XCB_XCB_LIBRARY})
+if (kmodifierkeyinfoprovider_impl STREQUAL "x11")
+    target_link_libraries(KF5GuiAddons LINK_PRIVATE ${X11_LIBRARIES} ${XCB_XCB_LIBRARY} Qt5::X11Extras)
 endif()
 
 set_target_properties(KF5GuiAddons PROPERTIES VERSION   ${KGUIADDONS_VERSION_STRING}
