@@ -21,7 +21,7 @@
 #include <QPainter>
 #include <QtCore/QVector>
 
-class KWordWrapPrivate
+class KWordWrapPrivate : public QSharedData
 {
 public:
     QRect m_constrainingRect;
@@ -32,23 +32,23 @@ public:
 };
 
 KWordWrap::KWordWrap(const QRect &r)
-    :   d(new KWordWrapPrivate)
+    : d(new KWordWrapPrivate)
 {
     d->m_constrainingRect = r;
 }
 
-KWordWrap *KWordWrap::formatText(QFontMetrics &fm, const QRect &r, int /*flags*/, const QString &str, int len)
+KWordWrap KWordWrap::formatText(QFontMetrics &fm, const QRect &r, int /*flags*/, const QString &str, int len)
 {
-    KWordWrap *kw = new KWordWrap(r);
+    KWordWrap kw(r);
     // The wordwrap algorithm
     // The variable names and the global shape of the algorithm are inspired
     // from QTextFormatterBreakWords::format().
     //qDebug() << "KWordWrap::formatText " << str << " r=" << r.x() << "," << r.y() << " " << r.width() << "x" << r.height();
     int height = fm.height();
     if (len == -1) {
-        kw->d->m_text = str;
+        kw.d->m_text = str;
     } else {
-        kw->d->m_text = str.left(len);
+        kw.d->m_text = str.left(len);
     }
     if (len == -1) {
         len = str.length();
@@ -107,15 +107,15 @@ KWordWrap *KWordWrap::formatText(QFontMetrics &fm, const QRect &r, int /*flags*/
                 lastBreak = -1;
             }
             // remove the line feed from the string
-            kw->d->m_text.remove(i, 1);
+            kw.d->m_text.remove(i, 1);
             inputString.remove(i, 1);
             len--;
         }
         if (breakAt != -1) {
             //qDebug() << "KWordWrap::formatText breaking after " << breakAt;
-            kw->d->m_breakPositions.append(breakAt);
+            kw.d->m_breakPositions.append(breakAt);
             int thisLineWidth = lastBreak == -1 ? x + ww : lineWidth;
-            kw->d->m_lineWidths.append(thisLineWidth);
+            kw.d->m_lineWidths.append(thisLineWidth);
             textwidth = qMax(textwidth, thisLineWidth);
             x = 0;
             y += height;
@@ -136,7 +136,7 @@ KWordWrap *KWordWrap::formatText(QFontMetrics &fm, const QRect &r, int /*flags*/
         wasParens = isParens;
     }
     textwidth = qMax(textwidth, x);
-    kw->d->m_lineWidths.append(x);
+    kw.d->m_lineWidths.append(x);
     y += height;
     //qDebug() << "KWordWrap::formatText boundingRect:" << r.x() << "," << r.y() << " " << textwidth << "x" << y;
     if (r.height() >= 0 && y > r.height()) {
@@ -149,13 +149,23 @@ KWordWrap *KWordWrap::formatText(QFontMetrics &fm, const QRect &r, int /*flags*/
         }
         realY = qMax(realY, 0);
     }
-    kw->d->m_boundingRect.setRect(0, 0, textwidth, realY);
+    kw.d->m_boundingRect.setRect(0, 0, textwidth, realY);
     return kw;
 }
 
 KWordWrap::~KWordWrap()
 {
-    delete d;
+}
+
+KWordWrap::KWordWrap(const KWordWrap &other)
+    : d(other.d)
+{
+}
+
+KWordWrap &KWordWrap::operator=(const KWordWrap &other)
+{
+    d = other.d;
+    return *this;
 }
 
 QString KWordWrap::wrappedString() const

@@ -20,13 +20,14 @@
 #define kwordwrap_h
 
 #include <kguiaddons_export.h>
-#include <qglobal.h>
+#include <QSharedDataPointer>
 #include <qnamespace.h>
 
 class QFontMetrics;
 class QRect;
 class QString;
 class QPainter;
+class KWordWrapPrivate;
 
 /**
  * Word-wrap algorithm that takes into account beautifulness ;)
@@ -67,7 +68,7 @@ public:
      * @param len Length of text to wrap (default is -1 for all).
      * @return a KWordWrap instance. The caller is responsible for storing and deleting the result.
      */
-    static KWordWrap *formatText(QFontMetrics &fm, const QRect &r, int flags, const QString &str, int len = -1);     // KDE5 TODO: return a value, not a pointer, and use QSharedDataPointer.
+    static KWordWrap formatText(QFontMetrics &fm, const QRect &r, int flags, const QString &str, int len = -1);
 
     /**
      * @return the bounding rect, calculated by formatText. The width is the
@@ -110,6 +111,15 @@ public:
     ~KWordWrap();
 
     /**
+     * Copy constructor
+     */
+    KWordWrap(const KWordWrap &other);
+    /**
+     * Assignment operator
+     */
+    KWordWrap &operator=(const KWordWrap &other);
+
+    /**
      * Draws the string @p t at the given coordinates, if it does not
      * @p fit into @p maxW the text will be faded out.
      * @param p the painter to use. Must have set the pen for the text
@@ -136,9 +146,8 @@ public:
                                  const QString &t);
 
 private:
-    Q_DISABLE_COPY(KWordWrap)
     KWordWrap(const QRect &r);
-    class KWordWrapPrivate *const d;
+    QExplicitlySharedDataPointer<KWordWrapPrivate> d;
 };
 
 #endif

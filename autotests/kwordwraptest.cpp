@@ -45,17 +45,15 @@ private Q_SLOTS:
         QFontMetrics fm(font);
         QRect r(0, 0, 100, -1);
         QString str = "test wadabada [/foo/bar/waba]";
-        KWordWrap *ww = KWordWrap::formatText(fm, r, 0, str);
-        //qDebug() << str << " => " << ww->truncatedString();
-        QVERIFY(ww->truncatedString().endsWith("..."));
-        delete ww;
+        KWordWrap ww = KWordWrap::formatText(fm, r, 0, str);
+        //qDebug() << str << " => " << ww.truncatedString();
+        QVERIFY(ww.truncatedString().endsWith("..."));
 
         str = "</p></p></p></p>";
         for (; r.width() > 0; r.setWidth(r.width() - 10)) {
             ww = KWordWrap::formatText(fm, r, 0, str);
-            //qDebug() << str << " => " << ww->truncatedString();
-            QVERIFY(ww->truncatedString().endsWith("..."));
-            delete ww;
+            //qDebug() << str << " => " << ww.truncatedString();
+            QVERIFY(ww.truncatedString().endsWith("..."));
         }
     }
 
@@ -65,10 +63,9 @@ private Q_SLOTS:
         QFont font("helvetica", 12);   // let's hope we all have the same...
         QFontMetrics fm(font);
         QString inputString = "The title here\nFoo (bar)\nFoo2 (bar2)";
-        KWordWrap *ww = KWordWrap::formatText(fm, r, 0, inputString);
-        QString str = ww->wrappedString();
+        KWordWrap ww = KWordWrap::formatText(fm, r, 0, inputString);
+        QString str = ww.wrappedString();
         QCOMPARE(str, inputString);
-        delete ww;
     }
 };
 
