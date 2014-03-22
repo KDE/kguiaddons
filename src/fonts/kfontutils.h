@@ -55,7 +55,7 @@ Q_DECLARE_FLAGS(AdaptFontSizeOptions, AdaptFontSizeOption)
             in the given dimensions. Can return smaller than minFontSize,
             that means the text doesn't fit in the given rectangle. Can
             return -1 on error
-    @since KDE 4.7
+    @since 4.7
 */
 qreal KGUIADDONS_EXPORT adaptFontSize(QPainter &painter,
                                       const QString &text,
@@ -66,7 +66,7 @@ qreal KGUIADDONS_EXPORT adaptFontSize(QPainter &painter,
                                       AdaptFontSizeOptions flags = NoFlags);
 
 /** Convenience function for adaptFontSize that accepts a QSizeF instead two qreals
-    @since KDE 4.7
+    @since 4.7
 */
 qreal KGUIADDONS_EXPORT adaptFontSize(QPainter &painter,
                                       const QString &text,
