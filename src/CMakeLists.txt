@@ -1,10 +1,4 @@
 
-# Global configuration
-include(ConfigureChecks.cmake)
-configure_file(kguiaddons_config.h.cmake
-               ${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_config.h)
-
-
 set(kguiaddons_LIB_SRCS
  colors/kcolorspaces.cpp
  colors/kcolorutils.cpp

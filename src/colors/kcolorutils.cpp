@@ -21,25 +21,15 @@
 #include <kcolorutils.h>
 #include "kcolorspaces_p.h"
 #include "kguiaddons_colorhelpers_p.h"
-#include "kguiaddons_config.h"
 
 #include <QColor>
 #include <QImage>
 
-#include <cmath>
+#include <math.h>
 
-#if HAVE_FLOAT_H
+#ifdef Q_CC_MSVC
 #include <float.h>
-#endif
-
-#if HAVE_FUNC_ISNAN
-// No-op:  Just use the C99 version we already found
-#elif HAVE_FUNC_STD_ISNAN
-#define isnan(n) std::isnan(n)
-#elif HAVE_FUNC__ISNAN
 #define isnan(n) _isnan(n)
-#else
-#error "No implementation of isnan found"
 #endif
 
 // BEGIN internal helper functions
