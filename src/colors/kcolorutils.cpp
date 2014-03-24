@@ -24,13 +24,7 @@
 
 #include <QColor>
 #include <QImage>
-
-#include <math.h>
-
-#ifdef Q_CC_MSVC
-#include <float.h>
-#define isnan(n) _isnan(n)
-#endif
+#include <QtNumeric> // qIsNaN
 
 // BEGIN internal helper functions
 static inline qreal mixQreal(qreal a, qreal b, qreal bias)
@@ -112,7 +106,7 @@ QColor KColorUtils::tint(const QColor &base, const QColor &color, qreal amount)
     if (amount >= 1.0) {
         return color;
     }
-    if (isnan(amount)) {
+    if (qIsNaN(amount)) {
         return base;
     }
 
@@ -142,7 +136,7 @@ QColor KColorUtils::mix(const QColor &c1, const QColor &c2, qreal bias)
     if (bias >= 1.0) {
         return c2;
     }
-    if (isnan(bias)) {
+    if (qIsNaN(bias)) {
         return c1;
     }
 
