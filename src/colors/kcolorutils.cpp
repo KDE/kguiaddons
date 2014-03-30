@@ -26,6 +26,8 @@
 #include <QImage>
 #include <QtNumeric> // qIsNaN
 
+#include <math.h>
+
 // BEGIN internal helper functions
 static inline qreal mixQreal(qreal a, qreal b, qreal bias)
 {
