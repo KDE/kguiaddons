@@ -41,7 +41,7 @@ set(kguiaddons_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/util
   )
 target_include_directories(KF5GuiAddons PUBLIC "$<BUILD_INTERFACE:${kguiaddons_INCLUDES}>")
-target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}/KGuiAddons>" )
+target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KF5_INCLUDE_INSTALL_DIR}/KGuiAddons>" )
 target_compile_definitions(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
 target_link_libraries(KF5GuiAddons PUBLIC Qt5::Gui)
 
@@ -88,12 +88,12 @@ ecm_generate_headers(KGuiAddons_HEADERS
   REQUIRED_HEADERS KGuiAddons_HEADERS
 )
 
-install(TARGETS KF5GuiAddons EXPORT KF5GuiAddonsTargets ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF5GuiAddons EXPORT KF5GuiAddonsTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_export.h
   util/klocalimagecacheimpl.h # implementation detail, no forwarding header
   ${KGuiAddons_HEADERS}
-  DESTINATION ${INCLUDE_INSTALL_DIR}/KGuiAddons COMPONENT Devel
+  DESTINATION ${KF5_INCLUDE_INSTALL_DIR}/KGuiAddons COMPONENT Devel
 )
 
 include(ECMGeneratePriFile)
