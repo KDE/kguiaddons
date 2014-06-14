@@ -8,6 +8,5 @@ ecm_add_tests(
   kwordwraptest.cpp
   kcolorutilstest.cpp
   kiconutilstest.cpp
-  NAME_PREFIX "kguiaddons-"
   LINK_LIBRARIES KF5::GuiAddons Qt5::Test
 )
