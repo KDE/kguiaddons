@@ -103,7 +103,7 @@ public:
      */
     const QList<Qt::Key> knownKeys() const;
 
-    virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long int *result);
+    bool nativeEventFilter(const QByteArray &eventType, void *message, long int *result) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
     void keyLatched(Qt::Key key, bool state);
