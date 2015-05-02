@@ -44,7 +44,7 @@ private Q_SLOTS:
         QFont font("helvetica", 12);   // let's hope we all have the same...
         QFontMetrics fm(font);
         QRect r(0, 0, 100, -1);
-        QString str = "test wadabada [/foo/bar/waba]";
+        QString str = "test wadabada [/foo/bar/waba] and some more text here";
         KWordWrap ww = KWordWrap::formatText(fm, r, 0, str);
         //qDebug() << str << " => " << ww.truncatedString();
         QVERIFY(ww.truncatedString().endsWith("..."));
