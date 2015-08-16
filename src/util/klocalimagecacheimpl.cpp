@@ -31,12 +31,12 @@
  * This is a QObject subclass so we can catch the signal that the application is about
  * to close and properly release any QPixmaps we have cached.
  */
-class KLocalImageCacheImplementation::Private : public QObject
+class KLocalImageCacheImplementationPrivate : public QObject
 {
     Q_OBJECT
 
 public:
-    Private(QObject *parent = 0)
+    KLocalImageCacheImplementationPrivate(QObject *parent = 0)
         : QObject(parent)
         , timestamp(QDateTime::currentDateTime())
         , enablePixmapCaching(true)
@@ -80,7 +80,7 @@ public:
 };
 
 KLocalImageCacheImplementation::KLocalImageCacheImplementation(unsigned defaultCacheSize)
-    : d(new Private)
+    : d(new KLocalImageCacheImplementationPrivate)
 {
     // Use at least 16 KiB for the pixmap cache
     d->pixmapCache.setMaxCost(qMax(defaultCacheSize / 8, (unsigned int) 16384));
