@@ -16,7 +16,7 @@ include(KDECMakeSettings)
 set(REQUIRED_QT_VERSION 5.3.0)
 find_package(Qt5Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
 
-if (NOT APPLE)
+if (NOT APPLE AND NOT WIN32)
     find_package(X11 MODULE)
     find_package(XCB MODULE COMPONENTS XCB)
 endif()
