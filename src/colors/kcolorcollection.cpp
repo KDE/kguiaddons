@@ -111,7 +111,7 @@ KColorCollectionPrivate::KColorCollectionPrivate(const KColorCollectionPrivate &
 QStringList KColorCollection::installedCollections()
 {
     QStringList paletteDirs = QStandardPaths::locateAll(QStandardPaths::GenericConfigLocation,
-                              QLatin1String("colors"),
+                              QStringLiteral("colors"),
                               QStandardPaths::LocateDirectory);
 
     QStringList paletteList;
@@ -152,7 +152,7 @@ KColorCollection::save()
     QTextStream str(&sf);
 
     QString description = d->desc.trimmed();
-    description = QLatin1Char('#') + description.split(QLatin1Char('\n'), QString::KeepEmptyParts).join(QLatin1String("\n#"));
+    description = QLatin1Char('#') + description.split(QLatin1Char('\n'), QString::KeepEmptyParts).join(QStringLiteral("\n#"));
 
     str << QLatin1String("KDE RGB Palette\n");
     str << description << QLatin1Char('\n');

@@ -74,23 +74,23 @@ private:
 TestWidget::TestWidget() : QWidget(0), m_lock(this)
 {
     QMap<Qt::Key, QString> mods;
-    mods.insert(Qt::Key_Shift, "Shift");
-    mods.insert(Qt::Key_Control, "Ctrl");
-    mods.insert(Qt::Key_Alt, "Alt");
-    mods.insert(Qt::Key_Meta, "Meta");
-    mods.insert(Qt::Key_Super_L, "Super");
-    mods.insert(Qt::Key_Hyper_L, "Hyper");
-    mods.insert(Qt::Key_AltGr, "AltGr");
-    mods.insert(Qt::Key_NumLock, "NumLock");
-    mods.insert(Qt::Key_CapsLock, "CapsLock");
-    mods.insert(Qt::Key_ScrollLock, "ScrollLock");
+    mods.insert(Qt::Key_Shift, QStringLiteral("Shift"));
+    mods.insert(Qt::Key_Control, QStringLiteral("Ctrl"));
+    mods.insert(Qt::Key_Alt, QStringLiteral("Alt"));
+    mods.insert(Qt::Key_Meta, QStringLiteral("Meta"));
+    mods.insert(Qt::Key_Super_L, QStringLiteral("Super"));
+    mods.insert(Qt::Key_Hyper_L, QStringLiteral("Hyper"));
+    mods.insert(Qt::Key_AltGr, QStringLiteral("AltGr"));
+    mods.insert(Qt::Key_NumLock, QStringLiteral("NumLock"));
+    mods.insert(Qt::Key_CapsLock, QStringLiteral("CapsLock"));
+    mods.insert(Qt::Key_ScrollLock, QStringLiteral("ScrollLock"));
 
     QMap<Qt::MouseButton, QString> buttons;
-    buttons.insert(Qt::LeftButton, "Left Button");
-    buttons.insert(Qt::RightButton, "Right Button");
-    buttons.insert(Qt::MidButton, "Middle Button");
-    buttons.insert(Qt::XButton1, "First X Button");
-    buttons.insert(Qt::XButton2, "Second X Button");
+    buttons.insert(Qt::LeftButton, QStringLiteral("Left Button"));
+    buttons.insert(Qt::RightButton, QStringLiteral("Right Button"));
+    buttons.insert(Qt::MidButton, QStringLiteral("Middle Button"));
+    buttons.insert(Qt::XButton1, QStringLiteral("First X Button"));
+    buttons.insert(Qt::XButton2, QStringLiteral("Second X Button"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
 
@@ -102,10 +102,10 @@ TestWidget::TestWidget() : QWidget(0), m_lock(this)
             QCheckBox *pressed = new QCheckBox(this);
             QCheckBox *latched = new QCheckBox(this);
             QCheckBox *locked = new QCheckBox(this);
-            QPushButton *latch = new QPushButton("latch", this);
+            QPushButton *latch = new QPushButton(QStringLiteral("latch"), this);
             latch->setProperty("modifier", it.key());
             connect(latch, SIGNAL(clicked()), SLOT(latch()));
-            QPushButton *lock = new QPushButton("lock", this);
+            QPushButton *lock = new QPushButton(QStringLiteral("lock"), this);
             lock->setProperty("modifier", it.key());
             connect(lock, SIGNAL(clicked()), SLOT(lock()));
             pressed->setChecked(m_lock.isKeyPressed(it.key()));
@@ -187,7 +187,7 @@ void TestWidget::lock()
 
 int main(int argc, char *argv[])
 {
-    QApplication::setApplicationName("simple");
+    QApplication::setApplicationName(QStringLiteral("simple"));
 
     QApplication app(argc, argv);
     TestWidget mainWidget;

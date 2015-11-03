@@ -11,7 +11,7 @@
 
 int main(int argc, char **argv)
 {
-    QApplication::setApplicationName("KColorCollectionTest");
+    QApplication::setApplicationName(QStringLiteral("KColorCollectionTest"));
     QApplication a(argc, argv);
 
     QStringList collections = KColorCollection::installedCollections();

@@ -41,7 +41,7 @@ public Q_SLOTS:
             u.setPath(QCoreApplication::applicationName());
         }
 
-        QString helpcenter = QStandardPaths::findExecutable(QLatin1String("khelpcenter"));
+        QString helpcenter = QStandardPaths::findExecutable(QStringLiteral("khelpcenter"));
         if (helpcenter.isEmpty()) {
             QDesktopServices::openUrl(u);
         } else {

@@ -175,11 +175,11 @@ QString KWordWrap::wrappedString() const
     int start = 0;
     for (int i = 0; i < d->m_breakPositions.count(); ++i) {
         int end = d->m_breakPositions.at(i);
-        ws += d->m_text.mid(start, end - start + 1);
+        ws += d->m_text.midRef(start, end - start + 1);
         ws += QLatin1Char('\n');
         start = end + 1;
     }
-    ws += d->m_text.mid(start);
+    ws += d->m_text.midRef(start);
     return ws;
 }
 
