@@ -26,6 +26,7 @@
 #include <QCoreApplication>
 #include <QProcess>
 #include <QDesktopServices>
+#include <QLocale>
 
 class UrlHandler : public QObject
 {
@@ -43,7 +44,13 @@ public Q_SLOTS:
 
         QString helpcenter = QStandardPaths::findExecutable(QStringLiteral("khelpcenter"));
         if (helpcenter.isEmpty()) {
-            QDesktopServices::openUrl(u);
+            if (QCoreApplication::organizationDomain() == QLatin1String("kde.org")) {
+                //if khelpcenter is not installed and it's a KDE application, use docs.kde.org
+                const QUrl httpUrl(QStringLiteral("https://docs.kde.org/index.php?branch=stable5&language=")+QLocale().name()+QStringLiteral("&application=") +
+                    QCoreApplication::applicationName() + QStringLiteral("&path=") + url.path());
+                QDesktopServices::openUrl(httpUrl);
+            } else
+                QDesktopServices::openUrl(u);
         } else {
             QProcess::startDetached(helpcenter, QStringList(u.toString()));
         }
