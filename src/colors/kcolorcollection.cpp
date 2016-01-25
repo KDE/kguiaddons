@@ -116,7 +116,7 @@ QStringList KColorCollection::installedCollections()
 
     QStringList paletteList;
     Q_FOREACH (const QString &dir, paletteDirs) {
-        paletteList += QDir(dir).entryList(QDir::NoDotAndDotDot);
+        paletteList += QDir(dir).entryList(QDir::Files | QDir::NoDotAndDotDot);
     }
     paletteList.removeDuplicates();
 
