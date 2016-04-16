@@ -26,7 +26,7 @@
 #include <QPainter>
 #include <QIcon>
 
-QTEST_MAIN(KIconUtilsTest);
+QTEST_MAIN(KIconUtilsTest)
 
 void KIconUtilsTest::addOverlayTest()
 {
