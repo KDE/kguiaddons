@@ -88,6 +88,28 @@ ecm_generate_headers(KGuiAddons_HEADERS
   REQUIRED_HEADERS KGuiAddons_HEADERS
 )
 
+find_package(PythonModuleGeneration)
+
+if (PythonModuleGeneration_FOUND)
+  ecm_generate_python_binding(
+    TARGET KF5::GuiAddons
+    PYTHONNAMESPACE PyKF5
+    MODULENAME KGuiAddons
+    SIP_DEPENDS
+      QtGui/QtGuimod.sip
+    HEADERS
+      colors/kcolorutils.h
+      colors/kcolorcollection.h
+      colors/kcolormimedata.h
+      text/kdatevalidator.h
+      text/kwordwrap.h
+      fonts/kfontutils.h
+      util/kiconutils.h
+      util/kimagecache.h
+      util/kmodifierkeyinfo.h
+  )
+endif()
+
 install(TARGETS KF5GuiAddons EXPORT KF5GuiAddonsTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_export.h
