@@ -59,7 +59,7 @@ QValidator::State KDateValidator::date(const QString &text, QDate &d) const
 
     for (int i = 0; i < 3; i++) {
         QDate tmp = locale.toDate(text, formats[i]);
-        if (d.isValid()) {
+        if (tmp.isValid()) {
             d = tmp;
             return Acceptable;
         }
