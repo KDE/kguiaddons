@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(KGuiAddons)
+set(KF5_VERSION "5.30.0") # handled by release scripts
+project(KGuiAddons VERSION ${KF5_VERSION})
 
 include(FeatureSummary)
 find_package(ECM 5.29.0  NO_MODULE)
@@ -25,9 +26,8 @@ endif()
 include(GenerateExportHeader)
 include(ECMSetupVersion)
 include(ECMGenerateHeaders)
-set(KF5_VERSION "5.30.0") # handled by release scripts
 
-ecm_setup_version(${KF5_VERSION} VARIABLE_PREFIX KGUIADDONS
+ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_version.h"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5GuiAddonsConfigVersion.cmake"
                         SOVERSION 5)
