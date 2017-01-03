@@ -2,6 +2,7 @@
 
 # Any changes in this file will be overwritten by CMake.
 
+include(CMakeFindDependencyMacro)
 find_dependency(Qt5Gui @REQUIRED_QT_VERSION@)
 
 
