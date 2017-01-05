@@ -20,5 +20,9 @@ def main():
 
     assert(colorCollection.count() == 2)
 
+    painter = QtGui.QPainter()
+    p = QtCore.QSizeF()
+    foo = KGuiAddons.KFontUtils.adaptFontSize(painter, "foo", p)
+
 if __name__ == '__main__':
     main()
