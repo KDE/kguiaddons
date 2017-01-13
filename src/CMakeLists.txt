@@ -95,6 +95,7 @@ if (PythonModuleGeneration_FOUND)
     TARGET KF5::GuiAddons
     PYTHONNAMESPACE PyKF5
     MODULENAME KGuiAddons
+    INSTALL_DIR_SUFFIX ${KDE_INSTALL_PYTHONBINDINGSDIR}
     SIP_DEPENDS
       QtGui/QtGuimod.sip
     HEADERS
