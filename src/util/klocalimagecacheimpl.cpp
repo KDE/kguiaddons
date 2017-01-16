@@ -36,7 +36,7 @@ class KLocalImageCacheImplementationPrivate : public QObject
     Q_OBJECT
 
 public:
-    KLocalImageCacheImplementationPrivate(QObject *parent = 0)
+    KLocalImageCacheImplementationPrivate(QObject *parent = nullptr)
         : QObject(parent)
         , timestamp(QDateTime::currentDateTime())
         , enablePixmapCaching(true)

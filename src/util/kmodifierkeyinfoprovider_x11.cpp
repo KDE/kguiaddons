@@ -50,13 +50,13 @@ struct ModifierDefinition {
  */
 unsigned int xkbVirtualModifier(XkbDescPtr xkb, const char *name)
 {
-    Q_ASSERT(xkb != 0);
+    Q_ASSERT(xkb != nullptr);
 
     unsigned int mask = 0;
     bool nameEqual;
     for (int i = 0; i < XkbNumVirtualMods; ++i) {
         char *modStr = XGetAtomName(xkb->dpy, xkb->names->vmods[i]);
-        if (modStr != 0) {
+        if (modStr != nullptr) {
             nameEqual = (strcmp(name, modStr) == 0);
             XFree(modStr);
             if (nameEqual) {
@@ -69,7 +69,7 @@ unsigned int xkbVirtualModifier(XkbDescPtr xkb, const char *name)
 }
 
 KModifierKeyInfoProvider::KModifierKeyInfoProvider()
-    : QObject(0)
+    : QObject(nullptr)
     , QAbstractNativeEventFilter()
     , m_xkbEv(0)
     , m_xkbAvailable(false)
@@ -301,8 +301,8 @@ void KModifierKeyInfoProvider::xkbUpdateModifierMapping()
     m_xkbModifiers.clear();
 
     QList<ModifierDefinition> srcModifiers;
-    srcModifiers << ModifierDefinition(Qt::Key_Shift, ShiftMask, 0, 0)
-                 << ModifierDefinition(Qt::Key_Control, ControlMask, 0, 0)
+    srcModifiers << ModifierDefinition(Qt::Key_Shift, ShiftMask, nullptr, 0)
+                 << ModifierDefinition(Qt::Key_Control, ControlMask, nullptr, 0)
                  << ModifierDefinition(Qt::Key_Alt, 0, "Alt", XK_Alt_L)
                  // << { 0, 0, I18N_NOOP("Win"), "superkey", "" }
                  << ModifierDefinition(Qt::Key_Meta, 0, "Meta", XK_Meta_L)
@@ -310,7 +310,7 @@ void KModifierKeyInfoProvider::xkbUpdateModifierMapping()
                  << ModifierDefinition(Qt::Key_Hyper_L, 0, "Hyper", XK_Hyper_L)
                  << ModifierDefinition(Qt::Key_AltGr, 0, "AltGr", 0)
                  << ModifierDefinition(Qt::Key_NumLock, 0, "NumLock", XK_Num_Lock)
-                 << ModifierDefinition(Qt::Key_CapsLock, LockMask, 0, 0)
+                 << ModifierDefinition(Qt::Key_CapsLock, LockMask, nullptr, 0)
                  << ModifierDefinition(Qt::Key_ScrollLock, 0, "ScrollLock", XK_Scroll_Lock);
 
     XkbDescPtr xkb = XkbGetKeyboard(QX11Info::display(), XkbAllComponentsMask, XkbUseCoreKbd);
@@ -319,9 +319,9 @@ void KModifierKeyInfoProvider::xkbUpdateModifierMapping()
     QList<ModifierDefinition>::const_iterator end = srcModifiers.constEnd();
     for (it = srcModifiers.constBegin(); it != end; ++it) {
         unsigned int mask = it->mask;
-        if (mask == 0 && xkb != 0) {
+        if (mask == 0 && xkb != nullptr) {
             // try virtual modifier first
-            if (it->name != 0) {
+            if (it->name != nullptr) {
                 mask = xkbVirtualModifier(xkb, it->name);
             }
             if (mask == 0 && it->keysym != 0) {
@@ -356,7 +356,7 @@ void KModifierKeyInfoProvider::xkbUpdateModifierMapping()
         }
     }
 
-    if (xkb != 0) {
+    if (xkb != nullptr) {
         XkbFreeKeyboard(xkb, 0, true);
     }
 }

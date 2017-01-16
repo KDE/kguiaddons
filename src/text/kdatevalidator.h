@@ -32,7 +32,7 @@
 class KGUIADDONS_EXPORT KDateValidator : public QValidator
 {
 public:
-    explicit KDateValidator(QObject *parent = 0);
+    explicit KDateValidator(QObject *parent = nullptr);
     State validate(QString &text, int &e) const Q_DECL_OVERRIDE;
     void fixup(QString &input) const Q_DECL_OVERRIDE;
     State date(const QString &text, QDate &date) const;

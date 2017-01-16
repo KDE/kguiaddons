@@ -48,7 +48,7 @@ KGUIADDONS_EXPORT qreal luma(const QColor &);
  * Calculate hue, chroma and luma of a color in one call.
  * @since 5.0
  */
-KGUIADDONS_EXPORT void getHcy(const QColor &, qreal *hue, qreal *chroma, qreal *luma, qreal *alpha = 0);
+KGUIADDONS_EXPORT void getHcy(const QColor &, qreal *hue, qreal *chroma, qreal *luma, qreal *alpha = nullptr);
 
 /**
  * Calculate the contrast ratio between two colors, according to the

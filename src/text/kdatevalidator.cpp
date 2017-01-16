@@ -38,7 +38,7 @@ public:
     KDateValidator *q;
 };
 
-KDateValidator::KDateValidator(QObject *parent) : QValidator(parent), d(0)
+KDateValidator::KDateValidator(QObject *parent) : QValidator(parent), d(nullptr)
 {
     Q_UNUSED(d);
 }

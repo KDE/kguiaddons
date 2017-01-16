@@ -71,7 +71,7 @@ private:
     QMap<Qt::MouseButton, QCheckBox *> m_mouseLeds;
 };
 
-TestWidget::TestWidget() : QWidget(0), m_lock(this)
+TestWidget::TestWidget() : QWidget(nullptr), m_lock(this)
 {
     QMap<Qt::Key, QString> mods;
     mods.insert(Qt::Key_Shift, QStringLiteral("Shift"));

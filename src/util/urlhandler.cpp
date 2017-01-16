@@ -32,7 +32,7 @@ class UrlHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit UrlHandler(QObject *parent = 0) : QObject(parent) {}
+    explicit UrlHandler(QObject *parent = nullptr) : QObject(parent) {}
 
 public Q_SLOTS:
     void openHelp(const QUrl &url)
