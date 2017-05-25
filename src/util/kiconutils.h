@@ -25,6 +25,10 @@
 
 #include <QIcon>
 
+/**
+ * @namespace KIconUtils
+ * Provides utility functions for icons.
+ */
 namespace KIconUtils
 {
 

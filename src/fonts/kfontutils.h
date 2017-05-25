@@ -31,6 +31,10 @@ class QPainter;
 class QSizeF;
 class QString;
 
+/**
+ * @namespace KFontUtils
+ * Provides utility functions for font data.
+ */
 namespace KFontUtils
 {
 /** Modifiers for the adaptFontSize function */
