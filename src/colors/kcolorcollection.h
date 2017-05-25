@@ -30,6 +30,8 @@
 #include <QtCore/QStringList>
 
 /**
+ * @class KColorCollection kcolorcollection.h KColorCollection
+ *
  * Class for handling color collections ("palettes").
  *
  * This class makes it easy to handle color collections, sometimes referred to

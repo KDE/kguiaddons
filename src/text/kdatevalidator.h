@@ -27,8 +27,10 @@
 #include <QValidator>
 
 /**
-* Validates user-entered dates.
-*/
+ * @class KDateValidator kdatevalidator.h KDateValidator
+ *
+ * Validates user-entered dates.
+ */
 class KGUIADDONS_EXPORT KDateValidator : public QValidator
 {
 public:

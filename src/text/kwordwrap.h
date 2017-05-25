@@ -30,6 +30,8 @@ class QPainter;
 class KWordWrapPrivate;
 
 /**
+ * @class KWordWrap kwordwrap.h KWordWrap
+ *
  * Word-wrap algorithm that takes into account beautifulness ;)
  *
  * That means:
