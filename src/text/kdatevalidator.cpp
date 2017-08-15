@@ -24,7 +24,7 @@
 #include <QDate>
 #include <QLocale>
 
-class KDateValidator::KDateValidatorPrivate
+class Q_DECL_HIDDEN KDateValidator::KDateValidatorPrivate
 {
 public:
     KDateValidatorPrivate(KDateValidator *q): q(q)
