@@ -41,8 +41,8 @@ public:
         , timestamp(QDateTime::currentDateTime())
         , enablePixmapCaching(true)
     {
-        QObject::connect(QCoreApplication::instance(), SIGNAL(aboutToQuit()),
-                         this, SLOT(clearPixmaps()));
+        QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
+                         this, &KLocalImageCacheImplementationPrivate::clearPixmaps);
     }
 
     /**

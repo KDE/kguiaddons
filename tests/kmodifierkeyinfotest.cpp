@@ -104,10 +104,10 @@ TestWidget::TestWidget() : QWidget(nullptr), m_lock(this)
             QCheckBox *locked = new QCheckBox(this);
             QPushButton *latch = new QPushButton(QStringLiteral("latch"), this);
             latch->setProperty("modifier", it.key());
-            connect(latch, SIGNAL(clicked()), SLOT(latch()));
+            connect(latch, &QAbstractButton::clicked, this, &TestWidget::latch);
             QPushButton *lock = new QPushButton(QStringLiteral("lock"), this);
             lock->setProperty("modifier", it.key());
-            connect(lock, SIGNAL(clicked()), SLOT(lock()));
+            connect(lock, &QAbstractButton::clicked, this, &TestWidget::lock);
             pressed->setChecked(m_lock.isKeyPressed(it.key()));
             latched->setChecked(m_lock.isKeyLatched(it.key()));
             locked->setChecked(m_lock.isKeyLocked(it.key()));
