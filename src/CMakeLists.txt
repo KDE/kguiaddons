@@ -129,7 +129,7 @@ if(BUILD_QCH)
         SOURCES # using only public headers, to cover only public API
             ${KGuiAddons_HEADERS}
         MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
-        LINK_QCH
+        LINK_QCHS
             Qt5Gui_QCH
         BLANK_MACROS
             KGUIADDONS_EXPORT
