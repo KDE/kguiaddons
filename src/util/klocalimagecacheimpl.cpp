@@ -19,10 +19,10 @@
 
 #include "klocalimagecacheimpl.h"
 
-#include <QtCore/QBuffer>
-#include <QtCore/QCache>
-#include <QtCore/QCoreApplication>
-#include <QtCore/QDateTime>
+#include <QBuffer>
+#include <QCache>
+#include <QCoreApplication>
+#include <QDateTime>
 
 #include <QImage>
 #include <QPixmap>

@@ -21,9 +21,9 @@
 
 #include "kcolorcollection.h"
 
-#include <QtCore/QFile>
-#include <QtCore/QDir>
-#include <QtCore/QTextStream>
+#include <QFile>
+#include <QDir>
+#include <QTextStream>
 #include <qsavefile.h>
 #include <qstandardpaths.h>
 

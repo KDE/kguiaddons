@@ -1,6 +1,6 @@
 #include "kcolorutilstest.h"
 
-#include <QtTest/QtTestGui>
+#include <QtTestGui>
 
 #include <kcolorutils.h>
 #include "../colors/kcolorspaces_p.h" // private header

@@ -19,7 +19,7 @@
 #include "kwordwrap.h"
 
 #include <QPainter>
-#include <QtCore/QVector>
+#include <QVector>
 
 class KWordWrapPrivate : public QSharedData
 {

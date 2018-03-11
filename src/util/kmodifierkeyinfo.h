@@ -23,7 +23,7 @@
 
 #include <kguiaddons_export.h>
 
-#include <QtCore/QObject>
+#include <QObject>
 
 class KModifierKeyInfoProvider;
 

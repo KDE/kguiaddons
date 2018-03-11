@@ -25,9 +25,9 @@
 #include <kguiaddons_export.h>
 
 #include <QColor>
-#include <QtCore/QList>
-#include <QtCore/QString>
-#include <QtCore/QStringList>
+#include <QList>
+#include <QString>
+#include <QStringList>
 
 /**
  * @class KColorCollection kcolorcollection.h KColorCollection
