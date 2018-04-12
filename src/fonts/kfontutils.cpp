@@ -35,7 +35,7 @@ static bool checkFits(QPainter &painter, const QString &string, qreal width, qre
         qtFlags &= ~Qt::TextWordWrap;
     }
     const QRectF boundingRect = painter.boundingRect(QRectF(0, 0, width, height), qtFlags, string);
-    if (boundingRect.width() == 0 || boundingRect.height() == 0) {
+    if (boundingRect.width() == 0.0 || boundingRect.height() == 0.0) {
         return false;
     } else if (boundingRect.width() > width || boundingRect.height() > height) {
         return false;

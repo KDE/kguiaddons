@@ -53,7 +53,7 @@ public:
     /**
      * Default constructor
      */
-    KModifierKeyInfo(QObject *parent = nullptr);
+    explicit KModifierKeyInfo(QObject *parent = nullptr);
 
     /**
      * Destructor

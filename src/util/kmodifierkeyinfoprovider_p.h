@@ -44,7 +44,7 @@ public:
     Q_DECLARE_FLAGS(ModifierStates, ModifierState)
 
     KModifierKeyInfoProvider();
-    ~KModifierKeyInfoProvider();
+    ~KModifierKeyInfoProvider() Q_DECL_OVERRIDE;
 
     /**
      * Detect if a key is pressed.

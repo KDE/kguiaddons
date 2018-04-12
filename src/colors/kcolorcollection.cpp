@@ -197,7 +197,7 @@ void KColorCollection::setEditable(Editable editable)
 
 int KColorCollection::count() const
 {
-    return (int) d->colorList.count();
+    return d->colorList.count();
 }
 
 KColorCollection &
