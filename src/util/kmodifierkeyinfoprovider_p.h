@@ -44,7 +44,7 @@ public:
     Q_DECLARE_FLAGS(ModifierStates, ModifierState)
 
     KModifierKeyInfoProvider();
-    ~KModifierKeyInfoProvider() Q_DECL_OVERRIDE;
+    ~KModifierKeyInfoProvider() override;
 
     /**
      * Detect if a key is pressed.
@@ -103,7 +103,7 @@ public:
      */
     const QList<Qt::Key> knownKeys() const;
 
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long int *result) Q_DECL_OVERRIDE;
+    bool nativeEventFilter(const QByteArray &eventType, void *message, long int *result) override;
 
 Q_SIGNALS:
     void keyLatched(Qt::Key key, bool state);
