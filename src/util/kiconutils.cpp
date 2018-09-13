@@ -22,6 +22,7 @@
 
 #include <QIconEngine>
 #include <QPainter>
+#include <QHash>
 
 class KOverlayIconEngine : public QIconEngine
 {
