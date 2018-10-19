@@ -20,8 +20,8 @@
  *                                                                               *
  *********************************************************************************/
 
-#ifndef KFONTMETRICS_H
-#define KFONTMETRICS_H
+#ifndef KFONTUTILS_H
+#define KFONTUTILS_H
 
 #include <kguiaddons_export.h>
 

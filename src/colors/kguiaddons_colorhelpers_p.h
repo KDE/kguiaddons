@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef KGUIADDONS_KCOLORHELPERS_P_H
-#define KGUIADDONS_KCOLORHELPERS_P_H
+#ifndef KGUIADDONS_COLORHELPERS_P_H
+#define KGUIADDONS_COLORHELPERS_P_H
 
 // normalize: like qBound(a, 0.0, 1.0) but without needing the args and with
 // "safer" behavior on NaN (isnan(a) -> return 0.0)
