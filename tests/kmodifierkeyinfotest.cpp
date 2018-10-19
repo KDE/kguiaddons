@@ -136,13 +136,18 @@ TestWidget::TestWidget() : QWidget(nullptr), m_lock(this)
 
     setLayout(layout);
 
-    connect(&m_lock, SIGNAL(keyPressed(Qt::Key,bool)), SLOT(keyPressed(Qt::Key,bool)));
-    connect(&m_lock, SIGNAL(keyLatched(Qt::Key,bool)), SLOT(keyLatched(Qt::Key,bool)));
-    connect(&m_lock, SIGNAL(keyLocked(Qt::Key,bool)), SLOT(keyLocked(Qt::Key,bool)));
-    connect(&m_lock, SIGNAL(buttonPressed(Qt::MouseButton,bool)),
-            SLOT(mouseButtonPressed(Qt::MouseButton,bool)));
-    connect(&m_lock, SIGNAL(keyAdded(Qt::Key)), SLOT(keyAdded(Qt::Key)));
-    connect(&m_lock, SIGNAL(keyRemoved(Qt::Key)), SLOT(keyRemoved(Qt::Key)));
+    connect(&m_lock, &KModifierKeyInfo::keyPressed,
+            this, &TestWidget::keyPressed);
+    connect(&m_lock, &KModifierKeyInfo::keyLatched,
+            this, &TestWidget::keyLatched);
+    connect(&m_lock, &KModifierKeyInfo::keyLocked,
+            this, &TestWidget::keyLocked);
+    connect(&m_lock, &KModifierKeyInfo::buttonPressed,
+            this, &TestWidget::mouseButtonPressed);
+    connect(&m_lock, &KModifierKeyInfo::keyAdded,
+            this, &TestWidget::keyAdded);
+    connect(&m_lock, &KModifierKeyInfo::keyRemoved,
+            this, &TestWidget::keyRemoved);
 }
 
 void TestWidget::keyPressed(Qt::Key key, bool pressed)

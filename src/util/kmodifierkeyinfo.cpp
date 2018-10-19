@@ -24,13 +24,18 @@
 KModifierKeyInfo::KModifierKeyInfo(QObject *parent)
     : QObject(parent), p(new KModifierKeyInfoProvider)
 {
-    connect(p, SIGNAL(keyPressed(Qt::Key,bool)), this, SIGNAL(keyPressed(Qt::Key,bool)));
-    connect(p, SIGNAL(keyLatched(Qt::Key,bool)), this, SIGNAL(keyLatched(Qt::Key,bool)));
-    connect(p, SIGNAL(keyLocked(Qt::Key,bool)), this, SIGNAL(keyLocked(Qt::Key,bool)));
-    connect(p, SIGNAL(buttonPressed(Qt::MouseButton,bool)),
-            this, SIGNAL(buttonPressed(Qt::MouseButton,bool)));
-    connect(p, SIGNAL(keyAdded(Qt::Key)), this, SIGNAL(keyAdded(Qt::Key)));
-    connect(p, SIGNAL(keyRemoved(Qt::Key)), this, SIGNAL(keyRemoved(Qt::Key)));
+    connect(p, &KModifierKeyInfoProvider::keyPressed,
+            this, &KModifierKeyInfo::keyPressed);
+    connect(p, &KModifierKeyInfoProvider::keyLatched,
+            this, &KModifierKeyInfo::keyLatched);
+    connect(p, &KModifierKeyInfoProvider::keyLocked,
+            this, &KModifierKeyInfo::keyLocked);
+    connect(p, &KModifierKeyInfoProvider::buttonPressed,
+            this, &KModifierKeyInfo::buttonPressed);
+    connect(p, &KModifierKeyInfoProvider::keyAdded,
+            this, &KModifierKeyInfo::keyAdded);
+    connect(p, &KModifierKeyInfoProvider::keyRemoved,
+            this, &KModifierKeyInfo::keyRemoved);
 }
 
 KModifierKeyInfo::~KModifierKeyInfo()
