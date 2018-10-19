@@ -37,7 +37,7 @@ class QString;
 class KGUIADDONS_EXPORT KLocalImageCacheImplementation
 {
 private:
-    KLocalImageCacheImplementation(unsigned defaultCacheSize);
+    explicit KLocalImageCacheImplementation(unsigned defaultCacheSize);
 
 public:
     virtual ~KLocalImageCacheImplementation();
