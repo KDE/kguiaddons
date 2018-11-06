@@ -225,25 +225,41 @@ void KWordWrap::drawFadeoutText(QPainter *p, int x, int y, int maxW,
         if (t.isRightToLeft()) {
             x += maxW; // start from the right side for RTL string
             if (tl > 3) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+                x -= fm.horizontalAdvance(t.left(tl - 3));
+#else
                 x -= fm.width(t.left(tl - 3));
+#endif
                 p->drawText(x, y, t.left(tl - 3));
             }
             for (int i = 0; i < n; i++) {
                 p->setPen(mixColors(0.70 - i * 0.25, textColor, bgColor));
                 QString s(t.at(tl - n + i));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+                x -= fm.horizontalAdvance(s);
+#else
                 x -= fm.width(s);
+#endif
                 p->drawText(x, y, s);
             }
         } else {
             if (tl > 3) {
                 p->drawText(x, y, t.left(tl - 3));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+                x += fm.horizontalAdvance(t.left(tl - 3));
+#else
                 x += fm.width(t.left(tl - 3));
+#endif
             }
             for (int i = 0; i < n; i++) {
                 p->setPen(mixColors(0.70 - i * 0.25, textColor, bgColor));
                 QString s(t.at(tl - n + i));
                 p->drawText(x, y, s);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+                x += fm.horizontalAdvance(s);
+#else
                 x += fm.width(s);
+#endif
             }
         }
     } else {
