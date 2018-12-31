@@ -42,7 +42,7 @@ public Q_SLOTS:
             u.setPath(QCoreApplication::applicationName());
         }
 
-        QString helpcenter = QStandardPaths::findExecutable(QStringLiteral("khelpcenter"));
+        const QString helpcenter = QStandardPaths::findExecutable(QStringLiteral("khelpcenter"));
         if (helpcenter.isEmpty()) {
             if (QCoreApplication::organizationDomain() == QLatin1String("kde.org")) {
                 //if khelpcenter is not installed and it's a KDE application, use docs.kde.org

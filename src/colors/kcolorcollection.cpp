@@ -110,12 +110,12 @@ KColorCollectionPrivate::KColorCollectionPrivate(const KColorCollectionPrivate &
 
 QStringList KColorCollection::installedCollections()
 {
-    QStringList paletteDirs = QStandardPaths::locateAll(QStandardPaths::GenericConfigLocation,
+    const QStringList paletteDirs = QStandardPaths::locateAll(QStandardPaths::GenericConfigLocation,
                               QStringLiteral("colors"),
                               QStandardPaths::LocateDirectory);
 
     QStringList paletteList;
-    Q_FOREACH (const QString &dir, paletteDirs) {
+    for (const QString &dir : paletteDirs) {
         paletteList += QDir(dir).entryList(QDir::Files | QDir::NoDotAndDotDot);
     }
     paletteList.removeDuplicates();
