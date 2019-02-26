@@ -156,7 +156,7 @@ KColorCollection::save()
 
     str << QLatin1String("KDE RGB Palette\n");
     str << description << QLatin1Char('\n');
-    foreach (const KColorCollectionPrivate::ColorNode &node, d->colorList) {
+    for (const KColorCollectionPrivate::ColorNode &node : qAsConst(d->colorList)) {
         int r, g, b;
         node.color.getRgb(&r, &g, &b);
         str << r << " " << g << " " << b << " " << node.name << "\n";
