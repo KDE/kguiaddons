@@ -24,13 +24,14 @@
 #include <QAbstractNativeEventFilter>
 #include <QHash>
 #include <QObject>
+#include "kguiaddons_export.h"
 
 /**
  * Background class that implements the behaviour of KModifierKeyInfo for
  * the different supported platforms.
  * @internal
  */
-class KModifierKeyInfoProvider : public QObject, public QAbstractNativeEventFilter
+class KGUIADDONS_EXPORT KModifierKeyInfoProvider : public QObject
 {
     Q_OBJECT
 
@@ -41,6 +42,7 @@ public:
         Latched = 0x2,
         Locked = 0x4
     };
+    Q_ENUM(ModifierState);
     Q_DECLARE_FLAGS(ModifierStates, ModifierState)
 
     KModifierKeyInfoProvider();
@@ -66,7 +68,7 @@ public:
      * @param latched true to latch the key, false to unlatch it
      * @return true if the key is known, false else
      */
-    bool setKeyLatched(Qt::Key key, bool latched);
+    virtual bool setKeyLatched(Qt::Key key, bool latched);
 
     /**
      * Detect if a key is locked.
@@ -81,7 +83,7 @@ public:
      * @param latched true to lock the key, false to unlock it
      * @return true if the key is known, false else
      */
-    bool setKeyLocked(Qt::Key key, bool locked);
+    virtual bool setKeyLocked(Qt::Key key, bool locked);
 
     /**
      * Check if a mouse button is pressed.
@@ -103,8 +105,6 @@ public:
      */
     const QList<Qt::Key> knownKeys() const;
 
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long int *result) override;
-
 Q_SIGNALS:
     void keyLatched(Qt::Key key, bool state);
     void keyLocked(Qt::Key key, bool state);
@@ -114,26 +114,16 @@ Q_SIGNALS:
     void keyRemoved(Qt::Key key);
 
 protected:
-    void xkbUpdateModifierMapping();
-    void xkbModifierStateChanged(unsigned char mods, unsigned char latched_mods,
-                                 unsigned char locked_mods);
-    void xkbButtonStateChanged(unsigned short ptr_buttons);
+    void stateUpdated(Qt::Key key, KModifierKeyInfoProvider::ModifierStates state);
 
-private:
     // the state of each known modifier
     QHash<Qt::Key, ModifierStates> m_modifierStates;
+
     // the state of each known mouse button
     QHash<Qt::MouseButton, bool> m_buttonStates;
-
-    int m_xkbEv;
-    bool m_xkbAvailable;
-
-    // maps a Qt::Key to a modifier mask
-    QHash<Qt::Key, unsigned int> m_xkbModifiers;
-    // maps a Qt::MouseButton to a button mask
-    QHash<Qt::MouseButton, unsigned short> m_xkbButtons;
 };
 
+Q_DECLARE_INTERFACE(KModifierKeyInfoProvider, "org.kde.kguiaddons.KModifierKeyInfoProvider")
 Q_DECLARE_OPERATORS_FOR_FLAGS(KModifierKeyInfoProvider::ModifierStates)
 
 #endif

@@ -20,7 +20,7 @@
 */
 
 #include "kmodifierkeyinfo.h"
-#include "kmodifierkeyinfoprovider_p.h"
+#include "kmodifierkeyinfoprovider_xcb.h"
 
 #include <QGuiApplication>
 #include <QX11Info>
@@ -61,16 +61,15 @@ unsigned int xkbVirtualModifier(XkbDescPtr xkb, const char *name)
             XFree(modStr);
             if (nameEqual) {
                 XkbVirtualModsToReal(xkb, 1 << i, &mask);
-                break;
+                    break;
             }
         }
     }
     return mask;
 }
 
-KModifierKeyInfoProvider::KModifierKeyInfoProvider()
-    : QObject(nullptr)
-    , QAbstractNativeEventFilter()
+KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
+    : KModifierKeyInfoProvider()
     , m_xkbEv(0)
     , m_xkbAvailable(false)
 {
@@ -111,14 +110,14 @@ KModifierKeyInfoProvider::KModifierKeyInfoProvider()
     }
 }
 
-KModifierKeyInfoProvider::~KModifierKeyInfoProvider()
+KModifierKeyInfoProviderXcb::~KModifierKeyInfoProviderXcb()
 {
     if (m_xkbAvailable) {
         QCoreApplication::instance()->removeNativeEventFilter(this);
     }
 }
 
-bool KModifierKeyInfoProvider::setKeyLatched(Qt::Key key, bool latched)
+bool KModifierKeyInfoProviderXcb::setKeyLatched(Qt::Key key, bool latched)
 {
     if (!m_xkbModifiers.contains(key)) {
         return false;
@@ -128,7 +127,7 @@ bool KModifierKeyInfoProvider::setKeyLatched(Qt::Key key, bool latched)
                              m_xkbModifiers[key], latched ? m_xkbModifiers[key] : 0);
 }
 
-bool KModifierKeyInfoProvider::setKeyLocked(Qt::Key key, bool locked)
+bool KModifierKeyInfoProviderXcb::setKeyLocked(Qt::Key key, bool locked)
 {
     if (!m_xkbModifiers.contains(key)) {
         return false;
@@ -208,7 +207,7 @@ typedef union {
 } _xkb_event;
 }
 
-bool KModifierKeyInfoProvider::nativeEventFilter(const QByteArray &eventType, void *message, long int *result)
+bool KModifierKeyInfoProviderXcb::nativeEventFilter(const QByteArray &eventType, void *message, long int *result)
 {
     Q_UNUSED(result)
     if (!m_xkbAvailable || eventType != "xcb_generic_event_t") {
@@ -233,12 +232,11 @@ bool KModifierKeyInfoProvider::nativeEventFilter(const QByteArray &eventType, vo
     return false;
 }
 
-void KModifierKeyInfoProvider::xkbModifierStateChanged(unsigned char mods,
+void KModifierKeyInfoProviderXcb::xkbModifierStateChanged(unsigned char mods,
         unsigned char latched_mods,
         unsigned char locked_mods)
 {
     // detect keyboard modifiers
-    ModifierStates oldState;
     ModifierStates newState;
 
     QHash<Qt::Key, unsigned int>::const_iterator it;
@@ -248,7 +246,6 @@ void KModifierKeyInfoProvider::xkbModifierStateChanged(unsigned char mods,
             continue;
         }
         newState = Nothing;
-        oldState = m_modifierStates[it.key()];
 
         // determine the new state
         if (mods & it.value()) {
@@ -261,23 +258,11 @@ void KModifierKeyInfoProvider::xkbModifierStateChanged(unsigned char mods,
             newState |= Locked;
         }
 
-        if (newState != oldState) {
-            m_modifierStates[it.key()] = newState;
-
-            if ((newState ^ oldState) & Pressed) {
-                emit keyPressed(it.key(), newState & Pressed);
-            }
-            if ((newState ^ oldState) & Latched) {
-                emit keyLatched(it.key(), newState & Latched);
-            }
-            if ((newState ^ oldState) & Locked) {
-                emit keyLocked(it.key(), newState & Locked);
-            }
-        }
+        stateUpdated(it.key(), newState);
     }
 }
 
-void KModifierKeyInfoProvider::xkbButtonStateChanged(unsigned short ptr_buttons)
+void KModifierKeyInfoProviderXcb::xkbButtonStateChanged(unsigned short ptr_buttons)
 {
     // detect mouse button states
     bool newButtonState;
@@ -293,7 +278,7 @@ void KModifierKeyInfoProvider::xkbButtonStateChanged(unsigned short ptr_buttons)
     }
 }
 
-void KModifierKeyInfoProvider::xkbUpdateModifierMapping()
+void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
 {
     if (!m_xkbAvailable) {
         return;

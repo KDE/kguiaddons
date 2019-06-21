@@ -14,20 +14,7 @@ set(kguiaddons_LIB_SRCS
  util/urlhandler.cpp
 )
 
-set (kmodifierkeyinfoprovider_impl "dummy")
-if (NOT APPLE AND X11_FOUND AND X11_Xkb_FOUND AND XCB_XCB_FOUND)
-    find_package(Qt5X11Extras ${REQUIRED_QT_VERSION} NO_MODULE)
-    if (Qt5X11Extras_FOUND)
-        include_directories (
-            ${X11_Xkb_INCLUDE_PATH}
-            ${X11_Xlib_INCLUDE_PATH}
-            ${XCB_XCB_INCLUDE_DIR}
-        )
-        set (kmodifierkeyinfoprovider_impl "x11")
-    endif()
-endif ()
-
-set (kguiaddons_LIB_SRCS ${kguiaddons_LIB_SRCS} util/kmodifierkeyinfoprovider_${kmodifierkeyinfoprovider_impl}.cpp)
+set (kguiaddons_LIB_SRCS ${kguiaddons_LIB_SRCS} util/kmodifierkeyinfoprovider.cpp)
 
 add_library(KF5GuiAddons ${kguiaddons_LIB_SRCS})
 
@@ -45,9 +32,20 @@ target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INS
 target_compile_definitions(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
 target_link_libraries(KF5GuiAddons PUBLIC Qt5::Gui)
 
-if (kmodifierkeyinfoprovider_impl STREQUAL "x11")
-    target_link_libraries(KF5GuiAddons LINK_PRIVATE ${X11_LIBRARIES} ${XCB_XCB_LIBRARY} Qt5::X11Extras)
-endif()
+set(WITH_XCB)
+if (NOT APPLE AND X11_FOUND AND X11_Xkb_FOUND AND XCB_XCB_FOUND)
+    find_package(Qt5X11Extras ${REQUIRED_QT_VERSION} NO_MODULE)
+    if (Qt5X11Extras_FOUND)
+        add_library(kmodifierkey_xcb MODULE util/kmodifierkeyinfoprovider_xcb.cpp)
+        target_include_directories (kmodifierkey_xcb PRIVATE
+            ${X11_Xkb_INCLUDE_PATH}
+            ${X11_Xlib_INCLUDE_PATH}
+            ${XCB_XCB_INCLUDE_DIR}
+        )
+        target_link_libraries(kmodifierkey_xcb PRIVATE ${X11_LIBRARIES} ${XCB_XCB_LIBRARY} Qt5::X11Extras KF5::GuiAddons)
+        install( TARGETS kmodifierkey_xcb DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/kguiaddons/kmodifierkey/)
+    endif()
+endif ()
 
 set_target_properties(KF5GuiAddons PROPERTIES VERSION   ${KGUIADDONS_VERSION_STRING}
                                               SOVERSION ${KGUIADDONS_SOVERSION}
@@ -107,12 +105,14 @@ if (PythonModuleGeneration_FOUND)
       util/kiconutils.h
       util/kimagecache.h
       util/kmodifierkeyinfo.h
+      util/kmodifierkeyinfoprovider_p.h
   )
 endif()
 
 install(TARGETS KF5GuiAddons EXPORT KF5GuiAddonsTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_export.h
+  util/kmodifierkeyinfoprovider_p.h
   util/klocalimagecacheimpl.h # implementation detail, no forwarding header
   ${KGuiAddons_HEADERS}
   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KGuiAddons COMPONENT Devel

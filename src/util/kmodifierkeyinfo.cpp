@@ -20,9 +20,23 @@
 
 #include "kmodifierkeyinfo.h"
 #include "kmodifierkeyinfoprovider_p.h"
+#include <QPluginLoader>
+
+#include <QDebug>
+#include <QGuiApplication>
+
+KModifierKeyInfoProvider* createProvider()
+{
+    QPluginLoader loader(QStringLiteral("kf5/kguiaddons/kmodifierkey/kmodifierkey_")+qGuiApp->platformName());
+    auto instance = dynamic_cast<KModifierKeyInfoProvider*>(loader.instance());
+    if (instance)
+        return instance;
+    qWarning() << "Error: could not load plugin for platform" << loader.fileName() << "error:" << loader.errorString() << loader.instance();
+    return new KModifierKeyInfoProvider;
+}
 
 KModifierKeyInfo::KModifierKeyInfo(QObject *parent)
-    : QObject(parent), p(new KModifierKeyInfoProvider)
+    : QObject(parent), p(createProvider())
 {
     connect(p, &KModifierKeyInfoProvider::keyPressed,
             this, &KModifierKeyInfo::keyPressed);
