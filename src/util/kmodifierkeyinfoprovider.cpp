@@ -45,24 +45,27 @@ bool KModifierKeyInfoProvider::setKeyLocked(Qt::Key key, bool locked)
 
 bool KModifierKeyInfoProvider::isKeyPressed(Qt::Key key) const
 {
-    if (m_modifierStates.contains(key)) {
-        return m_modifierStates[key] & Pressed;
+    auto it = m_modifierStates.constFind(key);
+    if (it != m_modifierStates.constEnd()) {
+        return *it & Pressed;
     }
     return false;
 }
 
 bool KModifierKeyInfoProvider::isKeyLatched(Qt::Key key) const
 {
-    if (m_modifierStates.contains(key)) {
-        return m_modifierStates[key] & Latched;
+    auto it = m_modifierStates.constFind(key);
+    if (it != m_modifierStates.constEnd()) {
+        return *it & Latched;
     }
     return false;
 }
 
 bool KModifierKeyInfoProvider::isKeyLocked(Qt::Key key) const
 {
-    if (m_modifierStates.contains(key)) {
-        return m_modifierStates[key] & Locked;
+    auto it = m_modifierStates.constFind(key);
+    if (it != m_modifierStates.constEnd()) {
+        return *it & Locked;
     }
     return false;
 }
