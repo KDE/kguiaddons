@@ -24,6 +24,7 @@
 #include <QAbstractNativeEventFilter>
 #include <QHash>
 #include <QObject>
+#include <QSharedData>
 #include "kguiaddons_export.h"
 
 /**
@@ -31,7 +32,7 @@
  * the different supported platforms.
  * @internal
  */
-class KGUIADDONS_EXPORT KModifierKeyInfoProvider : public QObject
+class KGUIADDONS_EXPORT KModifierKeyInfoProvider : public QObject, public QSharedData
 {
     Q_OBJECT
 

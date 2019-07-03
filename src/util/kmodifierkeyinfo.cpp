@@ -38,23 +38,22 @@ KModifierKeyInfoProvider* createProvider()
 KModifierKeyInfo::KModifierKeyInfo(QObject *parent)
     : QObject(parent), p(createProvider())
 {
-    connect(p, &KModifierKeyInfoProvider::keyPressed,
+    connect(p.data(), &KModifierKeyInfoProvider::keyPressed,
             this, &KModifierKeyInfo::keyPressed);
-    connect(p, &KModifierKeyInfoProvider::keyLatched,
+    connect(p.data(), &KModifierKeyInfoProvider::keyLatched,
             this, &KModifierKeyInfo::keyLatched);
-    connect(p, &KModifierKeyInfoProvider::keyLocked,
+    connect(p.data(), &KModifierKeyInfoProvider::keyLocked,
             this, &KModifierKeyInfo::keyLocked);
-    connect(p, &KModifierKeyInfoProvider::buttonPressed,
+    connect(p.data(), &KModifierKeyInfoProvider::buttonPressed,
             this, &KModifierKeyInfo::buttonPressed);
-    connect(p, &KModifierKeyInfoProvider::keyAdded,
+    connect(p.data(), &KModifierKeyInfoProvider::keyAdded,
             this, &KModifierKeyInfo::keyAdded);
-    connect(p, &KModifierKeyInfoProvider::keyRemoved,
+    connect(p.data(), &KModifierKeyInfoProvider::keyRemoved,
             this, &KModifierKeyInfo::keyRemoved);
 }
 
 KModifierKeyInfo::~KModifierKeyInfo()
 {
-    delete p;
 }
 
 bool KModifierKeyInfo::knowsKey(Qt::Key key) const
