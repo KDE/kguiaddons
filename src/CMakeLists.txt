@@ -105,7 +105,6 @@ if (PythonModuleGeneration_FOUND)
       util/kiconutils.h
       util/kimagecache.h
       util/kmodifierkeyinfo.h
-      util/kmodifierkeyinfoprovider_p.h
   )
 endif()
 
