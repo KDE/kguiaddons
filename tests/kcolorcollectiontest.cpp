@@ -1,6 +1,4 @@
 
-#include <QWidget>
-#include <QTimer>
 #include <QApplication>
 #include <QStringList>
 
