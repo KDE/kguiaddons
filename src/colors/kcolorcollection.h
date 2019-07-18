@@ -25,7 +25,6 @@
 #include <kguiaddons_export.h>
 
 #include <QColor>
-#include <QList>
 #include <QString>
 #include <QStringList>
 

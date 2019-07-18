@@ -21,7 +21,6 @@
 #ifndef KMODIFIERKEYINFOPROVIDER_P_H
 #define KMODIFIERKEYINFOPROVIDER_P_H
 
-#include <QAbstractNativeEventFilter>
 #include <QHash>
 #include <QObject>
 #include <QSharedData>
