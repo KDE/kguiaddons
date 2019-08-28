@@ -26,7 +26,7 @@
 int main(int argc, char **argv)
 {
     QGuiApplication app(argc, argv);
-    if (app.arguments().count() <= 1 || app.arguments().last() == QStringLiteral("--help")) {
+    if (app.arguments().count() <= 1 || app.arguments().last() == QLatin1String("--help")) {
         qDebug() << "please use ./openurltest <url>";
         return 0;
     }
