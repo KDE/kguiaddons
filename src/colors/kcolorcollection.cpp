@@ -78,7 +78,7 @@ KColorCollectionPrivate::KColorCollectionPrivate(const QString &_name)
         line = QString::fromLocal8Bit(paletteFile.readLine());
         if (line[0] == QLatin1Char('#')) {
             // This is a comment line
-            line = line.mid(1); // Strip '#'
+            line.remove(0, 1); // Strip '#'
             line = line.trimmed(); // Strip remaining white space..
             if (!line.isEmpty()) {
                 desc += line + QLatin1Char('\n'); // Add comment to description

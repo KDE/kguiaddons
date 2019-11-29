@@ -38,7 +38,7 @@ public Q_SLOTS:
     void openHelp(const QUrl &url)
     {
         QUrl u(url);
-        if (u.path() == QLatin1String("/")) {
+        if (u.path() == QLatin1Char('/')) {
             u.setPath(QCoreApplication::applicationName());
         }
 
@@ -46,7 +46,7 @@ public Q_SLOTS:
         if (helpcenter.isEmpty()) {
             if (QCoreApplication::organizationDomain() == QLatin1String("kde.org")) {
                 //if khelpcenter is not installed and it's a KDE application, use docs.kde.org
-                const QUrl httpUrl(QStringLiteral("https://docs.kde.org/index.php?branch=stable5&language=")+QLocale().name()+QStringLiteral("&application=") +
+                const QUrl httpUrl(QLatin1String("https://docs.kde.org/index.php?branch=stable5&language=")+QLocale().name()+QLatin1String("&application=") +
                     QCoreApplication::applicationName() + QStringLiteral("&path=") + url.path());
                 QDesktopServices::openUrl(httpUrl);
             } else
