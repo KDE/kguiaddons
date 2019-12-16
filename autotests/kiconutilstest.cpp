@@ -21,7 +21,7 @@
 #include "kiconutilstest.h"
 #include <kiconutils.h>
 
-#include <QtTest>
+#include <QTest>
 #include <QPixmap>
 #include <QPainter>
 #include <QIcon>
