@@ -35,6 +35,16 @@ static inline qreal mixQreal(qreal a, qreal b, qreal bias)
 }
 // END internal helper functions
 
+qreal KColorUtils::hue(const QColor &color)
+{
+    return KColorSpaces::KHCY::hue(color);
+}
+
+qreal KColorUtils::chroma(const QColor &color)
+{
+    return KColorSpaces::KHCY::chroma(color);
+}
+
 qreal KColorUtils::luma(const QColor &color)
 {
     return KColorSpaces::KHCY::luma(color);
@@ -52,6 +62,11 @@ void KColorUtils::getHcy(const QColor &color, qreal *h, qreal *c, qreal *y, qrea
     if (a) {
         *a = khcy.a;
     }
+}
+
+QColor KColorUtils::hcyColor(qreal h, qreal c, qreal y, qreal a)
+{
+    return KColorSpaces::KHCY(h, c, y, a).qColor();
 }
 
 static qreal contrastRatioForLuma(qreal y1, qreal y2)

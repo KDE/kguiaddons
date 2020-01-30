@@ -33,9 +33,31 @@ class QColor;
 namespace KColorUtils
 {
 /**
+ * Calculate the hue of a color. The range is from 0.0 (red) to almost 1.0 (slightly blue-ish red).
+ * 
+ * The result is computed in linear (not sRGB) color space and may differ slightly from QColor::hue().
+ * 
+ * @see https://en.wikipedia.org/wiki/Hue
+ * @since 5.68
+ */
+KGUIADDONS_EXPORT qreal hue(const QColor &);
+
+/**
+ * Calculate the chroma of a color. The range is from 0.0 (none) to 1.0 (full).
+ * 
+ * The result is computed in linear (not sRGB) color space.
+ * 
+ * @see https://en.wikipedia.org/wiki/Colorfulness
+ * @since 5.68
+ */
+KGUIADDONS_EXPORT qreal chroma(const QColor &);
+
+/**
  * Calculate the luma of a color. Luma is weighted sum of gamma-adjusted
  * R'G'B' components of a color. The result is similar to qGray. The range
  * is from 0.0 (black) to 1.0 (white).
+ * 
+ * The result is computed in linear (not sRGB) color space.
  *
  * KColorUtils::darken(), KColorUtils::lighten() and KColorUtils::shade()
  * operate on the luma of a color.
@@ -46,9 +68,29 @@ KGUIADDONS_EXPORT qreal luma(const QColor &);
 
 /**
  * Calculate hue, chroma and luma of a color in one call.
+ * 
+ * The range of hue is from 0.0 (red) to almost 1.0 (slightly blue-ish red).
+ * The range of chroma is from 0.0 (none) to 1.0 (full).
+ * The range of luma is from 0.0 (black) to 1.0 (white).
+ * 
+ * The hue, chroma and luma values are computed in linear (not sRGB) color space.
+ * 
  * @since 5.0
  */
 KGUIADDONS_EXPORT void getHcy(const QColor &, qreal *hue, qreal *chroma, qreal *luma, qreal *alpha = nullptr);
+
+/**
+ * Return a QColor based on the given hue, chroma, luma and alpha values.
+ * 
+ * The range of hue is cyclical. For example, 0.0 and 1.0 are both red while -0.166667 and 0.833333 are both magenta.
+ * The range of chroma is from 0.0 (none) to 1.0 (full). Out of range values will be clamped.
+ * The range of luma is from 0.0 (black) to 1.0 (white). Out of range values will be clamped.
+ * 
+ * The hue, chroma and luma values are computed in linear (not sRGB) color space.
+ * 
+ * @since 5.68
+ */
+KGUIADDONS_EXPORT QColor hcyColor(qreal hue, qreal chroma, qreal luma, qreal alpha = 1.0);
 
 /**
  * Calculate the contrast ratio between two colors, according to the

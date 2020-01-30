@@ -156,6 +156,16 @@ QColor KHCY::qColor() const
     }
 }
 
+qreal KHCY::hue(const QColor &color)
+{
+    return wrap(KHCY(color).h);
+}
+
+qreal KHCY::chroma(const QColor &color)
+{
+    return KHCY(color).c;
+}
+
 qreal KHCY::luma(const QColor &color)
 {
     return lumag(gamma(color.redF()),

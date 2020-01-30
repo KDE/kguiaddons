@@ -38,6 +38,8 @@ public:
     explicit KHCY(qreal h_, qreal c_, qreal y_, qreal a_ = 1.0);
     QColor qColor() const;
     qreal h, c, y, a;
+    static qreal hue(const QColor &);
+    static qreal chroma(const QColor &);
     static qreal luma(const QColor &);
 private:
     static qreal gamma(qreal);
