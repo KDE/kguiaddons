@@ -57,7 +57,7 @@ void KColorUtils::getHcy(const QColor &color, qreal *h, qreal *c, qreal *y, qrea
     }
     KColorSpaces::KHCY khcy(color);
     *c = khcy.c;
-    *h = khcy.h;
+    *h = khcy.h + (khcy.h < 0.0 ? 1.0 : 0.0);
     *y = khcy.y;
     if (a) {
         *a = khcy.a;
