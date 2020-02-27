@@ -9,6 +9,7 @@
 #include <QStandardPaths>
 #include <QCoreApplication>
 #include <QProcess>
+#include <QDebug>
 #include <QDesktopServices>
 #include <QLocale>
 
@@ -21,23 +22,39 @@ public:
 public Q_SLOTS:
     void openHelp(const QUrl &url)
     {
+        const QString appName = QCoreApplication::applicationName();
+
         QUrl u(url);
         if (u.path() == QLatin1Char('/')) {
-            u.setPath(QCoreApplication::applicationName());
+            u.setPath(appName);
         }
 
         const QString helpcenter = QStandardPaths::findExecutable(QStringLiteral("khelpcenter"));
-        if (helpcenter.isEmpty()) {
-            if (QCoreApplication::organizationDomain() == QLatin1String("kde.org")) {
-                //if khelpcenter is not installed and it's a KDE application, use docs.kde.org
-                const QUrl httpUrl(QLatin1String("https://docs.kde.org/index.php?branch=stable5&language=")+QLocale().name()+QLatin1String("&application=") +
-                    QCoreApplication::applicationName() + QStringLiteral("&path=") + url.path());
-                QDesktopServices::openUrl(httpUrl);
-            } else
-                QDesktopServices::openUrl(u);
-        } else {
+        if (!helpcenter.isEmpty()) { // use khelpcenter if it is available
             QProcess::startDetached(helpcenter, QStringList(u.toString()));
+            return;
         }
+
+        //if khelpcenter is not available and it's a KDE application, use docs.kde.org
+        if (QCoreApplication::organizationDomain() == QLatin1String("kde.org")) {
+            QString path = url.path();
+            QString docPath;
+            if (appName == QLatin1String("systemsettings") && path.startsWith(QLatin1String("/kcontrol"))) {
+                // special case for kcm modules
+                // e.g. "help:/kcontrol/fonts/index.html" >>> "&application=kcontorl/fonts"
+                docPath = path.remove(0, 1).remove(QLatin1String("/index.html"));
+            } else { //e.g. "help:/okular", "help:/systemsettings"
+                docPath = appName + QStringLiteral("&path=") + path;
+            }
+            const QUrl httpUrl(QLatin1String("https://docs.kde.org/index.php?branch=stable5&language=")
+                               + QLocale().name() + QLatin1String("&application=") + docPath);
+            QDesktopServices::openUrl(httpUrl);
+            return;
+        }
+
+        // not a KDE application
+        // TODO: use qCWarning(<logging-category>) when we have loggin categories set up
+        qDebug() << "Could not find a suitable handler for " << u.toString();
     }
 };
 
