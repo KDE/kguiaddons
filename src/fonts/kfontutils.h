@@ -21,11 +21,17 @@ class QString;
  */
 namespace KFontUtils
 {
-/** Modifiers for the adaptFontSize function */
+/**
+ * Modifiers for the adaptFontSize function
+ * @see AdaptFontSizeOptions
+ */
 enum AdaptFontSizeOption {
     NoFlags = 0x01, ///< No modifier
     DoNotAllowWordWrap = 0x02  ///< Do not use word wrapping
 };
+/**
+ * Stores a combination of #AdaptFontSizeOption values.
+ */
 Q_DECLARE_FLAGS(AdaptFontSizeOptions, AdaptFontSizeOption)
 
 /** Helper function that calculates the biggest font size (in points) used
