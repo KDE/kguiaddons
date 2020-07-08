@@ -7,7 +7,7 @@
 #include "kfontutils.h"
 
 #include <qmath.h>
-#include <qpainter.h>
+#include <QPainter>
 
 static bool checkFits(QPainter &painter, const QString &string, qreal width, qreal height, qreal size, KFontUtils::AdaptFontSizeOptions flags)
 {

@@ -11,8 +11,8 @@
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
-#include <qsavefile.h>
-#include <qstandardpaths.h>
+#include <QSaveFile>
+#include <QStandardPaths>
 
 //BEGIN KColorCollectionPrivate
 class KColorCollectionPrivate
