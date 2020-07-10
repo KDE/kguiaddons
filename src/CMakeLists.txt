@@ -12,6 +12,7 @@ set(kguiaddons_LIB_SRCS
  util/kmodifierkeyinfo.cpp
  util/kmodifierkeyinfoprovider.cpp
  util/urlhandler.cpp
+ util/kcursorsaver.cpp
 )
 
 set (kguiaddons_LIB_SRCS ${kguiaddons_LIB_SRCS} util/kmodifierkeyinfoprovider.cpp)
@@ -89,6 +90,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
   KIconUtils
   KImageCache
   KModifierKeyInfo
+  KCursorSaver
 
   RELATIVE util
   REQUIRED_HEADERS KGuiAddons_HEADERS
