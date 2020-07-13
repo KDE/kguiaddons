@@ -5,14 +5,12 @@
 */
 
 #include <QApplication>
-#include <QMessageBox>
 #include <QPushButton>
+#include <QThread>
 #include <QVBoxLayout>
 #include <QWidget>
 
 #include "kcursorsaver.h"
-#include <thread>
-#include <chrono>
 
 class TestWidget : public QWidget
 {
@@ -29,15 +27,13 @@ TestWidget::TestWidget(QWidget *parent)
     QPushButton *busyButton = new QPushButton(QStringLiteral("busy"), this);
     layout->addWidget(busyButton);
     connect(busyButton, &QPushButton::clicked, this, [this]() {
-        KCursorSaver busy(KCursorSaver::busy());
-        QMessageBox::information(this, QStringLiteral("info"), QStringLiteral("text"));
+        KCursorSaver saver(KCursorSaver::busy());
+        QThread::sleep(3);
     });
 }
 
 int main(int argc, char *argv[])
 {
-    QApplication::setApplicationName(QStringLiteral("testwidget"));
-
     QApplication app(argc, argv);
     TestWidget mainWidget;
     mainWidget.show();
