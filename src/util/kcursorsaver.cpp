@@ -45,9 +45,3 @@ KCursorSaver KCursorSaver::busy()
 {
     return KCursorSaver(Qt::WaitCursor);
 }
-
-void KCursorSaver::operator=(const KCursorSaver &rhs)
-{
-    d->inited = rhs.d->inited;
-    rhs.d->inited = false;
-}

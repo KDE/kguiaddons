@@ -27,14 +27,16 @@ public:
     /// restore the cursor
     ~KCursorSaver();
 
-    /// call this to explitly restore the cursor
+    /// call this to explicitly restore the cursor
     void restoreCursor();
 
+    /// Creates a KCursorSaver which uses Qt::ArrowCursor as shape.
     static KCursorSaver idle();
+
+    /// Creates a KCursorSaver which uses Qt::WaitCursor as shape.
     static KCursorSaver busy();
 
 private:
-    void operator=(const KCursorSaver &rhs);
     KCursorSaverPrivate *const d; ///< @internal
 };
 
