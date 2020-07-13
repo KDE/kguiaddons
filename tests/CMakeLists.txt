@@ -17,4 +17,5 @@ kguiaddons_executable_tests(
   kcolorcollectiontest
   kmodifierkeyinfotest
   openurltest
+  kcursorsavertest
 )
