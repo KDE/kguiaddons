@@ -16,6 +16,14 @@ set(kguiaddons_LIB_SRCS
 
 set (kguiaddons_LIB_SRCS ${kguiaddons_LIB_SRCS} util/kmodifierkeyinfoprovider.cpp)
 
+ecm_qt_declare_logging_category(kguiaddons_LIB_SRCS
+    HEADER kguiaddons_debug.h
+    IDENTIFIER KGUIADDONS_LOG
+    CATEGORY_NAME kf.guiaddons
+    DESCRIPTION "KGuiAddons"
+    EXPORT KGUIADDONS
+)
+
 add_library(KF5GuiAddons ${kguiaddons_LIB_SRCS})
 
 generate_export_header(KF5GuiAddons BASE_NAME KGuiAddons)
@@ -143,3 +151,9 @@ endif()
 include(ECMGeneratePriFile)
 ecm_generate_pri_file(BASE_NAME KGuiAddons LIB_NAME KF5GuiAddons DEPS "gui" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/KGuiAddons)
 install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
+
+ecm_qt_install_logging_categories(
+    EXPORT KGUIADDONS
+    FILE kguiaddons.categories
+    DESTINATION "${KDE_INSTALL_LOGGINGCATEGORIESDIR}"
+)

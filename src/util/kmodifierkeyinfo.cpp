@@ -6,9 +6,9 @@
 
 #include "kmodifierkeyinfo.h"
 #include "kmodifierkeyinfoprovider_p.h"
-#include <QPluginLoader>
+#include <kguiaddons_debug.h>
 
-#include <QDebug>
+#include <QPluginLoader>
 #include <QGuiApplication>
 
 KModifierKeyInfoProvider* createProvider()
@@ -17,7 +17,7 @@ KModifierKeyInfoProvider* createProvider()
     auto instance = dynamic_cast<KModifierKeyInfoProvider*>(loader.instance());
     if (instance)
         return instance;
-    qWarning() << "Error: could not load plugin for platform" << loader.fileName() << "error:" << loader.errorString() << loader.instance();
+    qCWarning(KGUIADDONS_LOG) << "Error: could not load plugin for platform" << loader.fileName() << "error:" << loader.errorString() << loader.instance();
     return new KModifierKeyInfoProvider;
 }
 

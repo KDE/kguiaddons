@@ -26,6 +26,7 @@ endif()
 include(GenerateExportHeader)
 include(ECMSetupVersion)
 include(ECMGenerateHeaders)
+include(ECMQtDeclareLoggingCategory)
 include(ECMAddQch)
 
 ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS

@@ -4,12 +4,13 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
+#include <kguiaddons_debug.h>
+
 #include <QObject>
 #include <QUrl>
 #include <QStandardPaths>
 #include <QCoreApplication>
 #include <QProcess>
-#include <QDebug>
 #include <QDesktopServices>
 #include <QLocale>
 
@@ -53,8 +54,7 @@ public Q_SLOTS:
         }
 
         // not a KDE application
-        // TODO: use qCWarning(<logging-category>) when we have loggin categories set up
-        qDebug() << "Could not find a suitable handler for " << u.toString();
+        qCWarning(KGUIADDONS_LOG) << "Could not find a suitable handler for " << u.toString();
     }
 };
 
