@@ -15,6 +15,10 @@
  * Create a KCursorSaver object when you want to set the cursor.
  * As soon as it gets out of scope, it will restore the original
  * cursor.
+ * @code
+    KCursorSaver saver(KCursorSaver::busy());
+    ... long-running operation here ...
+   @endcode
  * @since 5.73
  */
 class KCursorSaverPrivate;
