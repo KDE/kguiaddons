@@ -11,6 +11,7 @@
 #include <QCursor>
 
 /**
+ * @class KCursorSaver kcursorsaver.h KCursorSaver
  * @short sets a cursor and makes sure it's restored on destruction
  * Create a KCursorSaver object when you want to set the cursor.
  * As soon as it gets out of scope, it will restore the original
@@ -41,6 +42,7 @@ public:
     static KCursorSaver busy();
 
 private:
+    void operator=(const KCursorSaver &rhs) = delete;
     KCursorSaverPrivate *const d; ///< @internal
 };
 

@@ -9,6 +9,7 @@
 #include "kcursorsaver.h"
 
 #include <QGuiApplication>
+#include <QDebug> //TODO replace by qdebug category
 
 class KCursorSaverPrivate
 {
@@ -32,6 +33,10 @@ KCursorSaver::~KCursorSaver()
 
 void KCursorSaver::restoreCursor()
 {
+    if (!d->inited) {
+        qWarning() << "This method can't be calling twice. It's already restored.";
+        return;
+    }
     QGuiApplication::restoreOverrideCursor();
     d->inited = false;
 }
