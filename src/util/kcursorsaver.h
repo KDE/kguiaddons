@@ -29,6 +29,9 @@ public:
     /// Creates a KCursorSaver, setting the mouse cursor to @p shape.
     explicit KCursorSaver(Qt::CursorShape shape);
 
+    /// Move-constructs a KCursorSaver from other
+    KCursorSaver(KCursorSaver &&other);
+
     /// restore the cursor
     ~KCursorSaver();
 
@@ -41,7 +44,10 @@ public:
     /// Creates a KCursorSaver which uses Qt::WaitCursor as shape.
     static KCursorSaver busy();
 
+    KCursorSaver& operator=(KCursorSaver &&other);
+
 private:
+    KCursorSaver(KCursorSaver &other) = delete;
     void operator=(const KCursorSaver &rhs) = delete;
     KCursorSaverPrivate *const d; ///< @internal
 };
