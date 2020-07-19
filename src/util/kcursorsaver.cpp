@@ -28,7 +28,6 @@ KCursorSaver::KCursorSaver(KCursorSaver &&other)
     : d(other.d)
 {
     *this = std::move(other);
-    d->original = false;
 }
 
 KCursorSaver::~KCursorSaver()
@@ -42,27 +41,18 @@ KCursorSaver::~KCursorSaver()
 void KCursorSaver::restoreCursor()
 {
     if (!d->inited) {
-        qCWarning(KGUIADDONS_LOG) << "This method can't be calling twice. It's already restored.";
+        qCWarning(KGUIADDONS_LOG) << "This method can't be called twice. The cursor was already restored.";
         return;
     }
     QGuiApplication::restoreOverrideCursor();
     d->inited = false;
 }
 
-KCursorSaver KCursorSaver::idle()
-{
-    return KCursorSaver(Qt::ArrowCursor);
-}
-
-KCursorSaver KCursorSaver::busy()
-{
-    return KCursorSaver(Qt::WaitCursor);
-}
-
 KCursorSaver &KCursorSaver::operator =(KCursorSaver &&other)
 {
     if (this != &other) {
         d->inited = other.d->inited;
+        other.d->original = false;
     }
     return *this;
 }

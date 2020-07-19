@@ -27,7 +27,7 @@ TestWidget::TestWidget(QWidget *parent)
     QPushButton *busyButton = new QPushButton(QStringLiteral("busy"), this);
     layout->addWidget(busyButton);
     connect(busyButton, &QPushButton::clicked, this, [this]() {
-        KCursorSaver saver(KCursorSaver::busy());
+        KCursorSaver saver(KCursorSaver(Qt::WaitCursor));
         QThread::sleep(3);
     });
 }

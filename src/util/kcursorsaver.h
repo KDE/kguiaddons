@@ -38,12 +38,6 @@ public:
     /// call this to explicitly restore the cursor
     void restoreCursor();
 
-    /// Creates a KCursorSaver which uses Qt::ArrowCursor as shape.
-    static KCursorSaver idle();
-
-    /// Creates a KCursorSaver which uses Qt::WaitCursor as shape.
-    static KCursorSaver busy();
-
     KCursorSaver& operator=(KCursorSaver &&other);
 
 private:
