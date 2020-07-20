@@ -14,14 +14,13 @@ class KCursorSaverPrivate
 {
 public:
     bool inited = true;
-    bool original = false;
 };
 
 KCursorSaver::KCursorSaver(Qt::CursorShape shape)
     : d(new KCursorSaverPrivate)
 {
     QGuiApplication::setOverrideCursor(QCursor(shape));
-    d->original = true;
+    d->inited = true;
 }
 
 KCursorSaver::KCursorSaver(KCursorSaver &&other)
@@ -32,7 +31,7 @@ KCursorSaver::KCursorSaver(KCursorSaver &&other)
 
 KCursorSaver::~KCursorSaver()
 {
-    if (d->inited && d->original) {
+    if (d->inited) {
         QGuiApplication::restoreOverrideCursor();
     }
     delete d;
@@ -45,14 +44,12 @@ void KCursorSaver::restoreCursor()
         return;
     }
     QGuiApplication::restoreOverrideCursor();
-    d->inited = false;
 }
 
 KCursorSaver &KCursorSaver::operator =(KCursorSaver &&other)
 {
     if (this != &other) {
-        d->inited = other.d->inited;
-        other.d->original = false;
+        d->inited = false;
     }
     return *this;
 }
