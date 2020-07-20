@@ -8,5 +8,6 @@ ecm_add_tests(
   kwordwraptest.cpp
   kcolorutilstest.cpp
   kiconutilstest.cpp
+  kcursorsavertest.cpp
   LINK_LIBRARIES KF5::GuiAddons Qt5::Test
 )

@@ -12,22 +12,22 @@
 
 #include "kcursorsaver.h"
 
-class TestWidget : public QWidget
+class KCursorSaverTestWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit TestWidget(QWidget *parent = nullptr);
+    explicit KCursorSaverTestWidget(QWidget *parent = nullptr);
 };
 
-TestWidget::TestWidget(QWidget *parent)
+KCursorSaverTestWidget::KCursorSaverTestWidget(QWidget *parent)
     : QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     QPushButton *busyButton = new QPushButton(QStringLiteral("busy"), this);
     layout->addWidget(busyButton);
     connect(busyButton, &QPushButton::clicked, this, [this]() {
-        KCursorSaver saver(KCursorSaver(Qt::WaitCursor));
+        KCursorSaver saver(Qt::WaitCursor);
         QThread::sleep(3);
     });
 }
@@ -35,10 +35,10 @@ TestWidget::TestWidget(QWidget *parent)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    TestWidget mainWidget;
+    KCursorSaverTestWidget mainWidget;
     mainWidget.show();
 
     return app.exec();
 }
 
-#include "kcursorsavertest.moc"
+#include "kcursorsavergui_test.moc"

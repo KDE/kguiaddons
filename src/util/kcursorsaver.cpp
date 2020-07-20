@@ -13,14 +13,14 @@
 class KCursorSaverPrivate
 {
 public:
-    bool inited = true;
+    bool ownsCursor = true;
 };
 
 KCursorSaver::KCursorSaver(Qt::CursorShape shape)
     : d(new KCursorSaverPrivate)
 {
     QGuiApplication::setOverrideCursor(QCursor(shape));
-    d->inited = true;
+    d->ownsCursor = true;
 }
 
 KCursorSaver::KCursorSaver(KCursorSaver &&other)
@@ -31,25 +31,26 @@ KCursorSaver::KCursorSaver(KCursorSaver &&other)
 
 KCursorSaver::~KCursorSaver()
 {
-    if (d->inited) {
+    if (d->ownsCursor) {
         QGuiApplication::restoreOverrideCursor();
+        delete d;
     }
-    delete d;
 }
 
 void KCursorSaver::restoreCursor()
 {
-    if (!d->inited) {
-        qCWarning(KGUIADDONS_LOG) << "This method can't be called twice. The cursor was already restored.";
+    if (!d->ownsCursor) {
+        qCWarning(KGUIADDONS_LOG) << "This KCursorSaver doesn't own the cursor anymore, invalid call to restoreCursor().";
         return;
     }
+    d->ownsCursor = false;
     QGuiApplication::restoreOverrideCursor();
 }
 
 KCursorSaver &KCursorSaver::operator =(KCursorSaver &&other)
 {
     if (this != &other) {
-        d->inited = false;
+        d->ownsCursor = false;
     }
     return *this;
 }
