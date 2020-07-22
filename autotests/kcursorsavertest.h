@@ -17,7 +17,6 @@ public:
     ~KCursorSaverTest() = default;
 private Q_SLOTS:
     void ignoreWarning();
-    void initTestCase();
 };
 
 #endif // KCURSORSAVERTEST_H
