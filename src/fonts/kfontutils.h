@@ -33,6 +33,7 @@ enum AdaptFontSizeOption {
  * Stores a combination of #AdaptFontSizeOption values.
  */
 Q_DECLARE_FLAGS(AdaptFontSizeOptions, AdaptFontSizeOption)
+Q_DECLARE_OPERATORS_FOR_FLAGS(AdaptFontSizeOptions)
 
 /** Helper function that calculates the biggest font size (in points) used
     drawing a centered text using word wrapping.
@@ -70,7 +71,4 @@ qreal KGUIADDONS_EXPORT adaptFontSize(QPainter &painter,
                                       AdaptFontSizeOptions flags = NoFlags);
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(KFontUtils::AdaptFontSizeOptions)
-
 #endif
-
