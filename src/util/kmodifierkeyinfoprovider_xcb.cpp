@@ -80,7 +80,7 @@ KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
 
     // add known pointer buttons
     m_xkbButtons.insert(Qt::LeftButton, Button1Mask);
-    m_xkbButtons.insert(Qt::MidButton, Button2Mask);
+    m_xkbButtons.insert(Qt::MiddleButton, Button2Mask);
     m_xkbButtons.insert(Qt::RightButton, Button3Mask);
     m_xkbButtons.insert(Qt::XButton1, Button4Mask);
     m_xkbButtons.insert(Qt::XButton2, Button5Mask);

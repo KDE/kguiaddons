@@ -74,7 +74,7 @@ TestWidget::TestWidget() : QWidget(nullptr), m_lock(this)
     QMap<Qt::MouseButton, QString> buttons;
     buttons.insert(Qt::LeftButton, QStringLiteral("Left Button"));
     buttons.insert(Qt::RightButton, QStringLiteral("Right Button"));
-    buttons.insert(Qt::MidButton, QStringLiteral("Middle Button"));
+    buttons.insert(Qt::MiddleButton, QStringLiteral("Middle Button"));
     buttons.insert(Qt::XButton1, QStringLiteral("First X Button"));
     buttons.insert(Qt::XButton2, QStringLiteral("Second X Button"));
 
