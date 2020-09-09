@@ -28,9 +28,9 @@ class KModifierKeyInfoProvider;
  * @li @em latched the key is temporarily locked but will be unlocked upon
  *                          the next keypress.
  *
- * An application can either query the states synchronously (@see isKeyLatched,
- * @see isKeyLocked) or connect to KModifierKeyInfo's signals to be notified about
- * changes (@see keyLatched, @see keyLocked).
+ * An application can either query the states synchronously (isKeyLatched(),
+ * isKeyLocked()) or connect to KModifierKeyInfo's signals to be notified about
+ * changes (keyLatched(), keyLocked()).
  */
 class KGUIADDONS_EXPORT KModifierKeyInfo : public QObject
 {
