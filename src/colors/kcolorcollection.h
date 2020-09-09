@@ -26,7 +26,7 @@
  * This class uses the "GIMP" palette file format.
  *
  * @author Waldo Bastian (bastian@kde.org)
- **/
+ */
 class KGUIADDONS_EXPORT KColorCollection
 {
 public:
@@ -41,53 +41,53 @@ public:
      * KColorCollection constructor. Creates a KColorCollection from a file
      * the filename is derived from the name.
      * @param name The name of collection as returned by installedCollections()
-     **/
+     */
     explicit KColorCollection(const QString &name = QString());
 
     /**
      * KColorCollection copy constructor.
-     **/
+     */
     KColorCollection(const KColorCollection &);
 
     /**
      * KColorCollection destructor.
-     **/
+     */
     ~KColorCollection();
 
     /**
      * KColorCollection assignment operator
-     **/
+     */
     KColorCollection &operator=(const KColorCollection &);
 
     /**
      * Save the collection
      *
      * @return 'true' if successful
-     **/
+     */
     bool save();
 
     /**
      * Get the description of the collection.
      * @return the description of the collection.
-     **/
+     */
     QString description() const;
 
     /**
      * Set the description of the collection.
      * @param desc the new description
-     **/
+     */
     void setDescription(const QString &desc);
 
     /**
      * Get the name of the collection.
      * @return the name of the collection
-     **/
+     */
     QString name() const;
 
     /**
      * Set the name of the collection.
      * @param name the name of the collection
-     **/
+     */
     void setName(const QString &name);
 
     /**
@@ -103,26 +103,26 @@ public:
     /**
      * Returns whether the collection may be edited.
      * @return the state of the collection
-     **/
+     */
     Editable editable() const;
 
     /**
      * Change whether the collection may be edited.
      * @param editable the state of the collection
-     **/
+     */
     void setEditable(Editable editable);
 
     /**
      * Return the number of colors in the collection.
      * @return the number of colors
-     **/
+     */
     int count() const;
 
     /**
      * Find color by index.
      * @param index the index of the desired color
      * @return The @p index -th color of the collection, null if not found.
-     **/
+     */
     QColor color(int index) const;
 
     /**
@@ -130,7 +130,7 @@ public:
      * @param color the color to find
      * @return The index of the color in the collection or -1 if the
      * color is not found.
-     **/
+     */
     int findColor(const QColor &color) const;
 
     /**
@@ -139,7 +139,7 @@ public:
      * @return The name of the @p index -th color.
      * Note that not all collections have named the colors. Null is
      * returned if the color does not exist or has no name.
-     **/
+     */
     QString name(int index) const;
 
     /**
@@ -148,7 +148,7 @@ public:
      * Note that not all collections have named the colors.
      * Note also that each collection can give the same color
      * a different name.
-     **/
+     */
     QString name(const QColor &color) const;
 
     /**
@@ -157,7 +157,7 @@ public:
      * @param newColorName The name of the color, null to remove
      *                     the name.
      * @return The index of the added color.
-     **/
+     */
     int addColor(const QColor &newColor,
                  const QString &newColorName = QString());
 
@@ -169,7 +169,7 @@ public:
      *                     the name.
      * @return The index of the new color or -1 if the color couldn't
      * be changed.
-     **/
+     */
     int changeColor(int index,
                     const QColor &newColor,
                     const QString &newColorName = QString());
@@ -182,7 +182,7 @@ public:
      *                     the name.
      * @return The index of the new color or -1 if the color couldn't
      * be changed.
-     **/
+     */
     int changeColor(const QColor &oldColor,
                     const QColor &newColor,
                     const QString &newColorName = QString());
