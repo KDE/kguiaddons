@@ -10,19 +10,22 @@
 
 #include <QCursor>
 
+class KCursorSaverPrivate;
+
 /**
  * @class KCursorSaver kcursorsaver.h KCursorSaver
- * @short sets a cursor and makes sure it's restored on destruction
+ *
+ * @short Class to temporarily set a mouse cursor and restore the previous one on destruction
+ *
  * Create a KCursorSaver object when you want to set the cursor.
  * As soon as it gets out of scope, it will restore the original
  * cursor.
  * @code
-    KCursorSaver saver(KCursorSaver::busy());
+    KCursorSaver saver(Qt::WaitCursor);
     ... long-running operation here ...
    @endcode
  * @since 5.73
  */
-class KCursorSaverPrivate;
 class KGUIADDONS_EXPORT KCursorSaver
 {
 public:
