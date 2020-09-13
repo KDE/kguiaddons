@@ -26,7 +26,6 @@ public:
     KLocalImageCacheImplementationPrivate(QObject *parent = nullptr)
         : QObject(parent)
         , timestamp(QDateTime::currentDateTime())
-        , enablePixmapCaching(true)
     {
         QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
                          this, &KLocalImageCacheImplementationPrivate::clearPixmaps);
@@ -63,7 +62,7 @@ public:
      */
     QCache<QString, QPixmap> pixmapCache;
 
-    bool enablePixmapCaching;
+    bool enablePixmapCaching = true;
 };
 
 KLocalImageCacheImplementation::KLocalImageCacheImplementation(unsigned defaultCacheSize)

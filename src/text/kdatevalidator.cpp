@@ -23,7 +23,7 @@ public:
     {
     }
 
-    KDateValidator *q;
+    KDateValidator *const q;
 };
 
 KDateValidator::KDateValidator(QObject *parent) : QValidator(parent), d(nullptr)
