@@ -42,7 +42,7 @@ public Q_SLOTS:
             QString docPath;
             if (appName == QLatin1String("systemsettings") && path.startsWith(QLatin1String("/kcontrol"))) {
                 // special case for kcm modules
-                // e.g. "help:/kcontrol/fonts/index.html" >>> "&application=kcontorl/fonts"
+                // e.g. "help:/kcontrol/fonts/index.html" >>> "&application=kcontrol/fonts"
                 docPath = path.remove(0, 1).remove(QLatin1String("/index.html"));
             } else { //e.g. "help:/okular", "help:/systemsettings"
                 docPath = appName + QStringLiteral("&path=") + path;
