@@ -13,7 +13,10 @@ set(kguiaddons_LIB_SRCS
  util/kmodifierkeyinfoprovider.cpp
  util/urlhandler.cpp
  util/kcursorsaver.cpp
+ recorder/keyboardgrabber.cpp
+ recorder/keysequencerecorder.cpp
 )
+
 
 set (kguiaddons_LIB_SRCS ${kguiaddons_LIB_SRCS} util/kmodifierkeyinfoprovider.cpp)
 
@@ -27,6 +30,16 @@ ecm_qt_declare_logging_category(kguiaddons_LIB_SRCS
 
 add_library(KF5GuiAddons ${kguiaddons_LIB_SRCS})
 
+if(WITH_WAYLAND)
+    ecm_add_qtwayland_client_protocol(wayland_SRCS
+        PROTOCOL recorder/keyboard-shortcuts-inhibit-unstable-v1.xml
+        BASENAME keyboard-shortcuts-inhibit-unstable-v1
+    )
+    target_sources(KF5GuiAddons PRIVATE recorder/waylandinhibition.cpp ${wayland_SRCS})
+    target_compile_definitions(KF5GuiAddons PRIVATE WITH_WAYLAND)
+    target_link_libraries(KF5GuiAddons PRIVATE Qt5::GuiPrivate Qt5::WaylandClient Wayland::Client)
+endif()
+
 generate_export_header(KF5GuiAddons BASE_NAME KGuiAddons)
 add_library(KF5::GuiAddons ALIAS KF5GuiAddons)
 
@@ -35,6 +48,7 @@ set(kguiaddons_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/fonts
   ${CMAKE_CURRENT_SOURCE_DIR}/text
   ${CMAKE_CURRENT_SOURCE_DIR}/util
+  ${CMAKE_CURRENT_SOURCE_DIR}/recorder
   )
 target_include_directories(KF5GuiAddons PUBLIC "$<BUILD_INTERFACE:${kguiaddons_INCLUDES}>")
 target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/KGuiAddons>" )
@@ -94,6 +108,14 @@ ecm_generate_headers(KGuiAddons_HEADERS
 
   RELATIVE util
   REQUIRED_HEADERS KGuiAddons_HEADERS
+)
+
+ecm_generate_headers(KGuiAddons_HEADERS
+    HEADER_NAMES
+    KeySequenceRecorder
+
+    RELATIVE recorder
+    REQUIRED_HEADERS KGuiAddons_HEADERS
 )
 
 find_package(PythonModuleGeneration)

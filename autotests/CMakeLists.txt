@@ -9,5 +9,6 @@ ecm_add_tests(
   kcolorutilstest.cpp
   kiconutilstest.cpp
   kcursorsavertest.cpp
+  keysequencerecordertest.cpp
   LINK_LIBRARIES KF5::GuiAddons Qt5::Test
 )
