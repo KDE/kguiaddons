@@ -425,7 +425,7 @@ bool KeySequenceRecorder::isRecording() const
 
 QKeySequence KeySequenceRecorder::currentKeySequence() const
 {
-    return appendToSequence(d->m_currentKeySequence, d->m_currentModifiers);
+    return  d->m_isRecording ? appendToSequence(d->m_currentKeySequence, d->m_currentModifiers) : d->m_currentKeySequence;
 }
 
 QWindow* KeySequenceRecorder::window() const
