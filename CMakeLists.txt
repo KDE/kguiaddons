@@ -25,14 +25,18 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 include(KDEInstallDirs)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(KDECMakeSettings)
+
 set(REQUIRED_QT_VERSION 5.12.0)
-find_package(Qt5Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
+if (WITH_WAYLAND)
+    set(_qtgui_find_components COMPONENTS Private)
+endif()
+# QtGui must be found becore Qt5WaylandClient
+find_package(Qt5Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE ${_qtgui_find_components})
 
 if (NOT APPLE AND NOT WIN32)
     find_package(X11 MODULE)
     find_package(XCB MODULE COMPONENTS XCB)
 endif()
-
 
 if (WITH_WAYLAND)
     find_package(Qt5WaylandClient ${REQUIRED_QT_VERSION} NO_MODULE)
