@@ -22,7 +22,9 @@ public:
     }
     ~ShortcutsInhibitManager()
     {
-        destroy();
+        if (isInitialized()) {
+            destroy();
+        }
     }
 };
 
