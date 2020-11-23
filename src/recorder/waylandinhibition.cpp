@@ -19,6 +19,9 @@ public:
     ShortcutsInhibitManager()
         : QWaylandClientExtensionTemplate<ShortcutsInhibitManager>(1)
     {
+        // QWaylandClientExtensionTemplate invokes this with a QueuedConnection but we want shortcuts
+        // to be inhibited immediately.
+        QMetaObject::invokeMethod(this, "addRegistryListener");
     }
     ~ShortcutsInhibitManager()
     {
