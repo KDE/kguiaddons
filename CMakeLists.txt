@@ -26,7 +26,7 @@ include(KDEInstallDirs)
 include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(KDECMakeSettings)
 
-set(REQUIRED_QT_VERSION 5.12.0)
+set(REQUIRED_QT_VERSION 5.13.0)
 if (WITH_WAYLAND)
     set(_qtgui_find_components COMPONENTS Private)
 endif()
