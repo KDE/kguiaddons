@@ -120,8 +120,6 @@ TestWidget::TestWidget() : QWidget(nullptr), m_lock(this)
         layout->addLayout(hlayout);
     }
 
-    setLayout(layout);
-
     connect(&m_lock, &KModifierKeyInfo::keyPressed,
             this, &TestWidget::keyPressed);
     connect(&m_lock, &KModifierKeyInfo::keyLatched,
