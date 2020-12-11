@@ -6,7 +6,7 @@
 
 #include <QFontMetrics>
 
-#include <QtTestGui>
+#include <QTest>
 
 #include <QObject>
 #include "kwordwrap.h"

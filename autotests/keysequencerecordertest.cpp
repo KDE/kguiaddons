@@ -7,7 +7,8 @@
 
 #include <KeySequenceRecorder>
 
-#include <QtTest>
+#include <QSignalSpy>
+#include <QTest>
 #include <QWindow>
 
 QTEST_MAIN(KeySequenceRecorderTest)
