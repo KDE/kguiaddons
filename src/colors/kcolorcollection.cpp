@@ -139,11 +139,7 @@ KColorCollection::save()
     QTextStream str(&sf);
 
     QString description = d->desc.trimmed();
-#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
-    description = QLatin1Char('#') + description.split(QLatin1Char('\n'), QString::KeepEmptyParts).join(QLatin1String("\n#"));
-#else
     description = QLatin1Char('#') + description.split(QLatin1Char('\n'), Qt::KeepEmptyParts).join(QLatin1String("\n#"));
-#endif
 
     str << QLatin1String("KDE RGB Palette\n");
     str << description << QLatin1Char('\n');
