@@ -81,13 +81,13 @@ void KModifierKeyInfoProvider::stateUpdated(Qt::Key key, KModifierKeyInfoProvide
         const auto difference = (newState ^ state);
         state = newState;
         if (difference & Pressed) {
-            emit keyPressed(key, newState & Pressed);
+            Q_EMIT keyPressed(key, newState & Pressed);
         }
         if (difference & Latched) {
-            emit keyLatched(key, newState & Latched);
+            Q_EMIT keyLatched(key, newState & Latched);
         }
         if (difference & Locked) {
-            emit keyLocked(key, newState & Locked);
+            Q_EMIT keyLocked(key, newState & Locked);
         }
     }
 }

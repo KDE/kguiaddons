@@ -259,7 +259,7 @@ void KModifierKeyInfoProviderXcb::xkbButtonStateChanged(unsigned short ptr_butto
         newButtonState = (ptr_buttons & it.value());
         if (newButtonState != m_buttonStates[it.key()]) {
             m_buttonStates[it.key()] = newButtonState;
-            emit buttonPressed(it.key(), newButtonState);
+            Q_EMIT buttonPressed(it.key(), newButtonState);
         }
     }
 }
@@ -311,7 +311,7 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
             // previously unknown modifier
             if (!m_modifierStates.contains(it->key)) {
                 m_modifierStates.insert(it->key, Nothing);
-                emit keyAdded(it->key);
+                Q_EMIT keyAdded(it->key);
             }
         }
     }
@@ -323,7 +323,7 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
         if (!m_xkbModifiers.contains(i.key())) {
             Qt::Key key = i.key();
             i.remove();
-            emit keyRemoved(key);
+            Q_EMIT keyRemoved(key);
         }
     }
 
