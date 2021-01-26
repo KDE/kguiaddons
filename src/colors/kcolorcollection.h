@@ -14,6 +14,7 @@
 #include <QColor>
 #include <QString>
 #include <QStringList>
+#include <QSharedDataPointer>
 
 /**
  * @class KColorCollection kcolorcollection.h KColorCollection
@@ -188,7 +189,7 @@ public:
                     const QString &newColorName = QString());
 
 private:
-    class KColorCollectionPrivate *d;
+    QSharedDataPointer<class KColorCollectionPrivate> d;
 };
 
 #endif // KDELIBS_KCOLORCOLLECTION_H

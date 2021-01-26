@@ -13,13 +13,14 @@
 #include <QTextStream>
 #include <QSaveFile>
 #include <QStandardPaths>
+#include <QSharedData>
 
 //BEGIN KColorCollectionPrivate
-class KColorCollectionPrivate
+class KColorCollectionPrivate : public QSharedData
 {
 public:
     KColorCollectionPrivate(const QString &);
-    KColorCollectionPrivate(const KColorCollectionPrivate &);
+    KColorCollectionPrivate(const KColorCollectionPrivate &) = default;
     ~KColorCollectionPrivate() {}
     struct ColorNode {
         ColorNode(const QColor &c, const QString &n)
@@ -88,11 +89,6 @@ KColorCollectionPrivate::KColorCollectionPrivate(const QString &_name)
         }
     }
 }
-
-KColorCollectionPrivate::KColorCollectionPrivate(const KColorCollectionPrivate &p)
-    : colorList(p.colorList), name(p.name), desc(p.desc), editable(p.editable)
-{
-}
 //END KColorCollectionPrivate
 
 QStringList KColorCollection::installedCollections()
@@ -111,20 +107,14 @@ QStringList KColorCollection::installedCollections()
 }
 
 KColorCollection::KColorCollection(const QString &name)
+    : d(new KColorCollectionPrivate(name))
 {
-    d = new KColorCollectionPrivate(name);
 }
 
-KColorCollection::KColorCollection(const KColorCollection &p)
-{
-    d = new KColorCollectionPrivate(*p.d);
-}
+KColorCollection::KColorCollection(const KColorCollection &p) = default;
 
-KColorCollection::~KColorCollection()
-{
-    // Need auto-save?
-    delete d;
-}
+// Need auto-save?
+KColorCollection::~KColorCollection() = default;
 
 bool
 KColorCollection::save()
@@ -187,18 +177,7 @@ int KColorCollection::count() const
     return d->colorList.count();
 }
 
-KColorCollection &
-KColorCollection::operator=(const KColorCollection &p)
-{
-    if (&p == this) {
-        return *this;
-    }
-    d->colorList = p.d->colorList;
-    d->name = p.d->name;
-    d->desc = p.d->desc;
-    d->editable = p.d->editable;
-    return *this;
-}
+KColorCollection & KColorCollection::operator=(const KColorCollection &p) = default;
 
 QColor
 KColorCollection::color(int index) const
