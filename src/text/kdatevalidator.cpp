@@ -12,7 +12,7 @@
 #include <QDate>
 #include <QLocale>
 
-class Q_DECL_HIDDEN KDateValidator::KDateValidatorPrivate
+class KDateValidatorPrivate
 {
 public:
     KDateValidatorPrivate(KDateValidator *q): q(q)

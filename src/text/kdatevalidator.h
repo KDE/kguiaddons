@@ -28,9 +28,9 @@ public:
     void fixup(QString &input) const override;
     State date(const QString &text, QDate &date) const;
 private:
-    class KDateValidatorPrivate;
+    // KF6 TODO: add explicit destructor, use std::unique_ptr
     friend class KDateValidatorPrivate;
-    KDateValidatorPrivate *const d;
+    class KDateValidatorPrivate *const d;
 };
 
 #endif // KDATEVALIDATOR_H
