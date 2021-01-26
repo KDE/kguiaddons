@@ -8,6 +8,9 @@
 #define KLOCALIMAGECACHEIMPL_H
 
 #include <kguiaddons_export.h>
+
+#include <memory>
+
 class KLocalImageCacheImplementationPrivate;
 
 class QImage;
@@ -46,7 +49,7 @@ protected:
     void clearLocalCache();
 
 private:
-    KLocalImageCacheImplementationPrivate *const d; ///< @internal
+    std::unique_ptr<KLocalImageCacheImplementationPrivate> const d; ///< @internal
 
     template<class T> friend class KSharedPixmapCacheMixin;
 };

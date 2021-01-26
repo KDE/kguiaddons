@@ -124,9 +124,10 @@ Q_SIGNALS:
     void currentKeySequenceChanged();
     void multiKeyShortcutsAllowedChanged();
     void modifierlessAllowedChanged();
+
 private:
     friend class KeySequenceRecorderPrivate;
-    std::unique_ptr<KeySequenceRecorderPrivate> d;
+    std::unique_ptr<KeySequenceRecorderPrivate> const d;
 };
 
 #endif

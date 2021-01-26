@@ -72,10 +72,7 @@ KLocalImageCacheImplementation::KLocalImageCacheImplementation(unsigned defaultC
     d->pixmapCache.setMaxCost(qMax(defaultCacheSize / 8, (unsigned int) 16384));
 }
 
-KLocalImageCacheImplementation::~KLocalImageCacheImplementation()
-{
-    delete d;
-}
+KLocalImageCacheImplementation::~KLocalImageCacheImplementation() = default;
 
 void KLocalImageCacheImplementation::updateModifiedTime()
 {
