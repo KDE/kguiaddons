@@ -66,7 +66,7 @@ if (NOT APPLE AND X11_FOUND AND X11_Xkb_FOUND AND XCB_XCB_FOUND)
             ${XCB_XCB_INCLUDE_DIR}
         )
         target_link_libraries(kmodifierkey_xcb PRIVATE ${X11_LIBRARIES} ${XCB_XCB_LIBRARY} Qt5::X11Extras KF5::GuiAddons)
-        install( TARGETS kmodifierkey_xcb DESTINATION ${PLUGIN_INSTALL_DIR}/kf5/kguiaddons/kmodifierkey/)
+        install( TARGETS kmodifierkey_xcb DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kguiaddons/kmodifierkey/)
     endif()
 endif ()
 
