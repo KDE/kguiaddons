@@ -154,7 +154,7 @@ if(BUILD_QCH)
         KF5GuiAddons_QCH
         NAME KGuiAddons
         BASE_NAME KF5GuiAddons
-        VERSION ${KF5_VERSION}
+        VERSION ${KF_VERSION}
         ORG_DOMAIN org.kde
         SOURCES # using only public headers, to cover only public API
             ${KGuiAddons_HEADERS}
