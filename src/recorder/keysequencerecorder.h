@@ -14,12 +14,11 @@
 
 #include <QKeySequence>
 #include <QObject>
+#include <QWindow>
 
 #include <memory>
 
 class KeySequenceRecorderPrivate;
-
-class QWindow;
 
 /**
  * @class KeySequenceRecorder keysequencerecorder.h KeySequenceRecorder
