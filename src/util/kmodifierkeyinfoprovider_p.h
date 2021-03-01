@@ -26,7 +26,7 @@ public:
         Nothing = 0x0,
         Pressed = 0x1,
         Latched = 0x2,
-        Locked = 0x4
+        Locked = 0x4,
     };
     Q_ENUM(ModifierState);
     Q_DECLARE_FLAGS(ModifierStates, ModifierState)

@@ -98,7 +98,7 @@ public:
      */
     enum Editable { Yes, ///< Collection may be edited
                     No,  ///< Collection may not be edited
-                    Ask  ///< Ask user before editing
+                    Ask,  ///< Ask user before editing
                   };
 
     /**

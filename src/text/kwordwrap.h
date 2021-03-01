@@ -45,7 +45,7 @@ public:
      * Use this flag in drawText() if you want to fade out the text if it does
      * not fit into the constraining rectangle.
      */
-    enum { FadeOut = 0x10000000, Truncate = 0x20000000 };
+    enum { FadeOut = 0x10000000, Truncate = 0x20000000, };
 
     /**
      * Main method for wrapping text.

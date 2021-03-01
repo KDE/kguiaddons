@@ -27,7 +27,7 @@ namespace KFontUtils
  */
 enum AdaptFontSizeOption {
     NoFlags = 0x01, ///< No modifier
-    DoNotAllowWordWrap = 0x02  ///< Do not use word wrapping
+    DoNotAllowWordWrap = 0x02,  ///< Do not use word wrapping
 };
 /**
  * Stores a combination of #AdaptFontSizeOption values.
