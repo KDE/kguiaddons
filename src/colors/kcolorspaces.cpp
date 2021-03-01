@@ -23,12 +23,12 @@ static inline qreal wrap(qreal a, qreal d = 1.0)
 // HCY color space
 
 #define HCY_REC 709 // use 709 for now
-#if   HCY_REC == 601
-static const qreal yc[3] = { 0.299, 0.587, 0.114 };
+#if HCY_REC == 601
+static const qreal yc[3] = {0.299, 0.587, 0.114};
 #elif HCY_REC == 709
 static const qreal yc[3] = {0.2126, 0.7152, 0.0722};
 #else // use Qt values
-static const qreal yc[3] = { 0.34375, 0.5, 0.15625 };
+static const qreal yc[3] = {0.34375, 0.5, 0.15625};
 #endif
 
 qreal KHCY::gamma(qreal n)
@@ -155,8 +155,5 @@ qreal KHCY::chroma(const QColor &color)
 
 qreal KHCY::luma(const QColor &color)
 {
-    return lumag(gamma(color.redF()),
-                 gamma(color.greenF()),
-                 gamma(color.blueF()));
+    return lumag(gamma(color.redF()), gamma(color.greenF()), gamma(color.blueF()));
 }
-

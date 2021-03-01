@@ -7,10 +7,10 @@
 #include "kiconutilstest.h"
 #include <kiconutils.h>
 
-#include <QTest>
-#include <QPixmap>
-#include <QPainter>
 #include <QIcon>
+#include <QPainter>
+#include <QPixmap>
+#include <QTest>
 
 QTEST_MAIN(KIconUtilsTest)
 
@@ -187,4 +187,3 @@ void KIconUtilsTest::addOverlaysTest()
     QCOMPARE(bluePixels, 3072);
     QCOMPARE(redPixels, 6144);
 }
-

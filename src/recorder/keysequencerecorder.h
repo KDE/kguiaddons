@@ -6,7 +6,6 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-
 #ifndef KSHORTCUTRECORDER_H
 #define KSHORTCUTRECORDER_H
 
@@ -39,7 +38,7 @@ class KeySequenceRecorderPrivate;
  * @see KKeySequenceWidget, KeySequenceItem
  */
 
-class KGUIADDONS_EXPORT KeySequenceRecorder : public QObject 
+class KGUIADDONS_EXPORT KeySequenceRecorder : public QObject
 {
     Q_OBJECT
 
@@ -59,7 +58,7 @@ class KGUIADDONS_EXPORT KeySequenceRecorder : public QObject
     /**
      * The window in which the key events are happening that should be recorded
      */
-    Q_PROPERTY(QWindow* window READ window WRITE setWindow NOTIFY windowChanged)
+    Q_PROPERTY(QWindow *window READ window WRITE setWindow NOTIFY windowChanged)
     /**
      * If key presses of "plain" keys without a modifier are considered to be a valid finished
      * key combination.
@@ -100,7 +99,7 @@ public:
 
     QKeySequence currentKeySequence() const;
 
-    QWindow* window() const;
+    QWindow *window() const;
     void setWindow(QWindow *window);
 
     bool multiKeyShortcutsAllowed() const;

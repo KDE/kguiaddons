@@ -6,9 +6,9 @@
 
 #include "kiconutils.h"
 
+#include <QHash>
 #include <QIconEngine>
 #include <QPainter>
-#include <QHash>
 
 class KOverlayIconEngine : public QIconEngine
 {
@@ -105,7 +105,6 @@ void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode
     // Iterate over stored overlays
     QHash<Qt::Corner, QIcon>::const_iterator i = m_overlays.constBegin();
     while (i != m_overlays.constEnd()) {
-
         const QPixmap overlayPixmap = i.value().pixmap(overlaySize, overlaySize, mode, state);
         if (overlayPixmap.isNull()) {
             ++i;
@@ -139,7 +138,6 @@ void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode
 
 namespace KIconUtils
 {
-
 QIcon addOverlay(const QIcon &icon, const QIcon &overlay, Qt::Corner position)
 {
     return QIcon(new KOverlayIconEngine(icon, overlay, position));

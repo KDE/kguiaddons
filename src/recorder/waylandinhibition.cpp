@@ -6,14 +6,12 @@
 #include "waylandinhibition_p.h"
 
 #include <QGuiApplication>
-#include <qpa/qplatformnativeinterface.h>
 #include <QtWaylandClient/QWaylandClientExtensionTemplate>
+#include <qpa/qplatformnativeinterface.h>
 
 #include "qwayland-keyboard-shortcuts-inhibit-unstable-v1.h"
 
-class ShortcutsInhibitManager
-    : public QWaylandClientExtensionTemplate<ShortcutsInhibitManager>
-    , public QtWayland::zwp_keyboard_shortcuts_inhibit_manager_v1
+class ShortcutsInhibitManager : public QWaylandClientExtensionTemplate<ShortcutsInhibitManager>, public QtWayland::zwp_keyboard_shortcuts_inhibit_manager_v1
 {
 public:
     ShortcutsInhibitManager()
@@ -54,7 +52,7 @@ public:
         m_active = false;
     }
 
-    bool isActive() const 
+    bool isActive() const
     {
         return m_active;
     }
@@ -86,8 +84,8 @@ void WaylandInhibition::enableInhibition()
     if (!nativeInterface) {
         return;
     }
-    auto seat = static_cast<wl_seat*>(nativeInterface->nativeResourceForIntegration("wl_seat"));
-    auto surface = static_cast<wl_surface*>(nativeInterface->nativeResourceForWindow("surface", m_window));
+    auto seat = static_cast<wl_seat *>(nativeInterface->nativeResourceForIntegration("wl_seat"));
+    auto surface = static_cast<wl_surface *>(nativeInterface->nativeResourceForWindow("surface", m_window));
     if (!seat || !surface) {
         return;
     }
@@ -101,4 +99,3 @@ void WaylandInhibition::disableInhibition()
     }
     m_inhibitor.reset();
 }
-

@@ -17,7 +17,6 @@
 
 namespace KColorSpaces
 {
-
 class KHCY
 {
 public:
@@ -28,6 +27,7 @@ public:
     static qreal hue(const QColor &);
     static qreal chroma(const QColor &);
     static qreal luma(const QColor &);
+
 private:
     static qreal gamma(qreal);
     static qreal igamma(qreal);

@@ -7,8 +7,8 @@
 #ifndef kwordwrap_h
 #define kwordwrap_h
 
-#include <kguiaddons_export.h>
 #include <QSharedDataPointer>
+#include <kguiaddons_export.h>
 #include <qnamespace.h>
 
 class QFontMetrics;
@@ -45,7 +45,10 @@ public:
      * Use this flag in drawText() if you want to fade out the text if it does
      * not fit into the constraining rectangle.
      */
-    enum { FadeOut = 0x10000000, Truncate = 0x20000000, };
+    enum {
+        FadeOut = 0x10000000,
+        Truncate = 0x20000000,
+    };
 
     /**
      * Main method for wrapping text.
@@ -120,8 +123,7 @@ public:
      *             effect)
      * @param t the text to draw
      */
-    static void drawFadeoutText(QPainter *p, int x, int y, int maxW,
-                                const QString &t);
+    static void drawFadeoutText(QPainter *p, int x, int y, int maxW, const QString &t);
 
     /**
      * Draws the string @p t at the given coordinates, if it does not
@@ -132,8 +134,7 @@ public:
      * @param maxW the maximum width of the text (including the '...')
      * @param t the text to draw
      */
-    static void drawTruncateText(QPainter *p, int x, int y, int maxW,
-                                 const QString &t);
+    static void drawTruncateText(QPainter *p, int x, int y, int maxW, const QString &t);
 
 private:
     KWordWrap(const QRect &r);

@@ -8,13 +8,13 @@
 #include "kmodifierkeyinfoprovider_p.h"
 #include <kguiaddons_debug.h>
 
-#include <QPluginLoader>
 #include <QGuiApplication>
+#include <QPluginLoader>
 
-KModifierKeyInfoProvider* createProvider()
+KModifierKeyInfoProvider *createProvider()
 {
-    QPluginLoader loader(QStringLiteral("kf5/kguiaddons/kmodifierkey/kmodifierkey_")+qGuiApp->platformName());
-    auto instance = dynamic_cast<KModifierKeyInfoProvider*>(loader.instance());
+    QPluginLoader loader(QStringLiteral("kf5/kguiaddons/kmodifierkey/kmodifierkey_") + qGuiApp->platformName());
+    auto instance = dynamic_cast<KModifierKeyInfoProvider *>(loader.instance());
     if (instance)
         return instance;
     qCWarning(KGUIADDONS_LOG) << "Error: could not load plugin for platform" << loader.fileName() << "error:" << loader.errorString() << loader.instance();
@@ -22,20 +22,15 @@ KModifierKeyInfoProvider* createProvider()
 }
 
 KModifierKeyInfo::KModifierKeyInfo(QObject *parent)
-    : QObject(parent), p(createProvider())
+    : QObject(parent)
+    , p(createProvider())
 {
-    connect(p.data(), &KModifierKeyInfoProvider::keyPressed,
-            this, &KModifierKeyInfo::keyPressed);
-    connect(p.data(), &KModifierKeyInfoProvider::keyLatched,
-            this, &KModifierKeyInfo::keyLatched);
-    connect(p.data(), &KModifierKeyInfoProvider::keyLocked,
-            this, &KModifierKeyInfo::keyLocked);
-    connect(p.data(), &KModifierKeyInfoProvider::buttonPressed,
-            this, &KModifierKeyInfo::buttonPressed);
-    connect(p.data(), &KModifierKeyInfoProvider::keyAdded,
-            this, &KModifierKeyInfo::keyAdded);
-    connect(p.data(), &KModifierKeyInfoProvider::keyRemoved,
-            this, &KModifierKeyInfo::keyRemoved);
+    connect(p.data(), &KModifierKeyInfoProvider::keyPressed, this, &KModifierKeyInfo::keyPressed);
+    connect(p.data(), &KModifierKeyInfoProvider::keyLatched, this, &KModifierKeyInfo::keyLatched);
+    connect(p.data(), &KModifierKeyInfoProvider::keyLocked, this, &KModifierKeyInfo::keyLocked);
+    connect(p.data(), &KModifierKeyInfoProvider::buttonPressed, this, &KModifierKeyInfo::buttonPressed);
+    connect(p.data(), &KModifierKeyInfoProvider::keyAdded, this, &KModifierKeyInfo::keyAdded);
+    connect(p.data(), &KModifierKeyInfoProvider::keyRemoved, this, &KModifierKeyInfo::keyRemoved);
 }
 
 KModifierKeyInfo::~KModifierKeyInfo()
@@ -81,4 +76,3 @@ bool KModifierKeyInfo::isButtonPressed(Qt::MouseButton button) const
 {
     return p->isButtonPressed(button);
 }
-

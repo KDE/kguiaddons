@@ -12,8 +12,8 @@
 #include <QAbstractNativeEventFilter>
 class KModifierKeyInfoProviderXcb : public KModifierKeyInfoProvider, public QAbstractNativeEventFilter
 {
-Q_OBJECT
-Q_PLUGIN_METADATA(IID "org.kde.kguiaddons.KModifierKeyInfoProvider.XCB")
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.kguiaddons.KModifierKeyInfoProvider.XCB")
 public:
     KModifierKeyInfoProviderXcb();
     ~KModifierKeyInfoProviderXcb();
@@ -24,8 +24,7 @@ public:
     bool nativeEventFilter(const QByteArray &eventType, void *message, long int *result) override;
 
     void xkbUpdateModifierMapping();
-    void xkbModifierStateChanged(unsigned char mods, unsigned char latched_mods,
-                                 unsigned char locked_mods);
+    void xkbModifierStateChanged(unsigned char mods, unsigned char latched_mods, unsigned char locked_mods);
     void xkbButtonStateChanged(unsigned short ptr_buttons);
 
 private:

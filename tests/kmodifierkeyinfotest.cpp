@@ -5,24 +5,28 @@
 */
 
 #include <QApplication>
-#include <QVBoxLayout>
+#include <QCheckBox>
+#include <QDebug>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMap>
-#include <QWidget>
 #include <QPushButton>
-#include <QDebug>
-#include <QCheckBox>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include "kmodifierkeyinfo.h"
 
-template <typename A, typename B, typename C>
+template<typename A, typename B, typename C>
 class Triple
 {
 public:
-    Triple() {}
+    Triple()
+    {
+    }
     Triple(const A _first, const B _second, const C _third)
-        : first(_first), second(_second), third(_third) {};
+        : first(_first)
+        , second(_second)
+        , third(_third){};
     A first;
     B second;
     C third;
@@ -53,11 +57,13 @@ protected Q_SLOTS:
 
 private:
     KModifierKeyInfo m_lock;
-    QMap<Qt::Key, Triple<QCheckBox *, QCheckBox *, QCheckBox *> > m_leds;
+    QMap<Qt::Key, Triple<QCheckBox *, QCheckBox *, QCheckBox *>> m_leds;
     QMap<Qt::MouseButton, QCheckBox *> m_mouseLeds;
 };
 
-TestWidget::TestWidget() : QWidget(nullptr), m_lock(this)
+TestWidget::TestWidget()
+    : QWidget(nullptr)
+    , m_lock(this)
 {
     QMap<Qt::Key, QString> mods;
     mods.insert(Qt::Key_Shift, QStringLiteral("Shift"));
@@ -120,18 +126,12 @@ TestWidget::TestWidget() : QWidget(nullptr), m_lock(this)
         layout->addLayout(hlayout);
     }
 
-    connect(&m_lock, &KModifierKeyInfo::keyPressed,
-            this, &TestWidget::keyPressed);
-    connect(&m_lock, &KModifierKeyInfo::keyLatched,
-            this, &TestWidget::keyLatched);
-    connect(&m_lock, &KModifierKeyInfo::keyLocked,
-            this, &TestWidget::keyLocked);
-    connect(&m_lock, &KModifierKeyInfo::buttonPressed,
-            this, &TestWidget::mouseButtonPressed);
-    connect(&m_lock, &KModifierKeyInfo::keyAdded,
-            this, &TestWidget::keyAdded);
-    connect(&m_lock, &KModifierKeyInfo::keyRemoved,
-            this, &TestWidget::keyRemoved);
+    connect(&m_lock, &KModifierKeyInfo::keyPressed, this, &TestWidget::keyPressed);
+    connect(&m_lock, &KModifierKeyInfo::keyLatched, this, &TestWidget::keyLatched);
+    connect(&m_lock, &KModifierKeyInfo::keyLocked, this, &TestWidget::keyLocked);
+    connect(&m_lock, &KModifierKeyInfo::buttonPressed, this, &TestWidget::mouseButtonPressed);
+    connect(&m_lock, &KModifierKeyInfo::keyAdded, this, &TestWidget::keyAdded);
+    connect(&m_lock, &KModifierKeyInfo::keyRemoved, this, &TestWidget::keyRemoved);
 }
 
 void TestWidget::keyPressed(Qt::Key key, bool pressed)

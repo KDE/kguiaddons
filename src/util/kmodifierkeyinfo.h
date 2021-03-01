@@ -172,7 +172,7 @@ Q_SIGNALS:
 
 private:
     Q_DISABLE_COPY(KModifierKeyInfo)
-    QExplicitlySharedDataPointer<KModifierKeyInfoProvider> const p;  // krazy:exclude=dpointer
+    QExplicitlySharedDataPointer<KModifierKeyInfoProvider> const p; // krazy:exclude=dpointer
 };
 
 #endif

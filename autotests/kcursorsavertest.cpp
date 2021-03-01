@@ -11,20 +11,19 @@ QTEST_MAIN(KCursorSaverTest)
 KCursorSaverTest::KCursorSaverTest(QObject *parent)
     : QObject(parent)
 {
-
 }
 
 void KCursorSaverTest::ignoreWarning()
 {
     {
-        //Emit qwarning when we call twice restoreCursor
+        // Emit qwarning when we call twice restoreCursor
         KCursorSaver saver(Qt::WaitCursor);
         saver.restoreCursor();
         QTest::ignoreMessage(QtWarningMsg, "This KCursorSaver doesn't own the cursor anymore, invalid call to restoreCursor().");
         saver.restoreCursor();
     }
     {
-        //Emit qwarning when "moving A to B and then calling A::restoreCursor()"
+        // Emit qwarning when "moving A to B and then calling A::restoreCursor()"
         KCursorSaver saverA(Qt::WaitCursor);
         KCursorSaver saverB = std::move(saverA);
         QTest::ignoreMessage(QtWarningMsg, "This KCursorSaver doesn't own the cursor anymore, invalid call to restoreCursor().");

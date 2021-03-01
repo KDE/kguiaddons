@@ -39,4 +39,3 @@ bool KeyboardGrabber::shortcutsAreInhibited() const
 {
     return m_grabbingKeyboard;
 }
-

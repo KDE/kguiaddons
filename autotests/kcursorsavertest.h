@@ -3,7 +3,6 @@
     SPDX-FileCopyrightText: 2020 Laurent Montel <montel@kde.org>
 */
 
-
 #ifndef KCURSORSAVERTEST_H
 #define KCURSORSAVERTEST_H
 

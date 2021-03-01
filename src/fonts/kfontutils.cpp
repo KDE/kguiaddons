@@ -6,8 +6,8 @@
 
 #include "kfontutils.h"
 
-#include <qmath.h>
 #include <QPainter>
+#include <qmath.h>
 
 static bool checkFits(QPainter &painter, const QString &string, qreal width, qreal height, qreal size, KFontUtils::AdaptFontSizeOptions flags)
 {
@@ -27,7 +27,13 @@ static bool checkFits(QPainter &painter, const QString &string, qreal width, qre
     return true;
 }
 
-qreal KFontUtils::adaptFontSize(QPainter &painter, const QString &string, qreal width, qreal height, qreal maxFontSize, qreal minFontSize, AdaptFontSizeOptions flags)
+qreal KFontUtils::adaptFontSize(QPainter &painter,
+                                const QString &string,
+                                qreal width,
+                                qreal height,
+                                qreal maxFontSize,
+                                qreal minFontSize,
+                                AdaptFontSizeOptions flags)
 {
     // A invalid range is an error (-1)
     if (maxFontSize < minFontSize)
@@ -70,8 +76,12 @@ qreal KFontUtils::adaptFontSize(QPainter &painter, const QString &string, qreal 
     return fontSizeFits;
 }
 
-qreal KFontUtils::adaptFontSize(QPainter &painter, const QString &text, const QSizeF &availableSize, qreal maxFontSize, qreal minFontSize, AdaptFontSizeOptions flags)
+qreal KFontUtils::adaptFontSize(QPainter &painter,
+                                const QString &text,
+                                const QSizeF &availableSize,
+                                qreal maxFontSize,
+                                qreal minFontSize,
+                                AdaptFontSizeOptions flags)
 {
     return adaptFontSize(painter, text, availableSize.width(), availableSize.height(), maxFontSize, minFontSize, flags);
 }
-

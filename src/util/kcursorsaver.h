@@ -41,7 +41,7 @@ public:
     /// call this to explicitly restore the cursor
     void restoreCursor();
 
-    KCursorSaver& operator=(KCursorSaver &&other);
+    KCursorSaver &operator=(KCursorSaver &&other);
 
 private:
     KCursorSaver(KCursorSaver &other) = delete;

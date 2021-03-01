@@ -8,23 +8,28 @@
 
 #include "kcolorcollection.h"
 
-#include <QFile>
 #include <QDir>
-#include <QTextStream>
+#include <QFile>
 #include <QSaveFile>
-#include <QStandardPaths>
 #include <QSharedData>
+#include <QStandardPaths>
+#include <QTextStream>
 
-//BEGIN KColorCollectionPrivate
+// BEGIN KColorCollectionPrivate
 class KColorCollectionPrivate : public QSharedData
 {
 public:
     KColorCollectionPrivate(const QString &);
     KColorCollectionPrivate(const KColorCollectionPrivate &) = default;
-    ~KColorCollectionPrivate() {}
+    ~KColorCollectionPrivate()
+    {
+    }
     struct ColorNode {
         ColorNode(const QColor &c, const QString &n)
-            : color(c), name(n) {}
+            : color(c)
+            , name(n)
+        {
+        }
         QColor color;
         QString name;
     };
@@ -89,13 +94,11 @@ KColorCollectionPrivate::KColorCollectionPrivate(const QString &_name)
         }
     }
 }
-//END KColorCollectionPrivate
+// END KColorCollectionPrivate
 
 QStringList KColorCollection::installedCollections()
 {
-    const QStringList paletteDirs = QStandardPaths::locateAll(QStandardPaths::GenericConfigLocation,
-                              QStringLiteral("colors"),
-                              QStandardPaths::LocateDirectory);
+    const QStringList paletteDirs = QStandardPaths::locateAll(QStandardPaths::GenericConfigLocation, QStringLiteral("colors"), QStandardPaths::LocateDirectory);
 
     QStringList paletteList;
     for (const QString &dir : paletteDirs) {
@@ -116,11 +119,9 @@ KColorCollection::KColorCollection(const KColorCollection &p) = default;
 // Need auto-save?
 KColorCollection::~KColorCollection() = default;
 
-bool
-KColorCollection::save()
+bool KColorCollection::save()
 {
-    QString filename = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + QLatin1String("/colors/")
-                       + d->name;
+    QString filename = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + QLatin1String("/colors/") + d->name;
     QSaveFile sf(filename);
     if (!sf.open(QIODevice::WriteOnly)) {
         return false;
@@ -177,10 +178,9 @@ int KColorCollection::count() const
     return d->colorList.count();
 }
 
-KColorCollection & KColorCollection::operator=(const KColorCollection &p) = default;
+KColorCollection &KColorCollection::operator=(const KColorCollection &p) = default;
 
-QColor
-KColorCollection::color(int index) const
+QColor KColorCollection::color(int index) const
 {
     if ((index < 0) || (index >= count())) {
         return QColor();
@@ -189,8 +189,7 @@ KColorCollection::color(int index) const
     return d->colorList[index].color;
 }
 
-int
-KColorCollection::findColor(const QColor &color) const
+int KColorCollection::findColor(const QColor &color) const
 {
     for (int i = 0; i < d->colorList.size(); ++i) {
         if (d->colorList[i].color == color) {
@@ -200,8 +199,7 @@ KColorCollection::findColor(const QColor &color) const
     return -1;
 }
 
-QString
-KColorCollection::name(int index) const
+QString KColorCollection::name(int index) const
 {
     if ((index < 0) || (index >= count())) {
         return QString();
@@ -215,17 +213,13 @@ QString KColorCollection::name(const QColor &color) const
     return name(findColor(color));
 }
 
-int
-KColorCollection::addColor(const QColor &newColor, const QString &newColorName)
+int KColorCollection::addColor(const QColor &newColor, const QString &newColorName)
 {
     d->colorList.append(KColorCollectionPrivate::ColorNode(newColor, newColorName));
     return count() - 1;
 }
 
-int
-KColorCollection::changeColor(int index,
-                              const QColor &newColor,
-                              const QString &newColorName)
+int KColorCollection::changeColor(int index, const QColor &newColor, const QString &newColorName)
 {
     if ((index < 0) || (index >= count())) {
         return -1;
@@ -233,15 +227,12 @@ KColorCollection::changeColor(int index,
 
     KColorCollectionPrivate::ColorNode &node = d->colorList[index];
     node.color = newColor;
-    node.name  = newColorName;
+    node.name = newColorName;
 
     return index;
 }
 
-int KColorCollection::changeColor(const QColor &oldColor,
-                                  const QColor &newColor,
-                                  const QString &newColorName)
+int KColorCollection::changeColor(const QColor &oldColor, const QColor &newColor, const QString &newColorName)
 {
     return changeColor(findColor(oldColor), newColor, newColorName);
 }
-

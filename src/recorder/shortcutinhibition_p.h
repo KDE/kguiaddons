@@ -8,9 +8,12 @@
 
 class QWindow;
 
-class ShortcutInhibition {
+class ShortcutInhibition
+{
 public:
-    virtual ~ShortcutInhibition(){}
+    virtual ~ShortcutInhibition()
+    {
+    }
     virtual void enableInhibition() = 0;
     virtual void disableInhibition() = 0;
     virtual bool shortcutsAreInhibited() const = 0;

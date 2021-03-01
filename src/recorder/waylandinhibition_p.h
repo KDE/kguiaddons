@@ -21,8 +21,8 @@ public:
     bool shortcutsAreInhibited() const override;
     void enableInhibition() override;
     void disableInhibition() override;
-private:
 
+private:
     std::unique_ptr<ShortcutsInhibitManager> m_manager;
     std::unique_ptr<ShortcutsInhibitor> m_inhibitor;
     QWindow *m_window;

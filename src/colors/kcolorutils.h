@@ -9,8 +9,8 @@
 #ifndef KCOLORUTILS_H
 #define KCOLORUTILS_H
 
-#include <kguiaddons_export.h>
 #include <QPainter>
+#include <kguiaddons_export.h>
 
 class QColor;
 
@@ -166,8 +166,7 @@ KGUIADDONS_EXPORT QColor tint(const QColor &base, const QColor &color, qreal amo
  * @p bias >= 1 gives @p c2. @p bias == 0.5 gives a 50% blend of @p c1
  * and @p c2.
  */
-KGUIADDONS_EXPORT QColor mix(const QColor &c1, const QColor &c2,
-                             qreal bias = 0.5);
+KGUIADDONS_EXPORT QColor mix(const QColor &c1, const QColor &c2, qreal bias = 0.5);
 
 /**
  * Blend two colors into a new color by painting the second color over the
@@ -181,9 +180,7 @@ KGUIADDONS_EXPORT QColor mix(const QColor &c1, const QColor &c2,
  * @param paint the color to be overlayed onto the base color.
  * @param comp the CompositionMode used to do the blending.
  */
-KGUIADDONS_EXPORT QColor overlayColors(const QColor &base, const QColor &paint,
-                                       QPainter::CompositionMode comp = QPainter::CompositionMode_SourceOver);
-
+KGUIADDONS_EXPORT QColor overlayColors(const QColor &base, const QColor &paint, QPainter::CompositionMode comp = QPainter::CompositionMode_SourceOver);
 }
 
 #endif // KCOLORUTILS_H

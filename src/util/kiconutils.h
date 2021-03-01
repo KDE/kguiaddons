@@ -17,7 +17,6 @@
  */
 namespace KIconUtils
 {
-
 /**
  * Adds the \a overlay over the \a icon in the specified \a position
  *

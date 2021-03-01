@@ -4,8 +4,6 @@
     SPDX-FileCopyrightText: 2020 Laurent Montel <montel@kde.org>
 */
 
-
-
 #include "kcursorsaver.h"
 #include "kguiaddons_debug.h"
 #include <QGuiApplication>
@@ -47,7 +45,7 @@ void KCursorSaver::restoreCursor()
     QGuiApplication::restoreOverrideCursor();
 }
 
-KCursorSaver &KCursorSaver::operator =(KCursorSaver &&other)
+KCursorSaver &KCursorSaver::operator=(KCursorSaver &&other)
 {
     if (this != &other) {
         d->ownsCursor = false;

@@ -212,10 +212,9 @@ static bool isShiftAsModifierAllowed(int keyQt)
     }
 }
 
-
 static bool isOkWhenModifierless(int key)
 {
-    //this whole function is a hack, but especially the first line of code
+    // this whole function is a hack, but especially the first line of code
     if (QKeySequence(key).toString().length() == 1) {
         return false;
     }
@@ -224,7 +223,7 @@ static bool isOkWhenModifierless(int key)
     case Qt::Key_Return:
     case Qt::Key_Space:
     case Qt::Key_Tab:
-    case Qt::Key_Backtab: //does this ever happen?
+    case Qt::Key_Backtab: // does this ever happen?
     case Qt::Key_Backspace:
     case Qt::Key_Delete:
         return false;
@@ -233,13 +232,15 @@ static bool isOkWhenModifierless(int key)
     }
 }
 
-static QKeySequence appendToSequence(const QKeySequence &sequence, int key) {
+static QKeySequence appendToSequence(const QKeySequence &sequence, int key)
+{
     std::array<int, 4> keys{sequence[0], sequence[1], sequence[2], sequence[3]};
     keys[sequence.count()] = key;
     return QKeySequence(keys[0], keys[1], keys[2], keys[3]);
 }
 
-class KeySequenceRecorderPrivate : public QObject {
+class KeySequenceRecorderPrivate : public QObject
+{
     Q_OBJECT
 public:
     KeySequenceRecorderPrivate(KeySequenceRecorder *q);
@@ -290,11 +291,11 @@ bool KeySequenceRecorderPrivate::eventFilter(QObject *watched, QEvent *event)
         return true;
     }
     if (event->type() == QEvent::KeyRelease) {
-        handleKeyRelease(static_cast<QKeyEvent*>(event));
+        handleKeyRelease(static_cast<QKeyEvent *>(event));
         return true;
     }
     if (event->type() == QEvent::KeyPress) {
-        handleKeyPress(static_cast<QKeyEvent*>(event));
+        handleKeyPress(static_cast<QKeyEvent *>(event));
         return true;
     }
     return QObject::eventFilter(watched, event);
@@ -302,7 +303,6 @@ bool KeySequenceRecorderPrivate::eventFilter(QObject *watched, QEvent *event)
 
 void KeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
 {
-
     m_currentModifiers = event->modifiers() & modifierMask;
     int key = event->key();
     switch (key) {
@@ -313,7 +313,7 @@ void KeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
     case 0:
         break;
     case Qt::Key_AltGr:
-        //or else we get unicode salad
+        // or else we get unicode salad
         break;
     case Qt::Key_Super_L:
     case Qt::Key_Super_R:
@@ -425,10 +425,10 @@ bool KeySequenceRecorder::isRecording() const
 
 QKeySequence KeySequenceRecorder::currentKeySequence() const
 {
-    return  d->m_isRecording ? appendToSequence(d->m_currentKeySequence, d->m_currentModifiers) : d->m_currentKeySequence;
+    return d->m_isRecording ? appendToSequence(d->m_currentKeySequence, d->m_currentModifiers) : d->m_currentKeySequence;
 }
 
-QWindow* KeySequenceRecorder::window() const
+QWindow *KeySequenceRecorder::window() const
 {
     return d->m_window;
 }
@@ -452,7 +452,7 @@ void KeySequenceRecorder::setWindow(QWindow *window)
 #ifdef WITH_WAYLAND
         d->m_inhibition.reset(new WaylandInhibition(window));
 #endif
-    } else  {
+    } else {
         d->m_inhibition.reset(new KeyboardGrabber(window));
     }
 

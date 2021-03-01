@@ -10,7 +10,8 @@
 
 class QWindow;
 
-class KeySequenceRecorderTest : public QObject {
+class KeySequenceRecorderTest : public QObject
+{
     Q_OBJECT
 private Q_SLOTS:
     void initTestCase();
@@ -20,6 +21,7 @@ private Q_SLOTS:
     void testModifiers();
     void testModifierless();
     void testMultiKeyAllowed();
+
 private:
     QWindow *m_window;
 };

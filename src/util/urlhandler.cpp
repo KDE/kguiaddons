@@ -6,19 +6,22 @@
 
 #include <kguiaddons_debug.h>
 
-#include <QObject>
-#include <QUrl>
-#include <QStandardPaths>
 #include <QCoreApplication>
-#include <QProcess>
 #include <QDesktopServices>
 #include <QLocale>
+#include <QObject>
+#include <QProcess>
+#include <QStandardPaths>
+#include <QUrl>
 
 class UrlHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit UrlHandler(QObject *parent = nullptr) : QObject(parent) {}
+    explicit UrlHandler(QObject *parent = nullptr)
+        : QObject(parent)
+    {
+    }
 
 public Q_SLOTS:
     void openHelp(const QUrl &url)
@@ -36,7 +39,7 @@ public Q_SLOTS:
             return;
         }
 
-        //if khelpcenter is not available and it's a KDE application, use docs.kde.org
+        // if khelpcenter is not available and it's a KDE application, use docs.kde.org
         if (QCoreApplication::organizationDomain() == QLatin1String("kde.org")) {
             QString path = url.path();
             QString docPath;
@@ -44,11 +47,11 @@ public Q_SLOTS:
                 // special case for kcm modules
                 // e.g. "help:/kcontrol/fonts/index.html" >>> "&application=kcontrol/fonts"
                 docPath = path.remove(0, 1).remove(QLatin1String("/index.html"));
-            } else { //e.g. "help:/okular", "help:/systemsettings"
+            } else { // e.g. "help:/okular", "help:/systemsettings"
                 docPath = appName + QStringLiteral("&path=") + path;
             }
-            const QUrl httpUrl(QLatin1String("https://docs.kde.org/index.php?branch=stable5&language=")
-                               + QLocale().name() + QLatin1String("&application=") + docPath);
+            const QUrl httpUrl(QLatin1String("https://docs.kde.org/index.php?branch=stable5&language=") + QLocale().name() + QLatin1String("&application=")
+                               + docPath);
             QDesktopServices::openUrl(httpUrl);
             return;
         }

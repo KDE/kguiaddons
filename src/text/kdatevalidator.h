@@ -27,6 +27,7 @@ public:
     State validate(QString &text, int &e) const override;
     void fixup(QString &input) const override;
     State date(const QString &text, QDate &date) const;
+
 private:
     // KF6 TODO: add explicit destructor, use std::unique_ptr
     friend class KDateValidatorPrivate;

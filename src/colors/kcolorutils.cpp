@@ -5,9 +5,9 @@
 
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
-#include <kcolorutils.h>
 #include "kcolorspaces_p.h"
 #include "kguiaddons_colorhelpers_p.h"
+#include <kcolorutils.h>
 
 #include <QColor>
 #include <QImage>
@@ -114,7 +114,7 @@ QColor KColorUtils::tint(const QColor &base, const QColor &color, qreal amount)
         return base;
     }
 
-    qreal baseLuma = luma(base); //cache value because luma call is expensive
+    qreal baseLuma = luma(base); // cache value because luma call is expensive
     double ri = contrastRatioForLuma(baseLuma, luma(color));
     double rg = 1.0 + ((ri + 1.0) * amount * amount * amount);
     double u = 1.0, l = 0.0;
@@ -144,16 +144,15 @@ QColor KColorUtils::mix(const QColor &c1, const QColor &c2, qreal bias)
         return c1;
     }
 
-    qreal r = mixQreal(c1.redF(),   c2.redF(),   bias);
+    qreal r = mixQreal(c1.redF(), c2.redF(), bias);
     qreal g = mixQreal(c1.greenF(), c2.greenF(), bias);
-    qreal b = mixQreal(c1.blueF(),  c2.blueF(),  bias);
+    qreal b = mixQreal(c1.blueF(), c2.blueF(), bias);
     qreal a = mixQreal(c1.alphaF(), c2.alphaF(), bias);
 
     return QColor::fromRgbF(r, g, b, a);
 }
 
-QColor KColorUtils::overlayColors(const QColor &base, const QColor &paint,
-                                  QPainter::CompositionMode comp)
+QColor KColorUtils::overlayColors(const QColor &base, const QColor &paint, QPainter::CompositionMode comp)
 {
     // This isn't the fastest way, but should be "fast enough".
     // It's also the only safe way to use QPainter::CompositionMode

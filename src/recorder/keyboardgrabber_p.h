@@ -16,6 +16,7 @@ public:
     void enableInhibition() override;
     void disableInhibition() override;
     bool shortcutsAreInhibited() const override;
+
 private:
     QWindow *m_grabbedWindow;
     bool m_grabbingKeyboard;

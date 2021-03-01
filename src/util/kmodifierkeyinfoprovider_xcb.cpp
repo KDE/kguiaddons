@@ -5,8 +5,8 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
-#include "kmodifierkeyinfo.h"
 #include "kmodifierkeyinfoprovider_xcb.h"
+#include "kmodifierkeyinfo.h"
 
 #include <QGuiApplication>
 #include <QX11Info>
@@ -47,7 +47,7 @@ unsigned int xkbVirtualModifier(XkbDescPtr xkb, const char *name)
             XFree(modStr);
             if (nameEqual) {
                 XkbVirtualModsToReal(xkb, 1 << i, &mask);
-                    break;
+                break;
             }
         }
     }
@@ -66,14 +66,9 @@ KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
         }
     }
     if (m_xkbAvailable) {
-        XkbSelectEvents(QX11Info::display(), XkbUseCoreKbd,
-                        XkbStateNotifyMask | XkbMapNotifyMask,
-                        XkbStateNotifyMask | XkbMapNotifyMask);
-        unsigned long int stateMask = XkbModifierStateMask | XkbModifierBaseMask |
-                                      XkbModifierLatchMask | XkbModifierLockMask |
-                                      XkbPointerButtonMask;
-        XkbSelectEventDetails(QX11Info::display(), XkbUseCoreKbd, XkbStateNotifyMask,
-                              stateMask, stateMask);
+        XkbSelectEvents(QX11Info::display(), XkbUseCoreKbd, XkbStateNotifyMask | XkbMapNotifyMask, XkbStateNotifyMask | XkbMapNotifyMask);
+        unsigned long int stateMask = XkbModifierStateMask | XkbModifierBaseMask | XkbModifierLatchMask | XkbModifierLockMask | XkbPointerButtonMask;
+        XkbSelectEventDetails(QX11Info::display(), XkbUseCoreKbd, XkbStateNotifyMask, stateMask, stateMask);
     }
 
     xkbUpdateModifierMapping();
@@ -109,8 +104,7 @@ bool KModifierKeyInfoProviderXcb::setKeyLatched(Qt::Key key, bool latched)
         return false;
     }
 
-    return XkbLatchModifiers(QX11Info::display(), XkbUseCoreKbd,
-                             m_xkbModifiers[key], latched ? m_xkbModifiers[key] : 0);
+    return XkbLatchModifiers(QX11Info::display(), XkbUseCoreKbd, m_xkbModifiers[key], latched ? m_xkbModifiers[key] : 0);
 }
 
 bool KModifierKeyInfoProviderXcb::setKeyLocked(Qt::Key key, bool locked)
@@ -119,65 +113,64 @@ bool KModifierKeyInfoProviderXcb::setKeyLocked(Qt::Key key, bool locked)
         return false;
     }
 
-    return XkbLockModifiers(QX11Info::display(), XkbUseCoreKbd,
-                            m_xkbModifiers[key], locked ? m_xkbModifiers[key] : 0);
+    return XkbLockModifiers(QX11Info::display(), XkbUseCoreKbd, m_xkbModifiers[key], locked ? m_xkbModifiers[key] : 0);
 }
 
 // HACK: xcb-xkb is not yet a public part of xcb. Because of that we have to include the event structure.
 namespace
 {
 typedef struct _xcb_xkb_map_notify_event_t {
-    uint8_t         response_type;
-    uint8_t         xkbType;
-    uint16_t        sequence;
+    uint8_t response_type;
+    uint8_t xkbType;
+    uint16_t sequence;
     xcb_timestamp_t time;
-    uint8_t         deviceID;
-    uint8_t         ptrBtnActions;
-    uint16_t        changed;
-    xcb_keycode_t   minKeyCode;
-    xcb_keycode_t   maxKeyCode;
-    uint8_t         firstType;
-    uint8_t         nTypes;
-    xcb_keycode_t   firstKeySym;
-    uint8_t         nKeySyms;
-    xcb_keycode_t   firstKeyAct;
-    uint8_t         nKeyActs;
-    xcb_keycode_t   firstKeyBehavior;
-    uint8_t         nKeyBehavior;
-    xcb_keycode_t   firstKeyExplicit;
-    uint8_t         nKeyExplicit;
-    xcb_keycode_t   firstModMapKey;
-    uint8_t         nModMapKeys;
-    xcb_keycode_t   firstVModMapKey;
-    uint8_t         nVModMapKeys;
-    uint16_t        virtualMods;
-    uint8_t         pad0[2];
+    uint8_t deviceID;
+    uint8_t ptrBtnActions;
+    uint16_t changed;
+    xcb_keycode_t minKeyCode;
+    xcb_keycode_t maxKeyCode;
+    uint8_t firstType;
+    uint8_t nTypes;
+    xcb_keycode_t firstKeySym;
+    uint8_t nKeySyms;
+    xcb_keycode_t firstKeyAct;
+    uint8_t nKeyActs;
+    xcb_keycode_t firstKeyBehavior;
+    uint8_t nKeyBehavior;
+    xcb_keycode_t firstKeyExplicit;
+    uint8_t nKeyExplicit;
+    xcb_keycode_t firstModMapKey;
+    uint8_t nModMapKeys;
+    xcb_keycode_t firstVModMapKey;
+    uint8_t nVModMapKeys;
+    uint16_t virtualMods;
+    uint8_t pad0[2];
 } _xcb_xkb_map_notify_event_t;
 typedef struct _xcb_xkb_state_notify_event_t {
-    uint8_t         response_type;
-    uint8_t         xkbType;
-    uint16_t        sequence;
+    uint8_t response_type;
+    uint8_t xkbType;
+    uint16_t sequence;
     xcb_timestamp_t time;
-    uint8_t         deviceID;
-    uint8_t         mods;
-    uint8_t         baseMods;
-    uint8_t         latchedMods;
-    uint8_t         lockedMods;
-    uint8_t         group;
-    int16_t         baseGroup;
-    int16_t         latchedGroup;
-    uint8_t         lockedGroup;
-    uint8_t         compatState;
-    uint8_t         grabMods;
-    uint8_t         compatGrabMods;
-    uint8_t         lookupMods;
-    uint8_t         compatLoockupMods;
-    uint16_t        ptrBtnState;
-    uint16_t        changed;
-    xcb_keycode_t   keycode;
-    uint8_t         eventType;
-    uint8_t         requestMajor;
-    uint8_t         requestMinor;
+    uint8_t deviceID;
+    uint8_t mods;
+    uint8_t baseMods;
+    uint8_t latchedMods;
+    uint8_t lockedMods;
+    uint8_t group;
+    int16_t baseGroup;
+    int16_t latchedGroup;
+    uint8_t lockedGroup;
+    uint8_t compatState;
+    uint8_t grabMods;
+    uint8_t compatGrabMods;
+    uint8_t lookupMods;
+    uint8_t compatLoockupMods;
+    uint16_t ptrBtnState;
+    uint16_t changed;
+    xcb_keycode_t keycode;
+    uint8_t eventType;
+    uint8_t requestMajor;
+    uint8_t requestMinor;
 } _xcb_xkb_state_notify_event_t;
 typedef union {
     /* All XKB events share these fields. */
@@ -202,14 +195,12 @@ bool KModifierKeyInfoProviderXcb::nativeEventFilter(const QByteArray &eventType,
     xcb_generic_event_t *event = static_cast<xcb_generic_event_t *>(message);
     if ((event->response_type & ~0x80) == m_xkbEv + XkbEventCode) {
         _xkb_event *kbevt = reinterpret_cast<_xkb_event *>(event);
-        unsigned int stateMask = XkbModifierStateMask | XkbModifierBaseMask |
-                                 XkbModifierLatchMask | XkbModifierLockMask;
+        unsigned int stateMask = XkbModifierStateMask | XkbModifierBaseMask | XkbModifierLatchMask | XkbModifierLockMask;
         if (kbevt->any.xkbType == XkbMapNotify) {
             xkbUpdateModifierMapping();
         } else if (kbevt->any.xkbType == XkbStateNotify) {
             if (kbevt->state_notify.changed & stateMask) {
-                xkbModifierStateChanged(kbevt->state_notify.mods, kbevt->state_notify.latchedMods,
-                                        kbevt->state_notify.lockedMods);
+                xkbModifierStateChanged(kbevt->state_notify.mods, kbevt->state_notify.latchedMods, kbevt->state_notify.lockedMods);
             } else if (kbevt->state_notify.changed & XkbPointerButtonMask) {
                 xkbButtonStateChanged(kbevt->state_notify.ptrBtnState);
             }
@@ -218,9 +209,7 @@ bool KModifierKeyInfoProviderXcb::nativeEventFilter(const QByteArray &eventType,
     return false;
 }
 
-void KModifierKeyInfoProviderXcb::xkbModifierStateChanged(unsigned char mods,
-        unsigned char latched_mods,
-        unsigned char locked_mods)
+void KModifierKeyInfoProviderXcb::xkbModifierStateChanged(unsigned char mods, unsigned char latched_mods, unsigned char locked_mods)
 {
     // detect keyboard modifiers
     ModifierStates newState;
@@ -272,16 +261,12 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
     m_xkbModifiers.clear();
 
     QList<ModifierDefinition> srcModifiers;
-    srcModifiers << ModifierDefinition(Qt::Key_Shift, ShiftMask, nullptr, 0)
-                 << ModifierDefinition(Qt::Key_Control, ControlMask, nullptr, 0)
+    srcModifiers << ModifierDefinition(Qt::Key_Shift, ShiftMask, nullptr, 0) << ModifierDefinition(Qt::Key_Control, ControlMask, nullptr, 0)
                  << ModifierDefinition(Qt::Key_Alt, 0, "Alt", XK_Alt_L)
                  // << { 0, 0, I18N_NOOP("Win"), "superkey", "" }
-                 << ModifierDefinition(Qt::Key_Meta, 0, "Meta", XK_Meta_L)
-                 << ModifierDefinition(Qt::Key_Super_L, 0, "Super", XK_Super_L)
-                 << ModifierDefinition(Qt::Key_Hyper_L, 0, "Hyper", XK_Hyper_L)
-                 << ModifierDefinition(Qt::Key_AltGr, 0, "AltGr", 0)
-                 << ModifierDefinition(Qt::Key_NumLock, 0, "NumLock", XK_Num_Lock)
-                 << ModifierDefinition(Qt::Key_CapsLock, LockMask, nullptr, 0)
+                 << ModifierDefinition(Qt::Key_Meta, 0, "Meta", XK_Meta_L) << ModifierDefinition(Qt::Key_Super_L, 0, "Super", XK_Super_L)
+                 << ModifierDefinition(Qt::Key_Hyper_L, 0, "Hyper", XK_Hyper_L) << ModifierDefinition(Qt::Key_AltGr, 0, "AltGr", 0)
+                 << ModifierDefinition(Qt::Key_NumLock, 0, "NumLock", XK_Num_Lock) << ModifierDefinition(Qt::Key_CapsLock, LockMask, nullptr, 0)
                  << ModifierDefinition(Qt::Key_ScrollLock, 0, "ScrollLock", XK_Scroll_Lock);
 
     XkbDescPtr xkb = XkbGetKeyboard(QX11Info::display(), XkbAllComponentsMask, XkbUseCoreKbd);
@@ -299,10 +284,8 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
                 mask = XkbKeysymToModifiers(QX11Info::display(), it->keysym);
             } else if (mask == 0) {
                 // special case for AltGr
-                mask = XkbKeysymToModifiers(QX11Info::display(), XK_Mode_switch) |
-                       XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Shift) |
-                       XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Latch) |
-                       XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Lock);
+                mask = XkbKeysymToModifiers(QX11Info::display(), XK_Mode_switch) | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Shift)
+                    | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Latch) | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Lock);
             }
         }
 

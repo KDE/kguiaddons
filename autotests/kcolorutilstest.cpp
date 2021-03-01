@@ -2,9 +2,9 @@
 
 #include <QTest>
 
-#include <kcolorutils.h>
-#include "../colors/kcolorspaces_p.h" // private header
 #include "../colors/kcolorspaces.cpp" // private implementation
+#include "../colors/kcolorspaces_p.h" // private header
+#include <kcolorutils.h>
 
 void tst_KColorUtils::testOverlay()
 {
@@ -28,8 +28,8 @@ void tst_KColorUtils::testOverlay()
     }
 
     // only the alpha of color 2 alters the output
-    color2.setAlpha(255); //opaque
-    color1.setAlpha(80); //opaque
+    color2.setAlpha(255); // opaque
+    color1.setAlpha(80); // opaque
     blended = KColorUtils::overlayColors(color2, color2);
     QCOMPARE(blended.red(), color2.red());
     QCOMPARE(blended.green(), color2.green());
@@ -43,11 +43,12 @@ void tst_KColorUtils::testOverlay()
     QCOMPARE(blended.blue(), color2.blue());
 }
 
-#define compareColors(c1, c2) \
-    if ( c1 != c2 ) { \
-        fprintf( stderr, "%08x != expected value %08x\n", c1.rgb(), c2.rgb() ); \
-        QCOMPARE( c1, c2 ); \
-    } (void)0
+#define compareColors(c1, c2)                                                                                                                                  \
+    if (c1 != c2) {                                                                                                                                            \
+        fprintf(stderr, "%08x != expected value %08x\n", c1.rgb(), c2.rgb());                                                                                  \
+        QCOMPARE(c1, c2);                                                                                                                                      \
+    }                                                                                                                                                          \
+    (void)0
 
 void tst_KColorUtils::testMix()
 {
@@ -112,23 +113,23 @@ void checkIsGray(const QColor &color, int line)
 
 void tst_KColorUtils::testShading()
 {
-    const QColor testGray(128, 128, 128);   // Qt::gray isn't pure gray!
+    const QColor testGray(128, 128, 128); // Qt::gray isn't pure gray!
 
     // Test that KHCY gets chroma correct for white/black, grays
     checkIsGray(Qt::white, __LINE__);
-    checkIsGray(testGray,  __LINE__);
+    checkIsGray(testGray, __LINE__);
     checkIsGray(Qt::black, __LINE__);
 
     // Test that lighten/darken/shade don't change chroma for grays
     checkIsGray(KColorUtils::shade(Qt::white, -0.1), __LINE__);
-    checkIsGray(KColorUtils::shade(Qt::black,  0.1), __LINE__);
-    checkIsGray(KColorUtils::darken(Qt::white,  0.1), __LINE__);
-    checkIsGray(KColorUtils::darken(testGray,   0.1), __LINE__);
-    checkIsGray(KColorUtils::darken(testGray,  -0.1), __LINE__);
+    checkIsGray(KColorUtils::shade(Qt::black, 0.1), __LINE__);
+    checkIsGray(KColorUtils::darken(Qt::white, 0.1), __LINE__);
+    checkIsGray(KColorUtils::darken(testGray, 0.1), __LINE__);
+    checkIsGray(KColorUtils::darken(testGray, -0.1), __LINE__);
     checkIsGray(KColorUtils::darken(Qt::black, -0.1), __LINE__);
-    checkIsGray(KColorUtils::lighten(Qt::black,  0.1), __LINE__);
-    checkIsGray(KColorUtils::lighten(testGray,   0.1), __LINE__);
-    checkIsGray(KColorUtils::lighten(testGray,  -0.1), __LINE__);
+    checkIsGray(KColorUtils::lighten(Qt::black, 0.1), __LINE__);
+    checkIsGray(KColorUtils::lighten(testGray, 0.1), __LINE__);
+    checkIsGray(KColorUtils::lighten(testGray, -0.1), __LINE__);
     checkIsGray(KColorUtils::lighten(Qt::white, -0.1), __LINE__);
 }
 

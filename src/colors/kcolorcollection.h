@@ -12,9 +12,9 @@
 #include <kguiaddons_export.h>
 
 #include <QColor>
+#include <QSharedDataPointer>
 #include <QString>
 #include <QStringList>
-#include <QSharedDataPointer>
 
 /**
  * @class KColorCollection kcolorcollection.h KColorCollection
@@ -96,10 +96,11 @@ public:
      * @see editable()
      * @see setEditable()
      */
-    enum Editable { Yes, ///< Collection may be edited
-                    No,  ///< Collection may not be edited
-                    Ask,  ///< Ask user before editing
-                  };
+    enum Editable {
+        Yes, ///< Collection may be edited
+        No, ///< Collection may not be edited
+        Ask, ///< Ask user before editing
+    };
 
     /**
      * Returns whether the collection may be edited.
@@ -159,8 +160,7 @@ public:
      *                     the name.
      * @return The index of the added color.
      */
-    int addColor(const QColor &newColor,
-                 const QString &newColorName = QString());
+    int addColor(const QColor &newColor, const QString &newColorName = QString());
 
     /**
      * Change a color.
@@ -171,9 +171,7 @@ public:
      * @return The index of the new color or -1 if the color couldn't
      * be changed.
      */
-    int changeColor(int index,
-                    const QColor &newColor,
-                    const QString &newColorName = QString());
+    int changeColor(int index, const QColor &newColor, const QString &newColorName = QString());
 
     /**
      * Change a color.
@@ -184,13 +182,10 @@ public:
      * @return The index of the new color or -1 if the color couldn't
      * be changed.
      */
-    int changeColor(const QColor &oldColor,
-                    const QColor &newColor,
-                    const QString &newColorName = QString());
+    int changeColor(const QColor &oldColor, const QColor &newColor, const QString &newColorName = QString());
 
 private:
     QSharedDataPointer<class KColorCollectionPrivate> d;
 };
 
 #endif // KDELIBS_KCOLORCOLLECTION_H
-

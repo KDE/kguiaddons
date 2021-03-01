@@ -7,10 +7,10 @@
 #ifndef KMODIFIERKEYINFOPROVIDER_P_H
 #define KMODIFIERKEYINFOPROVIDER_P_H
 
+#include "kguiaddons_export.h"
 #include <QHash>
 #include <QObject>
 #include <QSharedData>
-#include "kguiaddons_export.h"
 
 /**
  * Background class that implements the behaviour of KModifierKeyInfo for

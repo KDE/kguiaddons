@@ -12,15 +12,13 @@
 #include <QMimeData>
 #include <QPainter>
 
-void
-KColorMimeData::populateMimeData(QMimeData *mimeData, const QColor &color)
+void KColorMimeData::populateMimeData(QMimeData *mimeData, const QColor &color)
 {
     mimeData->setColorData(color);
     mimeData->setText(color.name());
 }
 
-bool
-KColorMimeData::canDecode(const QMimeData *mimeData)
+bool KColorMimeData::canDecode(const QMimeData *mimeData)
 {
     if (mimeData->hasColor()) {
         return true;
@@ -34,8 +32,7 @@ KColorMimeData::canDecode(const QMimeData *mimeData)
     return false;
 }
 
-QColor
-KColorMimeData::fromMimeData(const QMimeData *mimeData)
+QColor KColorMimeData::fromMimeData(const QMimeData *mimeData)
 {
     if (mimeData->hasColor()) {
         return mimeData->colorData().value<QColor>();
@@ -46,8 +43,7 @@ KColorMimeData::fromMimeData(const QMimeData *mimeData)
     return QColor();
 }
 
-QDrag *
-KColorMimeData::createDrag(const QColor &color, QObject *dragsource)
+QDrag *KColorMimeData::createDrag(const QColor &color, QObject *dragsource)
 {
     QDrag *drag = new QDrag(dragsource);
     QMimeData *mime = new QMimeData;

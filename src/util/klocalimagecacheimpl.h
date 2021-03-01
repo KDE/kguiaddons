@@ -51,7 +51,8 @@ protected:
 private:
     std::unique_ptr<KLocalImageCacheImplementationPrivate> const d; ///< @internal
 
-    template<class T> friend class KSharedPixmapCacheMixin;
+    template<class T>
+    friend class KSharedPixmapCacheMixin;
 };
 
 #endif /* KLOCALIMAGECACHEIMPL_H */

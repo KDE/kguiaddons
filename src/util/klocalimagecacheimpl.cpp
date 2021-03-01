@@ -27,8 +27,7 @@ public:
         : QObject(parent)
         , timestamp(QDateTime::currentDateTime())
     {
-        QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
-                         this, &KLocalImageCacheImplementationPrivate::clearPixmaps);
+        QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &KLocalImageCacheImplementationPrivate::clearPixmaps);
     }
 
     /**
@@ -40,8 +39,7 @@ public:
         if (enablePixmapCaching && pixmap && !pixmap->isNull()) {
             // "cost" parameter is based on both image size and depth to make cost
             // based on size in bytes instead of area on-screen.
-            return pixmapCache.insert(key, pixmap,
-                                      pixmap->width() * pixmap->height() * pixmap->depth() / 8);
+            return pixmapCache.insert(key, pixmap, pixmap->width() * pixmap->height() * pixmap->depth() / 8);
         }
 
         return false;
@@ -69,7 +67,7 @@ KLocalImageCacheImplementation::KLocalImageCacheImplementation(unsigned defaultC
     : d(new KLocalImageCacheImplementationPrivate)
 {
     // Use at least 16 KiB for the pixmap cache
-    d->pixmapCache.setMaxCost(qMax(defaultCacheSize / 8, (unsigned int) 16384));
+    d->pixmapCache.setMaxCost(qMax(defaultCacheSize / 8, (unsigned int)16384));
 }
 
 KLocalImageCacheImplementation::~KLocalImageCacheImplementation() = default;
