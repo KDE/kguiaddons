@@ -18,10 +18,11 @@
 #endif
 #endif
 
-#include <QImage>
-#include <QPixmap>
 #include <klocalimagecacheimpl.h>
 #include <kshareddatacache.h>
+
+#include <QImage>
+#include <QPixmap>
 
 #define KImageCache KSharedPixmapCacheMixin<KSharedDataCache>
 

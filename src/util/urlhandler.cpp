@@ -50,9 +50,8 @@ public Q_SLOTS:
             } else { // e.g. "help:/okular", "help:/systemsettings"
                 docPath = appName + QStringLiteral("&path=") + path;
             }
-            const QUrl httpUrl(QLatin1String("https://docs.kde.org/index.php?branch=stable5&language=") + QLocale().name() + QLatin1String("&application=")
-                               + docPath);
-            QDesktopServices::openUrl(httpUrl);
+            QDesktopServices::openUrl(
+                QUrl{QLatin1String("https://docs.kde.org/index.php?branch=stable5&language=%1&application=%2").arg(QLocale().name(), docPath)});
             return;
         }
 

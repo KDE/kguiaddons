@@ -66,8 +66,19 @@ KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
         }
     }
     if (m_xkbAvailable) {
-        XkbSelectEvents(QX11Info::display(), XkbUseCoreKbd, XkbStateNotifyMask | XkbMapNotifyMask, XkbStateNotifyMask | XkbMapNotifyMask);
-        unsigned long int stateMask = XkbModifierStateMask | XkbModifierBaseMask | XkbModifierLatchMask | XkbModifierLockMask | XkbPointerButtonMask;
+        /* clang-format off */
+        XkbSelectEvents(QX11Info::display(),
+                        XkbUseCoreKbd,
+                        XkbStateNotifyMask | XkbMapNotifyMask,
+                        XkbStateNotifyMask | XkbMapNotifyMask);
+
+        unsigned long int stateMask = XkbModifierStateMask
+                                      | XkbModifierBaseMask
+                                      | XkbModifierLatchMask
+                                      | XkbModifierLockMask
+                                      | XkbPointerButtonMask;
+        /* clang-format on */
+
         XkbSelectEventDetails(QX11Info::display(), XkbUseCoreKbd, XkbStateNotifyMask, stateMask, stateMask);
     }
 
@@ -261,13 +272,19 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
     m_xkbModifiers.clear();
 
     QList<ModifierDefinition> srcModifiers;
-    srcModifiers << ModifierDefinition(Qt::Key_Shift, ShiftMask, nullptr, 0) << ModifierDefinition(Qt::Key_Control, ControlMask, nullptr, 0)
+    /* clang-format off */
+    srcModifiers << ModifierDefinition(Qt::Key_Shift, ShiftMask, nullptr, 0)
+                 << ModifierDefinition(Qt::Key_Control, ControlMask, nullptr, 0)
                  << ModifierDefinition(Qt::Key_Alt, 0, "Alt", XK_Alt_L)
                  // << { 0, 0, I18N_NOOP("Win"), "superkey", "" }
-                 << ModifierDefinition(Qt::Key_Meta, 0, "Meta", XK_Meta_L) << ModifierDefinition(Qt::Key_Super_L, 0, "Super", XK_Super_L)
-                 << ModifierDefinition(Qt::Key_Hyper_L, 0, "Hyper", XK_Hyper_L) << ModifierDefinition(Qt::Key_AltGr, 0, "AltGr", 0)
-                 << ModifierDefinition(Qt::Key_NumLock, 0, "NumLock", XK_Num_Lock) << ModifierDefinition(Qt::Key_CapsLock, LockMask, nullptr, 0)
+                 << ModifierDefinition(Qt::Key_Meta, 0, "Meta", XK_Meta_L)
+                 << ModifierDefinition(Qt::Key_Super_L, 0, "Super", XK_Super_L)
+                 << ModifierDefinition(Qt::Key_Hyper_L, 0, "Hyper", XK_Hyper_L)
+                 << ModifierDefinition(Qt::Key_AltGr, 0, "AltGr", 0)
+                 << ModifierDefinition(Qt::Key_NumLock, 0, "NumLock", XK_Num_Lock)
+                 << ModifierDefinition(Qt::Key_CapsLock, LockMask, nullptr, 0)
                  << ModifierDefinition(Qt::Key_ScrollLock, 0, "ScrollLock", XK_Scroll_Lock);
+    /* clang-format on */
 
     XkbDescPtr xkb = XkbGetKeyboard(QX11Info::display(), XkbAllComponentsMask, XkbUseCoreKbd);
 
@@ -284,8 +301,12 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
                 mask = XkbKeysymToModifiers(QX11Info::display(), it->keysym);
             } else if (mask == 0) {
                 // special case for AltGr
-                mask = XkbKeysymToModifiers(QX11Info::display(), XK_Mode_switch) | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Shift)
-                    | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Latch) | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Lock);
+                /* clang-format off */
+                mask = XkbKeysymToModifiers(QX11Info::display(), XK_Mode_switch)
+                       | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Shift)
+                       | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Latch)
+                       | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Lock);
+                /* clang-format on */
             }
         }
 

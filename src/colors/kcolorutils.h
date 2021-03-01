@@ -9,8 +9,9 @@
 #ifndef KCOLORUTILS_H
 #define KCOLORUTILS_H
 
-#include <QPainter>
 #include <kguiaddons_export.h>
+
+#include <QPainter>
 
 class QColor;
 

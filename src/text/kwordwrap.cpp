@@ -57,14 +57,18 @@ KWordWrap KWordWrap::formatText(QFontMetrics &fm, const QRect &r, int /*flags*/,
         const QChar c = inputString.at(i);
         const int ww = fm.charWidth(inputString, i);
 
-        isParens = (c == QLatin1Char('(') || c == QLatin1Char('[') || c == QLatin1Char('{'));
+        isParens = (c == QLatin1Char('(') //
+                    || c == QLatin1Char('[') //
+                    || c == QLatin1Char('{'));
         // isBreakable is true when we can break _after_ this character.
         isBreakable = (c.isSpace() || c.isPunct() || c.isSymbol()) & !isParens;
 
         // Special case for '(', '[' and '{': we want to break before them
         if (!isBreakable && i < len - 1) {
             const QChar nextc = inputString.at(i + 1); // look at next char
-            isBreakable = (nextc == QLatin1Char('(') || nextc == QLatin1Char('[') || nextc == QLatin1Char('{'));
+            isBreakable = (nextc == QLatin1Char('(') //
+                           || nextc == QLatin1Char('[') //
+                           || nextc == QLatin1Char('{'));
         }
         // Special case for '/': after normal chars it's breakable (e.g. inside a path),
         // but after another breakable char it's not (e.g. "mounted at /foo")
@@ -183,7 +187,9 @@ QString KWordWrap::truncatedString(bool dots) const
 
 static QColor mixColors(double p1, QColor c1, QColor c2)
 {
-    return QColor(int(c1.red() * p1 + c2.red() * (1.0 - p1)), int(c1.green() * p1 + c2.green() * (1.0 - p1)), int(c1.blue() * p1 + c2.blue() * (1.0 - p1)));
+    return QColor(int(c1.red() * p1 + c2.red() * (1.0 - p1)), //
+                  int(c1.green() * p1 + c2.green() * (1.0 - p1)), //
+                  int(c1.blue() * p1 + c2.blue() * (1.0 - p1)));
 }
 
 void KWordWrap::drawFadeoutText(QPainter *p, int x, int y, int maxW, const QString &t)
@@ -254,7 +260,8 @@ void KWordWrap::drawText(QPainter *painter, int textX, int textY, int flags) con
     int end = 0;
     for (i = 0; i < d->m_breakPositions.count(); ++i) {
         // if this is the last line, leave the loop
-        if ((d->m_constrainingRect.height() >= 0) && ((y + 2 * height) > d->m_constrainingRect.height())) {
+        if (d->m_constrainingRect.height() >= 0 //
+            && ((y + 2 * height) > d->m_constrainingRect.height())) {
             break;
         }
         end = d->m_breakPositions.at(i);

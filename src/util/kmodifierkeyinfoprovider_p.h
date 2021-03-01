@@ -8,6 +8,7 @@
 #define KMODIFIERKEYINFOPROVIDER_P_H
 
 #include "kguiaddons_export.h"
+
 #include <QHash>
 #include <QObject>
 #include <QSharedData>

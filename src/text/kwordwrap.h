@@ -7,8 +7,9 @@
 #ifndef kwordwrap_h
 #define kwordwrap_h
 
-#include <QSharedDataPointer>
 #include <kguiaddons_export.h>
+
+#include <QSharedDataPointer>
 #include <qnamespace.h>
 
 class QFontMetrics;
