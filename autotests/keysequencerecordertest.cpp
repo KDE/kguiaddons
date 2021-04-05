@@ -5,7 +5,7 @@
 
 #include "keysequencerecordertest.h"
 
-#include <KeySequenceRecorder>
+#include "keysequencerecorder.h"
 
 #include <QSignalSpy>
 #include <QTest>
