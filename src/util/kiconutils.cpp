@@ -148,4 +148,33 @@ QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays)
     return QIcon(new KOverlayIconEngine(icon, overlays));
 }
 
+QIcon addOverlays(const QString &iconName, const QStringList &overlays)
+{
+    const int count = overlays.size();
+    const QIcon icon = QIcon::fromTheme(iconName);
+    if (count == 0) {
+        return icon;
+    }
+
+    QHash<Qt::Corner, QIcon> overlaysHash;
+    overlaysHash.reserve(count);
+
+    if (count >= 1) {
+        overlaysHash.insert(Qt::BottomRightCorner, QIcon::fromTheme(overlays.at(0)));
+    }
+
+    if (count >= 2) {
+        overlaysHash.insert(Qt::BottomLeftCorner, QIcon::fromTheme(overlays.at(1)));
+    }
+
+    if (count >= 3) {
+        overlaysHash.insert(Qt::TopLeftCorner, QIcon::fromTheme(overlays.at(2)));
+    }
+
+    if (count >= 4) {
+        overlaysHash.insert(Qt::TopRightCorner, QIcon::fromTheme(overlays.at(3)));
+    }
+
+    return QIcon(new KOverlayIconEngine(icon, overlaysHash));
+}
 }
