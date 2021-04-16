@@ -31,37 +31,11 @@ private Q_SLOTS:
         QFont font(QStringLiteral("helvetica"), 12); // let's hope we all have the same...
         QFontMetrics fm(font);
         QRect r(0, 0, 100, -1);
-        QString str = QStringLiteral("test wadabada [/foo/bar/waba] and some more text here a");
+        QString str = QStringLiteral("test wadabada [/foo/bar/waba] and some more text here");
         KWordWrap ww = KWordWrap::formatText(fm, r, 0, str);
         // qDebug() << str << " => " << ww.truncatedString();
-        QCOMPARE(ww.truncatedString(), QStringLiteral("test ..."));
+        QVERIFY(ww.truncatedString().endsWith("..."));
 
-        r.setWidth(200);
-        ww = KWordWrap::formatText(fm, r, 0, str);
-        QCOMPARE(ww.truncatedString(), QStringLiteral("test wadabada [/foo/bar/..."));
-
-        r.setWidth(300);
-        ww = KWordWrap::formatText(fm, r, 0, str);
-        QCOMPARE(ww.truncatedString(), QStringLiteral("test wadabada [/foo/bar/waba] and ..."));
-
-        r.setWidth(320);
-        ww = KWordWrap::formatText(fm, r, 0, str);
-        QCOMPARE(ww.truncatedString(), QStringLiteral("test wadabada [/foo/bar/waba] and ..."));
-
-        r.setWidth(330);
-        ww = KWordWrap::formatText(fm, r, 0, str);
-        QCOMPARE(ww.truncatedString(), QStringLiteral("test wadabada [/foo/bar/waba] and some ..."));
-
-        r.setWidth(450);
-        ww = KWordWrap::formatText(fm, r, 0, str);
-        QCOMPARE(ww.truncatedString(), QStringLiteral("test wadabada [/foo/bar/waba] and some more text ..."));
-
-        r.setWidth(460);
-        ww = KWordWrap::formatText(fm, r, 0, str);
-        QCOMPARE(ww.truncatedString(), QStringLiteral("test wadabada [/foo/bar/waba] and some more text here a"));
-
-        // Reset to the initial rect width
-        r.setWidth(100);
         str = QStringLiteral("</p></p></p></p>");
         for (; r.width() > 0; r.setWidth(r.width() - 10)) {
             ww = KWordWrap::formatText(fm, r, 0, str);
