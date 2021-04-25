@@ -234,6 +234,11 @@ static bool isOkWhenModifierless(int key)
 
 static QKeySequence appendToSequence(const QKeySequence &sequence, int key)
 {
+    if (sequence.count() >= 4) {
+        qCWarning(KGUIADDONS_LOG) << "Invalid sequence size: " << sequence.count();
+        return sequence;
+    }
+
     std::array<int, 4> keys{sequence[0], sequence[1], sequence[2], sequence[3]};
     keys[sequence.count()] = key;
     return QKeySequence(keys[0], keys[1], keys[2], keys[3]);
