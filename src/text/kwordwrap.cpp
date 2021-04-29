@@ -159,16 +159,17 @@ KWordWrap &KWordWrap::operator=(const KWordWrap &other)
 
 QString KWordWrap::wrappedString() const
 {
+    const QStringView strView(d->m_text);
     // We use the calculated break positions to insert '\n' into the string
     QString ws;
     int start = 0;
     for (int i = 0; i < d->m_breakPositions.count(); ++i) {
         int end = d->m_breakPositions.at(i);
-        ws += d->m_text.midRef(start, end - start + 1);
+        ws += strView.mid(start, end - start + 1);
         ws += QLatin1Char('\n');
         start = end + 1;
     }
-    ws += d->m_text.midRef(start);
+    ws += strView.mid(start);
     return ws;
 }
 
