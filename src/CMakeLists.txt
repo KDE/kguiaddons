@@ -70,7 +70,7 @@ if (NOT APPLE AND X11_FOUND AND X11_Xkb_FOUND AND XCB_XCB_FOUND)
     endif()
 endif ()
 
-set_target_properties(KF5GuiAddons PROPERTIES VERSION   ${KGUIADDONS_VERSION_STRING}
+set_target_properties(KF5GuiAddons PROPERTIES VERSION   ${KGUIADDONS_VERSION}
                                               SOVERSION ${KGUIADDONS_SOVERSION}
                                               EXPORT_NAME GuiAddons
 )
