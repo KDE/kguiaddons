@@ -88,6 +88,25 @@ if (WITH_X11 AND (TARGET Qt5::X11Extras OR TARGET Qt6::Gui))
     target_link_libraries(kmodifierkey_xcb PRIVATE X11::Xkb XCB::XCB KF5::GuiAddons)
 endif()
 
+if(WITH_WAYLAND)
+
+    if (TARGET Qt6::WaylandClient)
+        qt_generate_wayland_protocol_client_sources(KF5GuiAddons
+            FILES
+                "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
+        )
+    else()
+        ecm_add_qtwayland_client_protocol(wayland_keystate_SRCS
+            PROTOCOL ${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml
+            BASENAME keystate
+        )
+    endif()
+
+    add_library(kmodifierkey_wayland MODULE util/kmodifierkeyinfoprovider_wayland.cpp ${wayland_keystate_SRCS})
+    target_link_libraries(kmodifierkey_wayland PRIVATE Qt${QT_MAJOR_VERSION}::Core Qt${QT_MAJOR_VERSION}::WaylandClient Wayland::Client KF5::GuiAddons)
+    install(TARGETS kmodifierkey_wayland DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf${QT_MAJOR_VERSION}/kguiaddons/kmodifierkey/)
+endif()
+
 ecm_generate_headers(KGuiAddons_HEADERS
   HEADER_NAMES
   KColorUtils
