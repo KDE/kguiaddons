@@ -58,7 +58,6 @@ ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS
 
 
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050f00)
-add_definitions(-DQT_NO_FOREACH)
 add_subdirectory(src)
 if (BUILD_TESTING)
     add_subdirectory(autotests)
