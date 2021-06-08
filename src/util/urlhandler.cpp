@@ -23,23 +23,33 @@ public:
     {
     }
 
+private:
+    static bool openWithKHelpCenter(const QUrl &url, const QString &appName)
+    {
+        const QString helpcenter = QStandardPaths::findExecutable(QStringLiteral("khelpcenter"));
+        if (!helpcenter.isEmpty()) { // use khelpcenter if it is available
+            QUrl u(url);
+            if (u.path() == QLatin1Char('/')) {
+                u.setPath(appName);
+            }
+
+            QProcess::startDetached(helpcenter, QStringList(u.toString()));
+            return true;
+        }
+
+        return false;
+    }
+
 public Q_SLOTS:
     void openHelp(const QUrl &url)
     {
         const QString appName = QCoreApplication::applicationName();
 
-        QUrl u(url);
-        if (u.path() == QLatin1Char('/')) {
-            u.setPath(appName);
-        }
-
-        const QString helpcenter = QStandardPaths::findExecutable(QStringLiteral("khelpcenter"));
-        if (!helpcenter.isEmpty()) { // use khelpcenter if it is available
-            QProcess::startDetached(helpcenter, QStringList(u.toString()));
+        if (openWithKHelpCenter(url, appName)) {
             return;
         }
 
-        // if khelpcenter is not available and it's a KDE application, use docs.kde.org
+        // KHelpCenter is not available and it's a KDE application, use docs.kde.org
         if (QCoreApplication::organizationDomain() == QLatin1String("kde.org")) {
             QString path = url.path();
             QString docPath;
@@ -55,8 +65,8 @@ public Q_SLOTS:
             return;
         }
 
-        // not a KDE application
-        qCWarning(KGUIADDONS_LOG) << "Could not find a suitable handler for " << u.toString();
+        // Not a KDE application
+        qCWarning(KGUIADDONS_LOG) << "Could not find a suitable handler for " << url.toString();
     }
 };
 
