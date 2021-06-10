@@ -37,7 +37,7 @@ UrlHandler::UrlHandler(QObject *parent)
 {
 }
 
-void UrlHandler::openHelp(const QUrl &url)
+void UrlHandler::openHelp(const QUrl &url) const
 {
     if (openWithKHelpCenter(url)) {
         return;

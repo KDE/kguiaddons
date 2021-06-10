@@ -18,8 +18,8 @@ public:
     explicit UrlHandler(QObject *parent = nullptr);
     ~UrlHandler() = default;
 
-public Q_SLOTS:
-    void openHelp(const QUrl &url);
+private Q_SLOTS:
+    void openHelp(const QUrl &url) const;
 
 private:
     friend class UrlHandlerTest;
