@@ -20,6 +20,8 @@ public:
 
 private Q_SLOTS:
     void openHelp(const QUrl &url) const;
+    void openManpage(const QUrl &url) const;
+    void openInfopage(const QUrl &url) const;
 
 private:
     friend class UrlHandlerTest;

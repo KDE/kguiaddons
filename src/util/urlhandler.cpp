@@ -15,7 +15,7 @@
 #include <QStandardPaths>
 #include <QUrl>
 
-static bool openWithKHelpCenter(const QUrl &url)
+static bool openHelpWithKHelpCenter(const QUrl &url)
 {
     const QString helpcenter = QStandardPaths::findExecutable(QStringLiteral("khelpcenter"));
     if (!helpcenter.isEmpty()) {
@@ -39,7 +39,7 @@ UrlHandler::UrlHandler(QObject *parent)
 
 void UrlHandler::openHelp(const QUrl &url) const
 {
-    if (openWithKHelpCenter(url)) {
+    if (openHelpWithKHelpCenter(url)) {
         return;
     }
 
@@ -110,11 +110,37 @@ QUrl UrlHandler::concatDocsUrl(const QUrl &url) const
     return {};
 }
 
+void UrlHandler::openManpage(const QUrl &url) const
+{
+    QString exec = QStandardPaths::findExecutable(QStringLiteral("khelpcenter"));
+    if (exec.isEmpty()) {
+        exec = QStandardPaths::findExecutable(QStringLiteral("konqueror"));
+    }
+
+    if (!exec.isEmpty()) {
+        QProcess::startDetached(exec, QStringList(url.toString()));
+    }
+}
+
+void UrlHandler::openInfopage(const QUrl &url) const
+{
+    QString exec = QStandardPaths::findExecutable(QStringLiteral("khelpcenter"));
+    if (exec.isEmpty()) {
+        exec = QStandardPaths::findExecutable(QStringLiteral("konqueror"));
+    }
+
+    if (!exec.isEmpty()) {
+        QProcess::startDetached(exec, QStringList(url.toString()));
+    }
+}
+
 Q_GLOBAL_STATIC(UrlHandler, s_handler)
 
 static void initializeGlobalSettings()
 {
     QDesktopServices::setUrlHandler(QStringLiteral("help"), s_handler, "openHelp");
+    QDesktopServices::setUrlHandler(QStringLiteral("man"), s_handler, "openManpage");
+    QDesktopServices::setUrlHandler(QStringLiteral("info"), s_handler, "openInfopage");
 }
 
 Q_COREAPP_STARTUP_FUNCTION(initializeGlobalSettings)
