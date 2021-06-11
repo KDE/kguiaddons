@@ -21,7 +21,6 @@
 #include <QWindow>
 
 #include <array>
-#include <memory>
 
 constexpr Qt::KeyboardModifiers modifierMask = Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier | Qt::KeypadModifier;
 
