@@ -1,5 +1,13 @@
+add_library(KF5GuiAddons)
+add_library(KF5::GuiAddons ALIAS KF5GuiAddons)
 
-set(kguiaddons_LIB_SRCS
+set_target_properties(KF5GuiAddons PROPERTIES
+    VERSION     ${KGUIADDONS_VERSION}
+    SOVERSION   ${KGUIADDONS_SOVERSION}
+    EXPORT_NAME GuiAddons
+)
+
+target_sources(KF5GuiAddons PRIVATE
  colors/kcolorspaces.cpp
  colors/kcolorutils.cpp
  colors/kcolorcollection.cpp
@@ -17,10 +25,7 @@ set(kguiaddons_LIB_SRCS
  recorder/keysequencerecorder.cpp
 )
 
-
-set (kguiaddons_LIB_SRCS ${kguiaddons_LIB_SRCS} util/kmodifierkeyinfoprovider.cpp)
-
-ecm_qt_declare_logging_category(kguiaddons_LIB_SRCS
+ecm_qt_declare_logging_category(KF5GuiAddons
     HEADER kguiaddons_debug.h
     IDENTIFIER KGUIADDONS_LOG
     CATEGORY_NAME kf.guiaddons
@@ -28,9 +33,8 @@ ecm_qt_declare_logging_category(kguiaddons_LIB_SRCS
     EXPORT KGUIADDONS
 )
 
-add_library(KF5GuiAddons ${kguiaddons_LIB_SRCS})
-
 if(WITH_WAYLAND)
+    set(wayland_SRCS)
     ecm_add_qtwayland_client_protocol(wayland_SRCS
         PROTOCOL recorder/keyboard-shortcuts-inhibit-unstable-v1.xml
         BASENAME keyboard-shortcuts-inhibit-unstable-v1
@@ -41,7 +45,6 @@ if(WITH_WAYLAND)
 endif()
 
 generate_export_header(KF5GuiAddons BASE_NAME KGuiAddons)
-add_library(KF5::GuiAddons ALIAS KF5GuiAddons)
 
 set(kguiaddons_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/colors
@@ -69,11 +72,6 @@ if (NOT APPLE AND X11_FOUND AND X11_Xkb_FOUND AND XCB_XCB_FOUND)
         install( TARGETS kmodifierkey_xcb DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kguiaddons/kmodifierkey/)
     endif()
 endif ()
-
-set_target_properties(KF5GuiAddons PROPERTIES VERSION   ${KGUIADDONS_VERSION}
-                                              SOVERSION ${KGUIADDONS_SOVERSION}
-                                              EXPORT_NAME GuiAddons
-)
 
 ecm_generate_headers(KGuiAddons_HEADERS
   HEADER_NAMES
