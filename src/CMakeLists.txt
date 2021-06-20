@@ -19,7 +19,7 @@ target_sources(KF5GuiAddons PRIVATE
  util/klocalimagecacheimpl.cpp
  util/kmodifierkeyinfo.cpp
  util/kmodifierkeyinfoprovider.cpp
- util/urlhandler.cpp
+ util/kurlhandler_p.cpp
  util/kcursorsaver.cpp
  recorder/keyboardgrabber.cpp
  recorder/keysequencerecorder.cpp
