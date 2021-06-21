@@ -7,6 +7,7 @@
 
 #include <QGuiApplication>
 #include <QtWaylandClient/QWaylandClientExtensionTemplate>
+#include <QtWaylandClient/QtWaylandClientVersion>
 #include <qpa/qplatformnativeinterface.h>
 
 #include "qwayland-keyboard-shortcuts-inhibit-unstable-v1.h"
@@ -17,9 +18,13 @@ public:
     ShortcutsInhibitManager()
         : QWaylandClientExtensionTemplate<ShortcutsInhibitManager>(1)
     {
+#if QTWAYLANDCLIENT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
+        initialize();
+#else
         // QWaylandClientExtensionTemplate invokes this with a QueuedConnection but we want shortcuts
         // to be inhibited immediately.
         QMetaObject::invokeMethod(this, "addRegistryListener");
+#endif
     }
     ~ShortcutsInhibitManager()
     {
