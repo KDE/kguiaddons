@@ -27,6 +27,8 @@ include(KDEFrameworkCompilerSettings NO_POLICY_SCOPE)
 include(KDECMakeSettings)
 include(KDEGitCommitHooks)
 
+set(CMAKE_C_STANDARD 99)
+
 set(REQUIRED_QT_VERSION 5.15.0)
 if (WITH_WAYLAND)
     set(_qtgui_find_components COMPONENTS Private)
