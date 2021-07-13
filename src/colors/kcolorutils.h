@@ -178,7 +178,7 @@ KGUIADDONS_EXPORT QColor mix(const QColor &c1, const QColor &c2, qreal bias = 0.
     QColor lighter = KColorUtils::overlayColors(myColor, white);
    @endcode
  * @param base the base color (alpha channel is ignored).
- * @param paint the color to be overlayed onto the base color.
+ * @param paint the color to be overlaid onto the base color.
  * @param comp the CompositionMode used to do the blending.
  */
 KGUIADDONS_EXPORT QColor overlayColors(const QColor &base, const QColor &paint, QPainter::CompositionMode comp = QPainter::CompositionMode_SourceOver);

@@ -50,7 +50,7 @@ class KGUIADDONS_EXPORT KeySequenceRecorder : public QObject
      * The recorded key sequence.
      * After construction this is empty.
      *
-     * During recording it is continiously updated with the newest user input.
+     * During recording it is continuously updated with the newest user input.
      *
      * After recording it contains the last recorded QKeySequence
      */
@@ -112,8 +112,8 @@ Q_SIGNALS:
     /**
      * This signal is emitted when a key sequence has been recorded.
      *
-     * Compared to currentKeySequenceChanged and currentKeySequence this is signal is not emmitted
-     * continiously during recording but only after recording has finished.
+     * Compared to currentKeySequenceChanged and currentKeySequence this is signal is not emitted
+     * continuously during recording but only after recording has finished.
      */
     void gotKeySequence(const QKeySequence &keySequence);
 

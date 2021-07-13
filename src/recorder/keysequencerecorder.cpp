@@ -276,7 +276,7 @@ KeySequenceRecorderPrivate::KeySequenceRecorderPrivate(KeySequenceRecorder *q)
 void KeySequenceRecorderPrivate::controlModifierlessTimeout()
 {
     if (m_currentKeySequence != 0 && !m_currentModifiers) {
-        // No modifier key pressed currently. Start the timout
+        // No modifier key pressed currently. Start the timeout
         m_modifierlessTimer.start(600);
     } else {
         // A modifier is pressed. Stop the timeout
