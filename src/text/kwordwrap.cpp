@@ -288,12 +288,13 @@ void KWordWrap::drawText(QPainter *painter, int textX, int textY, int flags) con
     if ((d->m_constrainingRect.height() < 0) || ((y + height) <= d->m_constrainingRect.height())) {
         if (i == d->m_breakPositions.count()) {
             painter->drawText(x, textY + y + ascent, d->m_text.mid(start));
-        } else if (flags & FadeOut)
+        } else if (flags & FadeOut) {
             drawFadeoutText(painter, textX, textY + y + ascent, d->m_constrainingRect.width(), d->m_text.mid(start));
-        else if (flags & Truncate)
+        } else if (flags & Truncate) {
             drawTruncateText(painter, textX, textY + y + ascent, d->m_constrainingRect.width(), d->m_text.mid(start));
-        else
+        } else {
             painter->drawText(x, textY + y + ascent, d->m_text.mid(start));
+        }
     }
 }
 

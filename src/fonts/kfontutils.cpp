@@ -36,12 +36,14 @@ qreal KFontUtils::adaptFontSize(QPainter &painter,
                                 AdaptFontSizeOptions flags)
 {
     // A invalid range is an error (-1)
-    if (maxFontSize < minFontSize)
+    if (maxFontSize < minFontSize) {
         return -1;
+    }
 
     // If the max font size already fits, return it
-    if (checkFits(painter, string, width, height, maxFontSize, flags))
+    if (checkFits(painter, string, width, height, maxFontSize, flags)) {
         return maxFontSize;
+    }
 
     qreal fontSizeDoesNotFit = maxFontSize;
 
@@ -52,8 +54,9 @@ qreal KFontUtils::adaptFontSize(QPainter &painter,
         fontSizeDoesNotFit = minFontSize;
 
         minFontSize = 1;
-        if (!checkFits(painter, string, width, height, minFontSize, flags))
+        if (!checkFits(painter, string, width, height, minFontSize, flags)) {
             return -1;
+        }
     }
 
     qreal fontSizeFits = minFontSize;

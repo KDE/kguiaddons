@@ -15,8 +15,9 @@ KModifierKeyInfoProvider *createProvider()
 {
     QPluginLoader loader(QStringLiteral("kf5/kguiaddons/kmodifierkey/kmodifierkey_") + qGuiApp->platformName());
     auto instance = dynamic_cast<KModifierKeyInfoProvider *>(loader.instance());
-    if (instance)
+    if (instance) {
         return instance;
+    }
     qCWarning(KGUIADDONS_LOG) << "Error: could not load plugin for platform" << loader.fileName() << "error:" << loader.errorString() << loader.instance();
     return new KModifierKeyInfoProvider;
 }

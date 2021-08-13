@@ -61,7 +61,10 @@ KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
 {
     if (qApp) {
         if (qApp->platformName() == QLatin1String("xcb")) {
-            int code, xkberr, maj, min;
+            int code;
+            int xkberr;
+            int maj;
+            int min;
             m_xkbAvailable = XkbQueryExtension(QX11Info::display(), &code, &m_xkbEv, &xkberr, &maj, &min);
         }
     }

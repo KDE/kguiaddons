@@ -117,7 +117,8 @@ QColor KColorUtils::tint(const QColor &base, const QColor &color, qreal amount)
     qreal baseLuma = luma(base); // cache value because luma call is expensive
     double ri = contrastRatioForLuma(baseLuma, luma(color));
     double rg = 1.0 + ((ri + 1.0) * amount * amount * amount);
-    double u = 1.0, l = 0.0;
+    double u = 1.0;
+    double l = 0.0;
     QColor result;
     for (int i = 12; i; --i) {
         double a = 0.5 * (l + u);

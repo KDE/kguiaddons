@@ -54,7 +54,10 @@ void tst_KColorUtils::testOverlay()
 
 void tst_KColorUtils::testMix()
 {
-    int r, g, b, k;
+    int r;
+    int g;
+    int b;
+    int k;
     for (r = 0; r < 52; r++) {
         for (g = 0; g < 52; g++) {
             for (b = 0; b < 52; b++) {
@@ -82,7 +85,9 @@ void tst_KColorUtils::testMix()
 
 void tst_KColorUtils::testHCY()
 {
-    int r, g, b;
+    int r;
+    int g;
+    int b;
     for (r = 0; r < 256; r += 5) {
         for (g = 0; g < 256; g += 5) {
             for (b = 0; b < 256; b += 5) {

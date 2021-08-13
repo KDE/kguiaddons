@@ -22,7 +22,9 @@ int main(int argc, char **argv)
         printf("Description:\n\"%s\"\n", myColorCollection.description().toLatin1().constData());
         printf("Nr of Colors = %d\n", myColorCollection.count());
         for (int i = 0; i < myColorCollection.count(); i++) {
-            int r, g, b;
+            int r;
+            int g;
+            int b;
             myColorCollection.color(i).getRgb(&r, &g, &b);
             printf("#%d Name = \"%s\" #%02x%02x%02x\n", i, myColorCollection.name(i).toLatin1().constData(), r, g, b);
         }

@@ -82,7 +82,9 @@ KColorCollectionPrivate::KColorCollectionPrivate(const QString &_name)
             if (line.isEmpty()) {
                 continue;
             }
-            int r, g, b;
+            int r;
+            int g;
+            int b;
             int pos = 0;
             if (sscanf(line.toLatin1().constData(), "%d %d %d%n", &r, &g, &b, &pos) >= 3) {
                 r = qBound(0, r, 255);
@@ -135,7 +137,9 @@ bool KColorCollection::save()
     str << QLatin1String("KDE RGB Palette\n");
     str << description << QLatin1Char('\n');
     for (const KColorCollectionPrivate::ColorNode &node : qAsConst(d->colorList)) {
-        int r, g, b;
+        int r;
+        int g;
+        int b;
         node.color.getRgb(&r, &g, &b);
         str << r << " " << g << " " << b << " " << node.name << "\n";
     }
