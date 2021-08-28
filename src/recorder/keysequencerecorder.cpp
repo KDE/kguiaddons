@@ -247,7 +247,7 @@ class KeySequenceRecorderPrivate : public QObject
 {
     Q_OBJECT
 public:
-    KeySequenceRecorderPrivate(KeySequenceRecorder *q);
+    KeySequenceRecorderPrivate(KeySequenceRecorder *qq);
 
     void controlModifierlessTimeout();
     bool eventFilter(QObject *watched, QEvent *event) override;
@@ -267,9 +267,9 @@ public:
     std::unique_ptr<ShortcutInhibition> m_inhibition;
 };
 
-KeySequenceRecorderPrivate::KeySequenceRecorderPrivate(KeySequenceRecorder *q)
-    : QObject(q)
-    , q(q)
+KeySequenceRecorderPrivate::KeySequenceRecorderPrivate(KeySequenceRecorder *qq)
+    : QObject(qq)
+    , q(qq)
 {
 }
 

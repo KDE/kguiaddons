@@ -15,8 +15,8 @@
 class KDateValidatorPrivate
 {
 public:
-    KDateValidatorPrivate(KDateValidator *q)
-        : q(q)
+    KDateValidatorPrivate(KDateValidator *qq)
+        : q(qq)
     {
     }
 
