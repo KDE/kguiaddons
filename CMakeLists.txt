@@ -39,6 +39,11 @@ if (NOT APPLE AND NOT WIN32)
     find_package(XCB MODULE COMPONENTS XCB)
 endif()
 
+set(WITH_XCB)
+if (NOT APPLE AND X11_FOUND AND X11_Xkb_FOUND AND XCB_XCB_FOUND)
+    find_package(Qt5X11Extras ${REQUIRED_QT_VERSION} NO_MODULE)
+endif()
+
 if (WITH_WAYLAND)
     find_package(Qt5WaylandClient ${REQUIRED_QT_VERSION} NO_MODULE)
     find_package(QtWaylandScanner REQUIRED)

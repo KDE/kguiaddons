@@ -58,20 +58,16 @@ target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INS
 target_compile_definitions(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
 target_link_libraries(KF5GuiAddons PUBLIC Qt5::Gui)
 
-set(WITH_XCB)
-if (NOT APPLE AND X11_FOUND AND X11_Xkb_FOUND AND XCB_XCB_FOUND)
-    find_package(Qt5X11Extras ${REQUIRED_QT_VERSION} NO_MODULE)
-    if (Qt5X11Extras_FOUND)
-        add_library(kmodifierkey_xcb MODULE util/kmodifierkeyinfoprovider_xcb.cpp)
-        target_include_directories (kmodifierkey_xcb PRIVATE
-            ${X11_Xkb_INCLUDE_PATH}
-            ${X11_Xlib_INCLUDE_PATH}
-            ${XCB_XCB_INCLUDE_DIR}
-        )
-        target_link_libraries(kmodifierkey_xcb PRIVATE ${X11_LIBRARIES} ${XCB_XCB_LIBRARY} Qt5::X11Extras KF5::GuiAddons)
-        install( TARGETS kmodifierkey_xcb DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kguiaddons/kmodifierkey/)
-    endif()
-endif ()
+if (Qt5X11Extras_FOUND)
+    add_library(kmodifierkey_xcb MODULE util/kmodifierkeyinfoprovider_xcb.cpp)
+    target_include_directories (kmodifierkey_xcb PRIVATE
+        ${X11_Xkb_INCLUDE_PATH}
+        ${X11_Xlib_INCLUDE_PATH}
+        ${XCB_XCB_INCLUDE_DIR}
+    )
+    target_link_libraries(kmodifierkey_xcb PRIVATE ${X11_LIBRARIES} ${XCB_XCB_LIBRARY} Qt5::X11Extras KF5::GuiAddons)
+    install( TARGETS kmodifierkey_xcb DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kguiaddons/kmodifierkey/)
+endif()
 
 ecm_generate_headers(KGuiAddons_HEADERS
   HEADER_NAMES
