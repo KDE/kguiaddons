@@ -60,12 +60,7 @@ target_link_libraries(KF5GuiAddons PUBLIC Qt5::Gui)
 
 if (WITH_X11)
     add_library(kmodifierkey_xcb MODULE util/kmodifierkeyinfoprovider_xcb.cpp)
-    target_include_directories (kmodifierkey_xcb PRIVATE
-        ${X11_Xkb_INCLUDE_PATH}
-        ${X11_Xlib_INCLUDE_PATH}
-        ${XCB_XCB_INCLUDE_DIR}
-    )
-    target_link_libraries(kmodifierkey_xcb PRIVATE ${X11_LIBRARIES} ${XCB_XCB_LIBRARY} Qt5::X11Extras KF5::GuiAddons)
+    target_link_libraries(kmodifierkey_xcb PRIVATE X11::Xkb XCB::XCB Qt5::X11Extras KF5::GuiAddons)
     install( TARGETS kmodifierkey_xcb DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kguiaddons/kmodifierkey/)
 endif()
 
