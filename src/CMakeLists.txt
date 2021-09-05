@@ -58,7 +58,7 @@ target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INS
 target_compile_definitions(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
 target_link_libraries(KF5GuiAddons PUBLIC Qt5::Gui)
 
-if (Qt5X11Extras_FOUND)
+if (WITH_X11)
     add_library(kmodifierkey_xcb MODULE util/kmodifierkeyinfoprovider_xcb.cpp)
     target_include_directories (kmodifierkey_xcb PRIVATE
         ${X11_Xkb_INCLUDE_PATH}
