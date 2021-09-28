@@ -14,6 +14,8 @@ target_sources(KF5GuiAddons PRIVATE
  colors/kcolorutils.cpp
  colors/kcolorcollection.cpp
  colors/kcolormimedata.cpp
+ colors/kcolorschemewatcher.cpp
+ colors/kcolorschemewatcherbackend.cpp
  text/kdatevalidator.cpp
  text/kwordwrap.cpp
  fonts/kfontutils.cpp
@@ -54,6 +56,16 @@ ecm_qt_declare_logging_category(KF5GuiAddons
     DESCRIPTION "KGuiAddons"
     EXPORT KGUIADDONS
 )
+
+if(WIN32)
+    target_sources(KF5GuiAddons PRIVATE colors/kcolorschemewatcher_win.cpp)
+    target_link_libraries(KF5GuiAddons PRIVATE advapi32)
+endif()
+
+if(WITH_DBUS)
+    target_sources(KF5GuiAddons PRIVATE colors/kcolorschemewatcher_xdg.cpp)
+    target_link_libraries(KF5GuiAddons PRIVATE Qt${QT_MAJOR_VERSION}::DBus)
+endif()
 
 if(WITH_WAYLAND)
     if (TARGET Qt6::WaylandClient)
@@ -121,6 +133,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
   KColorUtils
   KColorCollection
   KColorMimeData
+  KColorSchemeWatcher
 
   RELATIVE colors
   REQUIRED_HEADERS KGuiAddons_HEADERS

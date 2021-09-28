@@ -16,6 +16,10 @@ if (NOT @BUILD_SHARED_LIBS@)
         find_dependency(Qt@QT_MAJOR_VERSION@WaylandClient @REQUIRED_QT_VERSION@)
         find_dependency(QtWaylandScanner)
     endif()
+
+    if (@WITH_DBUS@)
+        find_dependency(Qt@QT_MAJOR_VERSION@DBus @REQUIRED_QT_VERSION@)
+    endif()
 endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/KF5GuiAddonsTargets.cmake")

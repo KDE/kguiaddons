@@ -31,9 +31,13 @@ if (UNIX AND NOT ANDROID AND NOT APPLE)
 
     option(WITH_X11 "Build with support for KeySequenceEditor inhibiting shortcuts on X11" ON)
     add_feature_info(X11 ${WITH_X11} "KeySequenceEditor inhibiting shortcuts on X11")
+
+    option(WITH_DBUS "Build with support for color scheme information via XDG portals" ON)
+
 else()
     set(WITH_WAYLAND OFF)
     set(WITH_X11 OFF)
+    set(WITH_DBUS OFF)
 endif()
 
 set(REQUIRED_QT_VERSION 5.15.2)
@@ -60,6 +64,10 @@ if (WITH_WAYLAND)
         find_package(QtWaylandScanner REQUIRED)
     endif()
     find_package(Wayland 1.9 REQUIRED Client)
+endif()
+
+if (WITH_DBUS)
+    find_package(Qt${QT_MAJOR_VERSION}DBus ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
 endif()
 
 ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS
