@@ -13,7 +13,7 @@ class KCursorSaverTest : public QObject
     Q_OBJECT
 public:
     explicit KCursorSaverTest(QObject *parent = nullptr);
-    ~KCursorSaverTest() = default;
+    ~KCursorSaverTest() override = default;
 private Q_SLOTS:
     void ignoreWarning();
 };

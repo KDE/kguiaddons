@@ -87,7 +87,7 @@ public:
      * @see window
      */
     explicit KeySequenceRecorder(QWindow *window, QObject *parent = nullptr);
-    ~KeySequenceRecorder();
+    ~KeySequenceRecorder() override;
 
     /**
      * Start recording.

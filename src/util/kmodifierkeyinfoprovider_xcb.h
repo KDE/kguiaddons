@@ -16,7 +16,7 @@ class KModifierKeyInfoProviderXcb : public KModifierKeyInfoProvider, public QAbs
     Q_PLUGIN_METADATA(IID "org.kde.kguiaddons.KModifierKeyInfoProvider.XCB")
 public:
     KModifierKeyInfoProviderXcb();
-    ~KModifierKeyInfoProviderXcb();
+    ~KModifierKeyInfoProviderXcb() override;
 
     bool setKeyLatched(Qt::Key key, bool latched) override;
     bool setKeyLocked(Qt::Key key, bool locked) override;

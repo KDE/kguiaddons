@@ -45,7 +45,7 @@ public:
     /**
      * Destructor
      */
-    virtual ~KModifierKeyInfo();
+    ~KModifierKeyInfo() override;
 
     /**
      * Check if a key is known by the underlying window system and can be queried.

@@ -12,7 +12,7 @@ class KeyboardGrabber : public ShortcutInhibition
 {
 public:
     explicit KeyboardGrabber(QWindow *window);
-    ~KeyboardGrabber();
+    ~KeyboardGrabber() override;
     void enableInhibition() override;
     void disableInhibition() override;
     bool shortcutsAreInhibited() const override;

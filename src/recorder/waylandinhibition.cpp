@@ -26,7 +26,7 @@ public:
         QMetaObject::invokeMethod(this, "addRegistryListener");
 #endif
     }
-    ~ShortcutsInhibitManager()
+    ~ShortcutsInhibitManager() override
     {
         if (isInitialized()) {
             destroy();
@@ -42,7 +42,7 @@ public:
     {
     }
 
-    ~ShortcutsInhibitor()
+    ~ShortcutsInhibitor() override
     {
         destroy();
     }
