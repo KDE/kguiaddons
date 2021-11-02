@@ -26,7 +26,7 @@ KCursorSaverTestWidget::KCursorSaverTestWidget(QWidget *parent)
     QVBoxLayout *layout = new QVBoxLayout(this);
     QPushButton *busyButton = new QPushButton(QStringLiteral("busy"), this);
     layout->addWidget(busyButton);
-    connect(busyButton, &QPushButton::clicked, this, [this]() {
+    connect(busyButton, &QPushButton::clicked, this, []() {
         KCursorSaver saver(Qt::WaitCursor);
         QThread::sleep(3);
     });
