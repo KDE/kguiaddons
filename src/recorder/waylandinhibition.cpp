@@ -85,7 +85,7 @@ void WaylandInhibition::enableInhibition()
     if (m_inhibitor || !m_manager->isActive()) {
         return;
     }
-    QPlatformNativeInterface *nativeInterface = qApp->platformNativeInterface();
+    QPlatformNativeInterface *nativeInterface = qGuiApp->platformNativeInterface();
     if (!nativeInterface) {
         return;
     }

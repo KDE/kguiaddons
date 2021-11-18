@@ -452,7 +452,7 @@ void KeySequenceRecorder::setWindow(QWindow *window)
         qCDebug(KGUIADDONS_LOG) << "listening for events in" << window;
     }
 
-    if (qApp->platformName() == QLatin1String("wayland")) {
+    if (qGuiApp->platformName() == QLatin1String("wayland")) {
 #ifdef WITH_WAYLAND
         d->m_inhibition.reset(new WaylandInhibition(window));
 #endif

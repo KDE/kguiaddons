@@ -59,8 +59,8 @@ KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
     , m_xkbEv(0)
     , m_xkbAvailable(false)
 {
-    if (qApp) {
-        if (qApp->platformName() == QLatin1String("xcb")) {
+    if (qGuiApp) {
+        if (qGuiApp->platformName() == QLatin1String("xcb")) {
             int code;
             int xkberr;
             int maj;
