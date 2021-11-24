@@ -23,6 +23,8 @@ target_sources(KF5GuiAddons PRIVATE
  util/kcursorsaver.cpp
  recorder/keyboardgrabber.cpp
  recorder/keysequencerecorder.cpp
+ systemclipboard/qtclipboard.cpp
+ systemclipboard/ksystemclipboard.cpp
 )
 
 ecm_qt_declare_logging_category(KF5GuiAddons
@@ -39,7 +41,15 @@ if(WITH_WAYLAND)
         PROTOCOL recorder/keyboard-shortcuts-inhibit-unstable-v1.xml
         BASENAME keyboard-shortcuts-inhibit-unstable-v1
     )
-    target_sources(KF5GuiAddons PRIVATE recorder/waylandinhibition.cpp ${wayland_SRCS})
+    ecm_add_qtwayland_client_protocol(wayland_SRCS
+        PROTOCOL  systemclipboard/wlr-data-control-unstable-v1.xml
+        BASENAME wlr-data-control-unstable-v1
+    )
+    target_sources(KF5GuiAddons PRIVATE
+        recorder/waylandinhibition.cpp
+        systemclipboard/waylandclipboard.cpp
+        ${wayland_SRCS}
+    )
     target_compile_definitions(KF5GuiAddons PRIVATE WITH_WAYLAND)
     target_link_libraries(KF5GuiAddons PRIVATE Qt5::GuiPrivate Qt5::WaylandClient Wayland::Client)
 endif()
@@ -52,6 +62,7 @@ set(kguiaddons_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/text
   ${CMAKE_CURRENT_SOURCE_DIR}/util
   ${CMAKE_CURRENT_SOURCE_DIR}/recorder
+  ${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard
   )
 target_include_directories(KF5GuiAddons PUBLIC "$<BUILD_INTERFACE:${kguiaddons_INCLUDES}>")
 target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/KGuiAddons>" )
@@ -104,6 +115,16 @@ ecm_generate_headers(KGuiAddons_HEADERS
     KeySequenceRecorder
 
     RELATIVE recorder
+    REQUIRED_HEADERS KGuiAddons_HEADERS
+)
+
+#add_subdirectory(systemclipboard)
+
+ecm_generate_headers(KGuiAddons_HEADERS
+    HEADER_NAMES
+    KSystemClipboard
+
+    RELATIVE systemclipboard
     REQUIRED_HEADERS KGuiAddons_HEADERS
 )
 
@@ -170,3 +191,12 @@ ecm_qt_install_logging_categories(
     FILE kguiaddons.categories
     DESTINATION "${KDE_INSTALL_LOGGINGCATEGORIESDIR}"
 )
+
+if(BUILD_TESTING)
+    add_executable(pasteclient systemclipboard/tests/paste.cpp)
+
+    target_link_libraries(pasteclient
+        KF5GuiAddons
+    )
+endif()
+
