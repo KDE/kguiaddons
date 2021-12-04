@@ -16,6 +16,7 @@
 #include <QPointer>
 #include <QtWaylandClient/QWaylandClientExtension>
 #include <qpa/qplatformnativeinterface.h>
+#include <qtwaylandclientversion.h>
 
 #include <errno.h>
 #include <poll.h>
