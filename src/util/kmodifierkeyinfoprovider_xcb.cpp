@@ -9,7 +9,11 @@
 #include "kmodifierkeyinfo.h"
 
 #include <QGuiApplication>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <private/qtx11extras_p.h>
+#else
 #include <QX11Info>
+#endif
 
 #define XK_MISCELLANY
 #define XK_XKB_KEYS
@@ -200,9 +204,12 @@ typedef union {
 } _xkb_event;
 }
 
-bool KModifierKeyInfoProviderXcb::nativeEventFilter(const QByteArray &eventType, void *message, long int *result)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+bool KModifierKeyInfoProviderXcb::nativeEventFilter(const QByteArray &eventType, void *message, qintptr *)
+#else
+bool KModifierKeyInfoProviderXcb::nativeEventFilter(const QByteArray &eventType, void *message, long *)
+#endif
 {
-    Q_UNUSED(result)
     if (!m_xkbAvailable || eventType != "xcb_generic_event_t") {
         return false;
     }

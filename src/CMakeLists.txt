@@ -51,7 +51,7 @@ if(WITH_WAYLAND)
         ${wayland_SRCS}
     )
     target_compile_definitions(KF5GuiAddons PRIVATE WITH_WAYLAND)
-    target_link_libraries(KF5GuiAddons PRIVATE Qt5::GuiPrivate Qt5::WaylandClient Wayland::Client)
+    target_link_libraries(KF5GuiAddons PRIVATE Qt${QT_MAJOR_VERSION}::GuiPrivate Qt${QT_MAJOR_VERSION}::WaylandClient Wayland::Client)
 endif()
 
 generate_export_header(KF5GuiAddons BASE_NAME KGuiAddons)
@@ -65,14 +65,20 @@ set(kguiaddons_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard
   )
 target_include_directories(KF5GuiAddons PUBLIC "$<BUILD_INTERFACE:${kguiaddons_INCLUDES}>")
-target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF5}/KGuiAddons>" )
+target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons>" )
 target_compile_definitions(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
-target_link_libraries(KF5GuiAddons PUBLIC Qt5::Gui)
+target_link_libraries(KF5GuiAddons PUBLIC Qt${QT_MAJOR_VERSION}::Gui)
 
-if (WITH_X11)
+if (WITH_X11 AND (TARGET Qt5::X11Extras OR TARGET Qt6::Gui))
     add_library(kmodifierkey_xcb MODULE util/kmodifierkeyinfoprovider_xcb.cpp)
-    target_link_libraries(kmodifierkey_xcb PRIVATE X11::Xkb XCB::XCB Qt5::X11Extras KF5::GuiAddons)
-    install( TARGETS kmodifierkey_xcb DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kguiaddons/kmodifierkey/)
+    install(TARGETS kmodifierkey_xcb DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf5/kguiaddons/kmodifierkey/)
+
+    if (TARGET Qt5::X11Extras)
+        set(_qt_x11_libs Qt5::X11Extras)
+    elseif (TARGET Qt6::Gui)
+        set(_qt_x11_libs Qt6::GuiPrivate) # qtx11extras_p.h
+    endif()
+    target_link_libraries(kmodifierkey_xcb PRIVATE X11::Xkb XCB::XCB KF5::GuiAddons ${_qt_x11_libs})
 endif()
 
 ecm_generate_headers(KGuiAddons_HEADERS
@@ -156,7 +162,7 @@ install(FILES
   util/kmodifierkeyinfoprovider_p.h
   util/klocalimagecacheimpl.h # implementation detail, no forwarding header
   ${KGuiAddons_HEADERS}
-  DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KGuiAddons COMPONENT Devel
+  DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons COMPONENT Devel
 )
 
 if(BUILD_QCH)
@@ -183,7 +189,7 @@ if(BUILD_QCH)
 endif()
 
 include(ECMGeneratePriFile)
-ecm_generate_pri_file(BASE_NAME KGuiAddons LIB_NAME KF5GuiAddons DEPS "gui" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF5}/KGuiAddons)
+ecm_generate_pri_file(BASE_NAME KGuiAddons LIB_NAME KF5GuiAddons DEPS "gui" FILENAME_VAR PRI_FILENAME INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons)
 install(FILES ${PRI_FILENAME} DESTINATION ${ECM_MKSPECS_INSTALL_DIR})
 
 ecm_qt_install_logging_categories(

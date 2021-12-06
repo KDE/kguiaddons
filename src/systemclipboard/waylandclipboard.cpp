@@ -153,7 +153,11 @@ protected:
         m_receivedFormats << mime_type;
     }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QVariant retrieveData(const QString &mimeType, QMetaType type) const override;
+#else
     QVariant retrieveData(const QString &mimeType, QVariant::Type type) const override;
+#endif
 
 private:
     /** reads data from a file descriptor with a timeout of 1 second
@@ -163,7 +167,11 @@ private:
     QStringList m_receivedFormats;
 };
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+QVariant DataControlOffer::retrieveData(const QString &mimeType, QMetaType type) const
+#else
 QVariant DataControlOffer::retrieveData(const QString &mimeType, QVariant::Type type) const
+#endif
 {
     Q_UNUSED(type);
 
@@ -269,7 +277,7 @@ class DataControlSource : public QObject, public QtWayland::zwlr_data_control_so
     Q_OBJECT
 public:
     DataControlSource(struct ::zwlr_data_control_source_v1 *id, QMimeData *mimeData);
-    DataControlSource();
+    DataControlSource() = default;
     ~DataControlSource()
     {
         destroy();

@@ -3,15 +3,19 @@
 # Any changes in this file will be overwritten by CMake.
 
 include(CMakeFindDependencyMacro)
-find_dependency(Qt5Gui @REQUIRED_QT_VERSION@)
+find_dependency(Qt@QT_MAJOR_VERSION@Gui @REQUIRED_QT_VERSION@)
 
 if (NOT @BUILD_SHARED_LIBS@)
     if (@WITH_X11@)
-        find_dependency(Qt5X11Extras @REQUIRED_QT_VERSION@)
+        if (@Qt5X11Extras_FOUND@)
+            find_dependency(Qt5X11Extras @REQUIRED_QT_VERSION@)
+        else()
+            # qtx11extras_p.h is in Qt6Gui which is a dependency anyway
+        endif()
     endif()
     if (@WITH_WAYLAND@)
         find_dependency(Wayland REQUIRED Client)
-        find_dependency(Qt5WaylandClient @REQUIRED_QT_VERSION@)
+        find_dependency(Qt@QT_MAJOR_VERSION@WaylandClient @REQUIRED_QT_VERSION@)
         find_dependency(QtWaylandScanner)
     endif()
 endif()

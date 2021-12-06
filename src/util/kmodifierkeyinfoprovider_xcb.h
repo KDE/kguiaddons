@@ -21,7 +21,11 @@ public:
     bool setKeyLatched(Qt::Key key, bool latched) override;
     bool setKeyLocked(Qt::Key key, bool locked) override;
 
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long int *result) override;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *) override;
+#else
+    bool nativeEventFilter(const QByteArray &eventType, void *message, long *) override;
+#endif
 
     void xkbUpdateModifierMapping();
     void xkbModifierStateChanged(unsigned char mods, unsigned char latched_mods, unsigned char locked_mods);
