@@ -479,14 +479,20 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
             m_device.reset(new DataControlDevice(m_manager->get_data_device(seat)));
 
             connect(m_device.get(), &DataControlDevice::receivedSelectionChanged, this, [this]() {
-                Q_EMIT changed(QClipboard::Clipboard);
+                // When our source is still valid, so the offer is for setting it or we emit changed when it is cancelled
+                if (!m_device->selection()) {
+                    Q_EMIT changed(QClipboard::Clipboard);
+                }
             });
             connect(m_device.get(), &DataControlDevice::selectionChanged, this, [this]() {
                 Q_EMIT changed(QClipboard::Clipboard);
             });
 
             connect(m_device.get(), &DataControlDevice::receivedPrimarySelectionChanged, this, [this]() {
-                Q_EMIT changed(QClipboard::Selection);
+                // When our source is still valid, so the offer is for setting it or we emit changed when it is cancelled
+                if (!m_device->primarySelection()) {
+                    Q_EMIT changed(QClipboard::Clipboard);
+                }
             });
             connect(m_device.get(), &DataControlDevice::primarySelectionChanged, this, [this]() {
                 Q_EMIT changed(QClipboard::Selection);
