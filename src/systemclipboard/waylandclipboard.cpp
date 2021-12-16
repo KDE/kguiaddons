@@ -491,7 +491,7 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
             connect(m_device.get(), &DataControlDevice::receivedPrimarySelectionChanged, this, [this]() {
                 // When our source is still valid, so the offer is for setting it or we emit changed when it is cancelled
                 if (!m_device->primarySelection()) {
-                    Q_EMIT changed(QClipboard::Clipboard);
+                    Q_EMIT changed(QClipboard::Selection);
                 }
             });
             connect(m_device.get(), &DataControlDevice::primarySelectionChanged, this, [this]() {
