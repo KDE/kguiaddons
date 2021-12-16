@@ -46,7 +46,10 @@ KSystemClipboard *KSystemClipboard::instance()
 QString KSystemClipboard::text(QClipboard::Mode mode)
 {
     const QMimeData *data = mimeData(mode);
-    return data->text();
+    if (data) {
+        return data->text();
+    }
+    return QString();
 }
 
 KSystemClipboard::KSystemClipboard(QObject *parent)
