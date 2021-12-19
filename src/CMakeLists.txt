@@ -36,19 +36,30 @@ ecm_qt_declare_logging_category(KF5GuiAddons
 )
 
 if(WITH_WAYLAND)
-    set(wayland_SRCS)
-    ecm_add_qtwayland_client_protocol(wayland_SRCS
-        PROTOCOL recorder/keyboard-shortcuts-inhibit-unstable-v1.xml
-        BASENAME keyboard-shortcuts-inhibit-unstable-v1
-    )
-    ecm_add_qtwayland_client_protocol(wayland_SRCS
-        PROTOCOL  systemclipboard/wlr-data-control-unstable-v1.xml
-        BASENAME wlr-data-control-unstable-v1
-    )
+    if (TARGET Qt6::WaylandClient)
+        qt_generate_wayland_protocol_client_sources(KF5GuiAddons
+            WAYLAND_INCLUDE_DIR ""
+            FILES
+                "${CMAKE_CURRENT_SOURCE_DIR}/recorder/keyboard-shortcuts-inhibit-unstable-v1.xml"
+                "${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard/wlr-data-control-unstable-v1.xml"
+        )
+    else()
+        set(wayland_SRCS)
+        ecm_add_qtwayland_client_protocol(wayland_SRCS
+            PROTOCOL recorder/keyboard-shortcuts-inhibit-unstable-v1.xml
+            BASENAME keyboard-shortcuts-inhibit-unstable-v1
+        )
+        ecm_add_qtwayland_client_protocol(wayland_SRCS
+            PROTOCOL  systemclipboard/wlr-data-control-unstable-v1.xml
+            BASENAME wlr-data-control-unstable-v1
+        )
+        target_sources(KF5GuiAddons PRIVATE
+            ${wayland_SRCS}
+        )
+    endif()
     target_sources(KF5GuiAddons PRIVATE
         recorder/waylandinhibition.cpp
         systemclipboard/waylandclipboard.cpp
-        ${wayland_SRCS}
     )
     target_compile_definitions(KF5GuiAddons PRIVATE WITH_WAYLAND)
     target_link_libraries(KF5GuiAddons PRIVATE Qt${QT_MAJOR_VERSION}::GuiPrivate Qt${QT_MAJOR_VERSION}::WaylandClient Wayland::Client)

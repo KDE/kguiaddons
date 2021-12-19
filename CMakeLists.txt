@@ -50,7 +50,9 @@ endif()
 
 if (WITH_WAYLAND)
     find_package(Qt${QT_MAJOR_VERSION}WaylandClient ${REQUIRED_QT_VERSION} CONFIG)
-    find_package(QtWaylandScanner REQUIRED)
+    if (NOT TARGET Qt6::WaylandClient)
+        find_package(QtWaylandScanner REQUIRED)
+    endif()
     find_package(Wayland 1.9 REQUIRED Client)
 endif()
 
