@@ -50,6 +50,8 @@ endif()
 
 if (WITH_WAYLAND)
     find_package(Qt${QT_MAJOR_VERSION}WaylandClient ${REQUIRED_QT_VERSION} CONFIG)
+    # With Qt6 use qt_generate_wayland_protocol_client_sources instead of
+    # ecm_add_qtwayland_client_protocol (in QtWaylandScanner from ECM)
     if (NOT TARGET Qt6::WaylandClient)
         find_package(QtWaylandScanner REQUIRED)
     endif()
