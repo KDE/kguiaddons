@@ -38,7 +38,6 @@ ecm_qt_declare_logging_category(KF5GuiAddons
 if(WITH_WAYLAND)
     if (TARGET Qt6::WaylandClient)
         qt_generate_wayland_protocol_client_sources(KF5GuiAddons
-            WAYLAND_INCLUDE_DIR ""
             FILES
                 "${CMAKE_CURRENT_SOURCE_DIR}/recorder/keyboard-shortcuts-inhibit-unstable-v1.xml"
                 "${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard/wlr-data-control-unstable-v1.xml"
