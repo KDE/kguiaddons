@@ -38,6 +38,24 @@ KGUIADDONS_EXPORT QIcon addOverlay(const QIcon &icon, const QIcon &overlay, Qt::
 KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays);
 
 /**
+ * Adds up to four overlays over the @p icon.
+ *
+ * The @p overlays is a QStringList of icon names (e.g. the emblems that are drawn on
+ * icons in Dolphin and KFileWidget, e.g. symlink, un-mounted device ...etc).
+ *
+ * Overlays are added in this order:
+ * - first icon is used to paint an overlay on the bottom-right corner
+ * - second icon on the bottom-left corner
+ * - third icon on the top-left corner
+ * - fourth icon on the top-right corner
+ *
+ * Each overlay icon is scaled down to 1/3 or 1/4 (depending on the icon size).
+ *
+ * @since 5.90
+ */
+KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QStringList &overlays);
+
+/**
  * Adds up to four overlays on the icon constructed from @p iconName.
  *
  * The @p overlays is a QStringList of icon names (e.g. the emblems that are drawn on

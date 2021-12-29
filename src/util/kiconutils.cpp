@@ -4,6 +4,8 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
+#include <array>
+
 #include "kiconutils.h"
 
 #include <QHash>
@@ -15,6 +17,7 @@ class KOverlayIconEngine : public QIconEngine
 public:
     KOverlayIconEngine(const QIcon &icon, const QIcon &overlay, Qt::Corner position);
     KOverlayIconEngine(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays);
+    KOverlayIconEngine(const QIcon &icon, const QStringList &overlays);
     void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
     QIconEngine *clone() const override;
 
@@ -41,6 +44,25 @@ KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QHash<Qt::Corner
 {
     m_base = icon;
     m_overlays = overlays;
+}
+
+KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QStringList &overlays)
+    : QIconEngine()
+    , m_base(icon)
+{
+    const std::array<Qt::Corner, 4> indexToCorner{
+        Qt::BottomRightCorner,
+        Qt::BottomLeftCorner,
+        Qt::TopLeftCorner,
+        Qt::TopRightCorner,
+    };
+    const int count = std::min(4, overlays.size());
+
+    m_overlays.reserve(count);
+
+    for (int i = 0; i < count; i++) {
+        m_overlays.insert(indexToCorner[i], QIcon::fromTheme(overlays.at(i)));
+    }
 }
 
 QIconEngine *KOverlayIconEngine::clone() const
@@ -148,33 +170,23 @@ QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays)
     return QIcon(new KOverlayIconEngine(icon, overlays));
 }
 
-QIcon addOverlays(const QString &iconName, const QStringList &overlays)
+QIcon addOverlays(const QIcon &icon, const QStringList &overlays)
 {
-    const int count = overlays.size();
-    const QIcon icon = QIcon::fromTheme(iconName);
-    if (count == 0) {
+    if (overlays.count() == 0) {
         return icon;
     }
 
-    QHash<Qt::Corner, QIcon> overlaysHash;
-    overlaysHash.reserve(count);
+    return QIcon(new KOverlayIconEngine(icon, overlays));
+}
 
-    if (count >= 1) {
-        overlaysHash.insert(Qt::BottomRightCorner, QIcon::fromTheme(overlays.at(0)));
+QIcon addOverlays(const QString &iconName, const QStringList &overlays)
+{
+    const QIcon icon = QIcon::fromTheme(iconName);
+
+    if (overlays.count() == 0) {
+        return icon;
     }
 
-    if (count >= 2) {
-        overlaysHash.insert(Qt::BottomLeftCorner, QIcon::fromTheme(overlays.at(1)));
-    }
-
-    if (count >= 3) {
-        overlaysHash.insert(Qt::TopLeftCorner, QIcon::fromTheme(overlays.at(2)));
-    }
-
-    if (count >= 4) {
-        overlaysHash.insert(Qt::TopRightCorner, QIcon::fromTheme(overlays.at(3)));
-    }
-
-    return QIcon(new KOverlayIconEngine(icon, overlaysHash));
+    return QIcon(new KOverlayIconEngine(icon, overlays));
 }
 }
