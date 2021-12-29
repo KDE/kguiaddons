@@ -56,7 +56,9 @@ KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QStringList &ove
         Qt::TopLeftCorner,
         Qt::TopRightCorner,
     };
-    const int count = std::min(4, overlays.size());
+
+    // static_cast becaue size() returns a qsizetype in Qt6
+    const int count = std::min(4, static_cast<int>(overlays.size()));
 
     m_overlays.reserve(count);
 
