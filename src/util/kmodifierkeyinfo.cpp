@@ -13,7 +13,8 @@
 
 KModifierKeyInfoProvider *createProvider()
 {
-    QPluginLoader loader(QStringLiteral("kf5/kguiaddons/kmodifierkey/kmodifierkey_") + qGuiApp->platformName());
+    QPluginLoader loader(QStringLiteral("kf" QT_STRINGIFY(QT_VERSION_MAJOR)) + QStringLiteral("/kguiaddons/kmodifierkey/kmodifierkey_")
+                         + qGuiApp->platformName());
     auto instance = dynamic_cast<KModifierKeyInfoProvider *>(loader.instance());
     if (instance) {
         return instance;
