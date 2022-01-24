@@ -13,3 +13,4 @@ ecm_add_tests(
   kurlhandlertest.cpp
   LINK_LIBRARIES KF5::GuiAddons Qt${QT_MAJOR_VERSION}::Test
 )
+ecm_add_tests(kgeourihandlertest.cpp LINK_LIBRARIES Qt${QT_MAJOR_VERSION}::Test)
