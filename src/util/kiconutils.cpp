@@ -27,6 +27,8 @@ public:
     void addPixmap(const QPixmap &pixmap, QIcon::Mode mode, QIcon::State state) override;
     void addFile(const QString &fileName, const QSize &size, QIcon::Mode mode, QIcon::State state) override;
 
+    void virtual_hook(int id, void *data) override;
+
 private:
     QIcon m_base;
     QHash<Qt::Corner, QIcon> m_overlays;
@@ -96,6 +98,28 @@ void KOverlayIconEngine::addPixmap(const QPixmap &pixmap, QIcon::Mode mode, QIco
 void KOverlayIconEngine::addFile(const QString &fileName, const QSize &size, QIcon::Mode mode, QIcon::State state)
 {
     m_base.addFile(fileName, size, mode, state);
+}
+
+void KOverlayIconEngine::virtual_hook(int id, void *data)
+{
+    if (id == QIconEngine::ScaledPixmapHook) {
+        auto *info = reinterpret_cast<ScaledPixmapArgument *>(data);
+
+        QPixmap pixmap(info->size);
+        pixmap.setDevicePixelRatio(info->scale);
+        pixmap.fill(Qt::transparent);
+
+        QRect rect = pixmap.rect();
+
+        const QRect logicalRect(rect.x() / info->scale, rect.y() / info->scale, rect.width() / info->scale, rect.height() / info->scale);
+        QPainter p(&pixmap);
+        paint(&p, logicalRect, info->mode, info->state);
+
+        info->pixmap = pixmap;
+
+        return;
+    }
+    QIconEngine::virtual_hook(id, data);
 }
 
 void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
