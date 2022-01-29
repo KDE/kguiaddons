@@ -12,6 +12,7 @@ install(TARGETS kde-geo-uri-handler ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(
     FILES
         openstreetmap-geo-handler.desktop
+        qwant-maps-geo-handler.desktop
         wheelmap-geo-handler.desktop
     DESTINATION
         ${KDE_INSTALL_APPDIR}
