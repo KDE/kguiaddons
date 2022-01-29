@@ -11,6 +11,7 @@ target_link_libraries(kde-geo-uri-handler PRIVATE Qt${QT_MAJOR_VERSION}::Gui)
 install(TARGETS kde-geo-uri-handler ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(
     FILES
+        google-maps-geo-handler.desktop
         openstreetmap-geo-handler.desktop
         qwant-maps-geo-handler.desktop
         wheelmap-geo-handler.desktop
