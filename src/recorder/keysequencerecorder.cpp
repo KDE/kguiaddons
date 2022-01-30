@@ -22,6 +22,30 @@
 
 #include <array>
 
+class KeySequenceRecorderPrivate : public QObject
+{
+    Q_OBJECT
+public:
+    KeySequenceRecorderPrivate(KeySequenceRecorder *qq);
+
+    void controlModifierlessTimeout();
+    bool eventFilter(QObject *watched, QEvent *event) override;
+    void handleKeyPress(QKeyEvent *event);
+    void handleKeyRelease(QKeyEvent *event);
+    void finishRecording();
+
+    KeySequenceRecorder *q;
+    QKeySequence m_currentKeySequence;
+    QPointer<QWindow> m_window;
+    bool m_isRecording;
+    bool m_multiKeyShortcutsAllowed;
+    bool m_modifierlessAllowed;
+
+    Qt::KeyboardModifiers m_currentModifiers;
+    QTimer m_modifierlessTimer;
+    std::unique_ptr<ShortcutInhibition> m_inhibition;
+};
+
 constexpr Qt::KeyboardModifiers modifierMask = Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier | Qt::KeypadModifier;
 
 // Copied here from KKeyServer
@@ -242,30 +266,6 @@ static QKeySequence appendToSequence(const QKeySequence &sequence, int key)
     keys[sequence.count()] = key;
     return QKeySequence(keys[0], keys[1], keys[2], keys[3]);
 }
-
-class KeySequenceRecorderPrivate : public QObject
-{
-    Q_OBJECT
-public:
-    KeySequenceRecorderPrivate(KeySequenceRecorder *qq);
-
-    void controlModifierlessTimeout();
-    bool eventFilter(QObject *watched, QEvent *event) override;
-    void handleKeyPress(QKeyEvent *event);
-    void handleKeyRelease(QKeyEvent *event);
-    void finishRecording();
-
-    KeySequenceRecorder *q;
-    QKeySequence m_currentKeySequence;
-    QPointer<QWindow> m_window;
-    bool m_isRecording;
-    bool m_multiKeyShortcutsAllowed;
-    bool m_modifierlessAllowed;
-
-    Qt::KeyboardModifiers m_currentModifiers;
-    QTimer m_modifierlessTimer;
-    std::unique_ptr<ShortcutInhibition> m_inhibition;
-};
 
 KeySequenceRecorderPrivate::KeySequenceRecorderPrivate(KeySequenceRecorder *qq)
     : QObject(qq)
