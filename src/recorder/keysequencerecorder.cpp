@@ -260,8 +260,8 @@ static bool isOkWhenModifierless(int key)
 
 static QKeySequence appendToSequence(const QKeySequence &sequence, int key)
 {
-        qCWarning(KGUIADDONS_LOG) << "Invalid sequence size: " << sequence.count();
     if (sequence.count() >= KeySequenceRecorderPrivate::MaxKeyCount) {
+        qCWarning(KGUIADDONS_LOG) << "Cannot append to a key to a sequence which is already of length" << sequence.count();
         return sequence;
     }
 
