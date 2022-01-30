@@ -354,7 +354,10 @@ void KeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
 
         m_currentKeySequence = appendToSequence(m_currentKeySequence, key);
         Q_EMIT q->currentKeySequenceChanged();
-
+        // Now we are in a critical region (race), where recording is still
+        // ongoing, but key sequence has already changed (potentially) to the
+        // longest. But we still want currentKeySequenceChanged to trigger
+        // before gotKeySequence, so there's only so much we can do about it.
         if ((!m_multiKeyShortcutsAllowed) || (m_currentKeySequence.count() == MaxKeyCount)) {
             finishRecording();
             break;
@@ -432,7 +435,13 @@ bool KeySequenceRecorder::isRecording() const
 
 QKeySequence KeySequenceRecorder::currentKeySequence() const
 {
-    return d->m_isRecording ? appendToSequence(d->m_currentKeySequence, d->m_currentModifiers) : d->m_currentKeySequence;
+    // We need a check for count() here because there's a race between the
+    // state of recording and a length of currentKeySequence.
+    if (d->m_isRecording && d->m_currentKeySequence.count() < KeySequenceRecorderPrivate::MaxKeyCount) {
+        return appendToSequence(d->m_currentKeySequence, d->m_currentModifiers);
+    } else {
+        return d->m_currentKeySequence;
+    }
 }
 
 QWindow *KeySequenceRecorder::window() const
