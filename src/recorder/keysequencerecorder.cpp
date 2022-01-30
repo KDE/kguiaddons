@@ -26,6 +26,9 @@ class KeySequenceRecorderPrivate : public QObject
 {
     Q_OBJECT
 public:
+    // Copy of QKeySequencePrivate::MaxKeyCount from private header
+    enum { MaxKeyCount = 4 };
+
     KeySequenceRecorderPrivate(KeySequenceRecorder *qq);
 
     void controlModifierlessTimeout();
@@ -257,12 +260,12 @@ static bool isOkWhenModifierless(int key)
 
 static QKeySequence appendToSequence(const QKeySequence &sequence, int key)
 {
-    if (sequence.count() >= 4) {
         qCWarning(KGUIADDONS_LOG) << "Invalid sequence size: " << sequence.count();
+    if (sequence.count() >= KeySequenceRecorderPrivate::MaxKeyCount) {
         return sequence;
     }
 
-    std::array<int, 4> keys{sequence[0], sequence[1], sequence[2], sequence[3]};
+    std::array<int, KeySequenceRecorderPrivate::MaxKeyCount> keys{sequence[0], sequence[1], sequence[2], sequence[3]};
     keys[sequence.count()] = key;
     return QKeySequence(keys[0], keys[1], keys[2], keys[3]);
 }
@@ -352,7 +355,7 @@ void KeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
         m_currentKeySequence = appendToSequence(m_currentKeySequence, key);
         Q_EMIT q->currentKeySequenceChanged();
 
-        if ((!m_multiKeyShortcutsAllowed) || (m_currentKeySequence.count() == 4)) {
+        if ((!m_multiKeyShortcutsAllowed) || (m_currentKeySequence.count() == MaxKeyCount)) {
             finishRecording();
             break;
         }
