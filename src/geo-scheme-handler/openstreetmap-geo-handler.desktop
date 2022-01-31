@@ -3,7 +3,13 @@ Type=Application
 Exec=kde-geo-uri-handler --coordinate-template "https://www.openstreetmap.org/#map=<Z>/<LAT>/<LON>" --query-template "https://www.openstreetmap.org/search?query=<Q>" --fallback "https://www.openstreetmap.org" %u
 Name=OpenStreetMap
 Name[ca]=OpenStreetMap
+Name[es]=OpenStreetMap
+Name[fr]=OpenStreetMap
 Name[nl]=OpenStreetMap
+Name[sk]=OpenStreetMap
+Name[sl]=OpenStreetMap
+Name[sv]=OpenStreetMap
+Name[uk]=OpenStreetMap
 Name[x-test]=xxOpenStreetMapxx
 Icon=map-globe
 MimeType=x-scheme-handler/geo;
