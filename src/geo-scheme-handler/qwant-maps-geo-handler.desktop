@@ -13,6 +13,7 @@ Name[sl]=Qwant Maps
 Name[sv]=Qwant kartor
 Name[uk]=Карти Qwant
 Name[x-test]=xxQwant Mapsxx
+Name[zh_CN]=Qwant Maps
 Icon=map-globe
 MimeType=x-scheme-handler/geo;
 Terminal=false

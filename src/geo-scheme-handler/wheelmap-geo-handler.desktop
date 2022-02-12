@@ -14,6 +14,7 @@ Name[sl]=wheelmap.org
 Name[sv]=wheelmap.org
 Name[uk]=wheelmap.org
 Name[x-test]=xxwheelmap.orgxx
+Name[zh_CN]=wheelmap.org
 Icon=map-globe
 MimeType=x-scheme-handler/geo;
 Terminal=false

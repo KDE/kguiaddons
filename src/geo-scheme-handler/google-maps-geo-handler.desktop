@@ -13,6 +13,7 @@ Name[sl]=Google Maps
 Name[sv]=Google kartor
 Name[uk]=Карти Google
 Name[x-test]=xxGoogle Mapsxx
+Name[zh_CN]=Google Maps
 Icon=map-globe
 MimeType=x-scheme-handler/geo;
 Terminal=false
