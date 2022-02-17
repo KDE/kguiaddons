@@ -145,10 +145,14 @@ QColor KColorUtils::mix(const QColor &c1, const QColor &c2, qreal bias)
         return c1;
     }
 
-    qreal r = mixQreal(c1.redF(), c2.redF(), bias);
-    qreal g = mixQreal(c1.greenF(), c2.greenF(), bias);
-    qreal b = mixQreal(c1.blueF(), c2.blueF(), bias);
     qreal a = mixQreal(c1.alphaF(), c2.alphaF(), bias);
+    if (a <= 0.0) {
+        return Qt::transparent;
+    }
+
+    qreal r = qBound(0.0, mixQreal(c1.redF() * c1.alphaF(), c2.redF() * c2.alphaF(), bias), 1.0) / a;
+    qreal g = qBound(0.0, mixQreal(c1.greenF() * c1.alphaF(), c2.greenF() * c2.alphaF(), bias), 1.0) / a;
+    qreal b = qBound(0.0, mixQreal(c1.blueF() * c1.alphaF(), c2.blueF() * c2.alphaF(), bias), 1.0) / a;
 
     return QColor::fromRgbF(r, g, b, a);
 }

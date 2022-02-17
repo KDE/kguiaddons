@@ -81,6 +81,14 @@ void tst_KColorUtils::testMix()
             }
         }
     }
+
+    const auto colorA = QColor::fromRgb(255, 255, 255, 1);
+    const auto colorB = QColor::fromRgb(0, 0, 0, 255);
+    const auto mixed = KColorUtils::mix(colorA, colorB, 0.5);
+
+    QVERIFY2(mixed.redF() <= 0.01, "colorA should have little influence on colorB due to low opacity");
+    QVERIFY2(mixed.greenF() <= 0.01, "colorA should have little influence on colorB due to low opacity");
+    QVERIFY2(mixed.blueF() <= 0.01, "colorA should have little influence on colorB due to low opacity");
 }
 
 void tst_KColorUtils::testHCY()
