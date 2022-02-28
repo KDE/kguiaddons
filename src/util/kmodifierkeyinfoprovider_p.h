@@ -23,14 +23,14 @@ class KGUIADDONS_EXPORT KModifierKeyInfoProvider : public QObject
     Q_OBJECT
 
 public:
-    enum ModifierState {
+    enum ModifierFlag {
         Nothing = 0x0,
         Pressed = 0x1,
         Latched = 0x2,
         Locked = 0x4,
     };
-    Q_ENUM(ModifierState);
-    Q_DECLARE_FLAGS(ModifierStates, ModifierState)
+    Q_ENUM(ModifierFlag);
+    Q_DECLARE_FLAGS(ModifierFlags, ModifierFlag)
 
     KModifierKeyInfoProvider();
     ~KModifierKeyInfoProvider() override;
@@ -101,16 +101,16 @@ Q_SIGNALS:
     void keyRemoved(Qt::Key key);
 
 protected:
-    void stateUpdated(Qt::Key key, KModifierKeyInfoProvider::ModifierStates state);
+    void stateUpdated(Qt::Key key, KModifierKeyInfoProvider::ModifierFlags state);
 
     // the state of each known modifier
-    QHash<Qt::Key, ModifierStates> m_modifierStates;
+    QHash<Qt::Key, ModifierFlags> m_modifierStates;
 
     // the state of each known mouse button
     QHash<Qt::MouseButton, bool> m_buttonStates;
 };
 
 Q_DECLARE_INTERFACE(KModifierKeyInfoProvider, "org.kde.kguiaddons.KModifierKeyInfoProvider")
-Q_DECLARE_OPERATORS_FOR_FLAGS(KModifierKeyInfoProvider::ModifierStates)
+Q_DECLARE_OPERATORS_FOR_FLAGS(KModifierKeyInfoProvider::ModifierFlags)
 
 #endif

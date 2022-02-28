@@ -233,7 +233,7 @@ bool KModifierKeyInfoProviderXcb::nativeEventFilter(const QByteArray &eventType,
 void KModifierKeyInfoProviderXcb::xkbModifierStateChanged(unsigned char mods, unsigned char latched_mods, unsigned char locked_mods)
 {
     // detect keyboard modifiers
-    ModifierStates newState;
+    ModifierFlags newState;
 
     QHash<Qt::Key, unsigned int>::const_iterator it;
     QHash<Qt::Key, unsigned int>::const_iterator end = m_xkbModifiers.constEnd();
@@ -331,7 +331,7 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
     }
 
     // remove modifiers which are no longer available
-    QMutableHashIterator<Qt::Key, ModifierStates> i(m_modifierStates);
+    QMutableHashIterator<Qt::Key, ModifierFlags> i(m_modifierStates);
     while (i.hasNext()) {
         i.next();
         if (!m_xkbModifiers.contains(i.key())) {
