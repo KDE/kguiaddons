@@ -18,7 +18,7 @@
  * the different supported platforms.
  * @internal
  */
-class KGUIADDONS_EXPORT KModifierKeyInfoProvider : public QObject, public QSharedData
+class KGUIADDONS_EXPORT KModifierKeyInfoProvider : public QObject
 {
     Q_OBJECT
 

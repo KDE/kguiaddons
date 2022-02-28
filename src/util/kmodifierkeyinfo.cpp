@@ -25,14 +25,15 @@ KModifierKeyInfoProvider *createProvider()
 
 KModifierKeyInfo::KModifierKeyInfo(QObject *parent)
     : QObject(parent)
-    , p(createProvider())
+    , m_provider(createProvider())
 {
-    connect(p.data(), &KModifierKeyInfoProvider::keyPressed, this, &KModifierKeyInfo::keyPressed);
-    connect(p.data(), &KModifierKeyInfoProvider::keyLatched, this, &KModifierKeyInfo::keyLatched);
-    connect(p.data(), &KModifierKeyInfoProvider::keyLocked, this, &KModifierKeyInfo::keyLocked);
-    connect(p.data(), &KModifierKeyInfoProvider::buttonPressed, this, &KModifierKeyInfo::buttonPressed);
-    connect(p.data(), &KModifierKeyInfoProvider::keyAdded, this, &KModifierKeyInfo::keyAdded);
-    connect(p.data(), &KModifierKeyInfoProvider::keyRemoved, this, &KModifierKeyInfo::keyRemoved);
+    auto *provider = m_provider.get();
+    connect(provider, &KModifierKeyInfoProvider::keyPressed, this, &KModifierKeyInfo::keyPressed);
+    connect(provider, &KModifierKeyInfoProvider::keyLatched, this, &KModifierKeyInfo::keyLatched);
+    connect(provider, &KModifierKeyInfoProvider::keyLocked, this, &KModifierKeyInfo::keyLocked);
+    connect(provider, &KModifierKeyInfoProvider::buttonPressed, this, &KModifierKeyInfo::buttonPressed);
+    connect(provider, &KModifierKeyInfoProvider::keyAdded, this, &KModifierKeyInfo::keyAdded);
+    connect(provider, &KModifierKeyInfoProvider::keyRemoved, this, &KModifierKeyInfo::keyRemoved);
 }
 
 KModifierKeyInfo::~KModifierKeyInfo()
@@ -41,40 +42,40 @@ KModifierKeyInfo::~KModifierKeyInfo()
 
 bool KModifierKeyInfo::knowsKey(Qt::Key key) const
 {
-    return p->knowsKey(key);
+    return m_provider->knowsKey(key);
 }
 
 const QList<Qt::Key> KModifierKeyInfo::knownKeys() const
 {
-    return p->knownKeys();
+    return m_provider->knownKeys();
 }
 
 bool KModifierKeyInfo::isKeyPressed(Qt::Key key) const
 {
-    return p->isKeyPressed(key);
+    return m_provider->isKeyPressed(key);
 }
 
 bool KModifierKeyInfo::isKeyLatched(Qt::Key key) const
 {
-    return p->isKeyLatched(key);
+    return m_provider->isKeyLatched(key);
 }
 
 bool KModifierKeyInfo::setKeyLatched(Qt::Key key, bool latched)
 {
-    return p->setKeyLatched(key, latched);
+    return m_provider->setKeyLatched(key, latched);
 }
 
 bool KModifierKeyInfo::isKeyLocked(Qt::Key key) const
 {
-    return p->isKeyLocked(key);
+    return m_provider->isKeyLocked(key);
 }
 
 bool KModifierKeyInfo::setKeyLocked(Qt::Key key, bool locked)
 {
-    return p->setKeyLocked(key, locked);
+    return m_provider->setKeyLocked(key, locked);
 }
 
 bool KModifierKeyInfo::isButtonPressed(Qt::MouseButton button) const
 {
-    return p->isButtonPressed(button);
+    return m_provider->isButtonPressed(button);
 }

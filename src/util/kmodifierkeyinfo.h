@@ -9,8 +9,9 @@
 
 #include <kguiaddons_export.h>
 
-#include <QExplicitlySharedDataPointer>
 #include <QObject>
+
+#include <memory>
 
 class KModifierKeyInfoProvider;
 
@@ -172,7 +173,8 @@ Q_SIGNALS:
 
 private:
     Q_DISABLE_COPY(KModifierKeyInfo)
-    QExplicitlySharedDataPointer<KModifierKeyInfoProvider> const p; // krazy:exclude=dpointer
+
+    std::unique_ptr<KModifierKeyInfoProvider> const m_provider;
 };
 
 #endif
