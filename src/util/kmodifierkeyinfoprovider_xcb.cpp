@@ -9,9 +9,7 @@
 #include "kmodifierkeyinfo.h"
 
 #include <QGuiApplication>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <private/qtx11extras_p.h>
-#else
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QX11Info>
 #endif
 
@@ -58,6 +56,15 @@ unsigned int xkbVirtualModifier(XkbDescPtr xkb, const char *name)
     return mask;
 }
 
+static Display *display()
+{
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    return QX11Info::display();
+#else
+    return qGuiApp->nativeInterface<QNativeInterface::QX11Application>()->display();
+#endif
+}
+
 KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
     : KModifierKeyInfoProvider()
     , m_xkbEv(0)
@@ -69,12 +76,12 @@ KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
             int xkberr;
             int maj;
             int min;
-            m_xkbAvailable = XkbQueryExtension(QX11Info::display(), &code, &m_xkbEv, &xkberr, &maj, &min);
+            m_xkbAvailable = XkbQueryExtension(display(), &code, &m_xkbEv, &xkberr, &maj, &min);
         }
     }
     if (m_xkbAvailable) {
         /* clang-format off */
-        XkbSelectEvents(QX11Info::display(),
+        XkbSelectEvents(display(),
                         XkbUseCoreKbd,
                         XkbStateNotifyMask | XkbMapNotifyMask,
                         XkbStateNotifyMask | XkbMapNotifyMask);
@@ -86,7 +93,7 @@ KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
                                       | XkbPointerButtonMask;
         /* clang-format on */
 
-        XkbSelectEventDetails(QX11Info::display(), XkbUseCoreKbd, XkbStateNotifyMask, stateMask, stateMask);
+        XkbSelectEventDetails(display(), XkbUseCoreKbd, XkbStateNotifyMask, stateMask, stateMask);
     }
 
     xkbUpdateModifierMapping();
@@ -101,7 +108,7 @@ KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
     // get the initial state
     if (m_xkbAvailable) {
         XkbStateRec state;
-        XkbGetState(QX11Info::display(), XkbUseCoreKbd, &state);
+        XkbGetState(display(), XkbUseCoreKbd, &state);
         xkbModifierStateChanged(state.mods, state.latched_mods, state.locked_mods);
         xkbButtonStateChanged(state.ptr_buttons);
 
@@ -122,7 +129,7 @@ bool KModifierKeyInfoProviderXcb::setKeyLatched(Qt::Key key, bool latched)
         return false;
     }
 
-    return XkbLatchModifiers(QX11Info::display(), XkbUseCoreKbd, m_xkbModifiers[key], latched ? m_xkbModifiers[key] : 0);
+    return XkbLatchModifiers(display(), XkbUseCoreKbd, m_xkbModifiers[key], latched ? m_xkbModifiers[key] : 0);
 }
 
 bool KModifierKeyInfoProviderXcb::setKeyLocked(Qt::Key key, bool locked)
@@ -131,7 +138,7 @@ bool KModifierKeyInfoProviderXcb::setKeyLocked(Qt::Key key, bool locked)
         return false;
     }
 
-    return XkbLockModifiers(QX11Info::display(), XkbUseCoreKbd, m_xkbModifiers[key], locked ? m_xkbModifiers[key] : 0);
+    return XkbLockModifiers(display(), XkbUseCoreKbd, m_xkbModifiers[key], locked ? m_xkbModifiers[key] : 0);
 }
 
 // HACK: xcb-xkb is not yet a public part of xcb. Because of that we have to include the event structure.
@@ -296,7 +303,7 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
                  << ModifierDefinition(Qt::Key_ScrollLock, 0, "ScrollLock", XK_Scroll_Lock);
     /* clang-format on */
 
-    XkbDescPtr xkb = XkbGetKeyboard(QX11Info::display(), XkbAllComponentsMask, XkbUseCoreKbd);
+    XkbDescPtr xkb = XkbGetKeyboard(display(), XkbAllComponentsMask, XkbUseCoreKbd);
 
     QList<ModifierDefinition>::const_iterator it;
     QList<ModifierDefinition>::const_iterator end = srcModifiers.constEnd();
@@ -308,14 +315,14 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
                 mask = xkbVirtualModifier(xkb, it->name);
             }
             if (mask == 0 && it->keysym != 0) {
-                mask = XkbKeysymToModifiers(QX11Info::display(), it->keysym);
+                mask = XkbKeysymToModifiers(display(), it->keysym);
             } else if (mask == 0) {
                 // special case for AltGr
                 /* clang-format off */
-                mask = XkbKeysymToModifiers(QX11Info::display(), XK_Mode_switch)
-                       | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Shift)
-                       | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Latch)
-                       | XkbKeysymToModifiers(QX11Info::display(), XK_ISO_Level3_Lock);
+                mask = XkbKeysymToModifiers(display(), XK_Mode_switch)
+                       | XkbKeysymToModifiers(display(), XK_ISO_Level3_Shift)
+                       | XkbKeysymToModifiers(display(), XK_ISO_Level3_Latch)
+                       | XkbKeysymToModifiers(display(), XK_ISO_Level3_Lock);
                 /* clang-format on */
             }
         }
