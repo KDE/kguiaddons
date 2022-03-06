@@ -3,6 +3,7 @@ Type=Application
 Exec=kde-geo-uri-handler --coordinate-template "https://www.openstreetmap.org/#map=<Z>/<LAT>/<LON>" --query-template "https://www.openstreetmap.org/search?query=<Q>" --fallback "https://www.openstreetmap.org" %u
 Name=OpenStreetMap
 Name[ca]=OpenStreetMap
+Name[ca@valencia]=OpenStreetMap
 Name[cs]=OpenStreetMap
 Name[en_GB]=OpenStreetMap
 Name[es]=OpenStreetMap
