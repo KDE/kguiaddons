@@ -20,6 +20,7 @@
 
 #include <errno.h>
 #include <poll.h>
+#include <signal.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -324,7 +325,6 @@ DataControlSource::DataControlSource(struct ::zwlr_data_control_source_v1 *id, Q
 
 void DataControlSource::zwlr_data_control_source_v1_send(const QString &mime_type, int32_t fd)
 {
-    QFile c;
     QString send_mime_type = mime_type;
     if (send_mime_type == QStringLiteral("text/plain;charset=utf-8")) {
         // if we get a request on the fallback mime, send the data from the original mime type
@@ -352,10 +352,16 @@ void DataControlSource::zwlr_data_control_source_v1_send(const QString &mime_typ
         ba = m_mimeData->data(send_mime_type);
     }
 
-    if (c.open(fd, QFile::WriteOnly, QFile::AutoCloseHandle)) {
-        c.write(ba);
-        c.close();
-    }
+    // Create a sigpipe handler that does nothing, or clients may be forced to terminate
+    // if the pipe is closed in the other end.
+    struct sigaction action, oldAction;
+    action.sa_handler = SIG_IGN;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    sigaction(SIGPIPE, &action, &oldAction);
+    write(fd, ba.constData(), ba.size());
+    sigaction(SIGPIPE, &oldAction, nullptr);
+    close(fd);
 }
 
 void DataControlSource::zwlr_data_control_source_v1_cancelled()
