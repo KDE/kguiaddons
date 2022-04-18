@@ -9,17 +9,32 @@
 #include <kguiaddons_debug.h>
 
 #include <QGuiApplication>
-#include <QPluginLoader>
+
+#include "config.h"
+
+#if WITH_WAYLAND
+#include "kmodifierkeyinfoprovider_wayland.h"
+#endif
+
+#if WITH_X11
+#include "kmodifierkeyinfoprovider_xcb.h"
+#endif
 
 KModifierKeyInfoProvider *createProvider()
 {
-    QPluginLoader loader(QStringLiteral("kf" QT_STRINGIFY(QT_VERSION_MAJOR)) + QStringLiteral("/kguiaddons/kmodifierkey/kmodifierkey_")
-                         + qGuiApp->platformName());
-    auto instance = dynamic_cast<KModifierKeyInfoProvider *>(loader.instance());
-    if (instance) {
-        return instance;
+#if WITH_WAYLAND
+    if (qGuiApp->platformName() == QLatin1String("wayland")) {
+        return new KModifierKeyInfoProviderWayland;
     }
-    qCWarning(KGUIADDONS_LOG) << "Error: could not load plugin for platform" << loader.fileName() << "error:" << loader.errorString() << loader.instance();
+#endif
+
+#if WITH_X11
+    if (qGuiApp->platformName() == QLatin1String("xcb")) {
+        return new KModifierKeyInfoProviderXcb;
+    }
+#endif
+
+    qCWarning(KGUIADDONS_LOG) << "No modifierkeyinfo backend for platform" << qGuiApp->platformName();
     return new KModifierKeyInfoProvider;
 }
 

@@ -15,7 +15,6 @@ class KeyState;
 class KModifierKeyInfoProviderWayland : public KModifierKeyInfoProvider
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.kguiaddons.KModifierKeyInfoProvider.Wayland")
 public:
     KModifierKeyInfoProviderWayland();
     ~KModifierKeyInfoProviderWayland();

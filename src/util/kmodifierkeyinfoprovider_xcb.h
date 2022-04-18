@@ -13,7 +13,6 @@
 class KModifierKeyInfoProviderXcb : public KModifierKeyInfoProvider, public QAbstractNativeEventFilter
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.kde.kguiaddons.KModifierKeyInfoProvider.XCB")
 public:
     KModifierKeyInfoProviderXcb();
     ~KModifierKeyInfoProviderXcb() override;

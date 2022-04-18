@@ -1,3 +1,5 @@
+configure_file(config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+
 add_library(KF5GuiAddons)
 add_library(KF5::GuiAddons ALIAS KF5GuiAddons)
 
@@ -41,6 +43,7 @@ if(WITH_WAYLAND)
             FILES
                 "${CMAKE_CURRENT_SOURCE_DIR}/recorder/keyboard-shortcuts-inhibit-unstable-v1.xml"
                 "${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard/wlr-data-control-unstable-v1.xml"
+                "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
         )
     else()
         set(wayland_SRCS)
@@ -52,6 +55,10 @@ if(WITH_WAYLAND)
             PROTOCOL  systemclipboard/wlr-data-control-unstable-v1.xml
             BASENAME wlr-data-control-unstable-v1
         )
+        ecm_add_qtwayland_client_protocol(wayland_SRCS
+            PROTOCOL ${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml
+            BASENAME keystate
+        )
         target_sources(KF5GuiAddons PRIVATE
             ${wayland_SRCS}
         )
@@ -59,9 +66,18 @@ if(WITH_WAYLAND)
     target_sources(KF5GuiAddons PRIVATE
         recorder/waylandinhibition.cpp
         systemclipboard/waylandclipboard.cpp
+        util/kmodifierkeyinfoprovider_wayland.cpp
     )
     target_compile_definitions(KF5GuiAddons PRIVATE WITH_WAYLAND)
     target_link_libraries(KF5GuiAddons PRIVATE Qt${QT_MAJOR_VERSION}::GuiPrivate Qt${QT_MAJOR_VERSION}::WaylandClient Wayland::Client)
+endif()
+
+if(WITH_X11)
+    target_sources(KF5GuiAddons PRIVATE util/kmodifierkeyinfoprovider_xcb.cpp)
+    if (TARGET Qt5::X11Extras)
+        target_link_libraries(KF5GuiAddons PRIVATE Qt5::X11Extras)
+    endif()
+    target_link_libraries(KF5GuiAddons PRIVATE X11::Xkb XCB::XCB)
 endif()
 
 generate_export_header(KF5GuiAddons BASE_NAME KGuiAddons)
@@ -78,34 +94,6 @@ target_include_directories(KF5GuiAddons PUBLIC "$<BUILD_INTERFACE:${kguiaddons_I
 target_include_directories(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons>" )
 target_compile_definitions(KF5GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
 target_link_libraries(KF5GuiAddons PUBLIC Qt${QT_MAJOR_VERSION}::Gui)
-
-if (WITH_X11 AND (TARGET Qt5::X11Extras OR TARGET Qt6::Gui))
-    add_library(kmodifierkey_xcb MODULE util/kmodifierkeyinfoprovider_xcb.cpp)
-    install(TARGETS kmodifierkey_xcb DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf${QT_MAJOR_VERSION}/kguiaddons/kmodifierkey/)
-    if (TARGET Qt5::X11Extras)
-        target_link_libraries(kmodifierkey_xcb PRIVATE Qt5::X11Extras)
-    endif()
-    target_link_libraries(kmodifierkey_xcb PRIVATE X11::Xkb XCB::XCB KF5::GuiAddons)
-endif()
-
-if(WITH_WAYLAND)
-
-    if (TARGET Qt6::WaylandClient)
-        qt_generate_wayland_protocol_client_sources(KF5GuiAddons
-            FILES
-                "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
-        )
-    else()
-        ecm_add_qtwayland_client_protocol(wayland_keystate_SRCS
-            PROTOCOL ${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml
-            BASENAME keystate
-        )
-    endif()
-
-    add_library(kmodifierkey_wayland MODULE util/kmodifierkeyinfoprovider_wayland.cpp ${wayland_keystate_SRCS})
-    target_link_libraries(kmodifierkey_wayland PRIVATE Qt${QT_MAJOR_VERSION}::Core Qt${QT_MAJOR_VERSION}::WaylandClient Wayland::Client KF5::GuiAddons)
-    install(TARGETS kmodifierkey_wayland DESTINATION ${KDE_INSTALL_PLUGINDIR}/kf${QT_MAJOR_VERSION}/kguiaddons/kmodifierkey/)
-endif()
 
 ecm_generate_headers(KGuiAddons_HEADERS
   HEADER_NAMES
