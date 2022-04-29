@@ -43,8 +43,6 @@ if (WITH_X11)
     find_package(XCB REQUIRED MODULE COMPONENTS XCB)
 if (QT_MAJOR_VERSION STREQUAL "5")
     find_package(Qt5X11Extras ${REQUIRED_QT_VERSION} CONFIG)
-else()
-    # qtx11extras_p.h is in Qt6Gui, which is already found a couple of lines above
 endif()
 endif()
 
