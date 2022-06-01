@@ -281,6 +281,7 @@ public:
     DataControlSource() = default;
     ~DataControlSource()
     {
+        delete m_mimeData;
         destroy();
     }
 
