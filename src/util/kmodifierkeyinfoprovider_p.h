@@ -29,7 +29,7 @@ public:
         Latched = 0x2,
         Locked = 0x4,
     };
-    Q_ENUM(ModifierState);
+    Q_ENUM(ModifierState)
     Q_DECLARE_FLAGS(ModifierStates, ModifierState)
 
     KModifierKeyInfoProvider();
