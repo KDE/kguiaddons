@@ -53,7 +53,7 @@ endif()
 
 if (WITH_WAYLAND)
     find_package(PlasmaWaylandProtocols 1.7.0 REQUIRED)
-    find_package(Qt${QT_MAJOR_VERSION}WaylandClient ${REQUIRED_QT_VERSION} CONFIG)
+    find_package(Qt${QT_MAJOR_VERSION}WaylandClient ${REQUIRED_QT_VERSION} REQUIRED CONFIG)
     # With Qt6 use qt_generate_wayland_protocol_client_sources instead of
     # ecm_add_qtwayland_client_protocol (in QtWaylandScanner from ECM)
     if (NOT TARGET Qt6::WaylandClient)
