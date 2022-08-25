@@ -46,9 +46,9 @@ find_package(Qt${QT_MAJOR_VERSION}Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE 
 if (WITH_X11)
     find_package(X11 REQUIRED MODULE)
     find_package(XCB REQUIRED MODULE COMPONENTS XCB)
-if (QT_MAJOR_VERSION STREQUAL "5")
-    find_package(Qt5X11Extras ${REQUIRED_QT_VERSION} CONFIG)
-endif()
+    if (QT_MAJOR_VERSION STREQUAL "5")
+        find_package(Qt5X11Extras ${REQUIRED_QT_VERSION} REQUIRED CONFIG)
+    endif()
 endif()
 
 if (WITH_WAYLAND)
