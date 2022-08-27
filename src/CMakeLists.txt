@@ -62,6 +62,12 @@ if(WIN32)
     target_link_libraries(KF5GuiAddons PRIVATE advapi32)
 endif()
 
+if(APPLE)
+    find_library(APPKIT_LIBRARY AppKit)
+    target_sources(KF5GuiAddons PRIVATE colors/kcolorschemewatcher_mac.mm)
+    target_link_libraries(KF5GuiAddons PRIVATE ${APPKIT_LIBRARY})
+endif()
+
 if(WITH_DBUS)
     target_sources(KF5GuiAddons PRIVATE colors/kcolorschemewatcher_xdg.cpp)
     target_link_libraries(KF5GuiAddons PRIVATE Qt${QT_MAJOR_VERSION}::DBus)

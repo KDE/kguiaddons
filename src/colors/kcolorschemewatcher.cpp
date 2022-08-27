@@ -12,6 +12,10 @@
 #include "kcolorschemewatcher_win.h"
 #endif
 
+#ifdef Q_OS_MACOS
+#include "kcolorschemewatcher_mac.h"
+#endif
+
 #ifdef QT_DBUS_LIB
 #include "kcolorschemewatcher_xdg.h"
 #endif
@@ -25,6 +29,8 @@ public:
     {
 #ifdef Q_OS_WINDOWS
         backend = std::make_unique<KColorSchemeWatcherWin>();
+#elif defined(Q_OS_MACOS)
+        backend = std::make_unique<KColorSchemeWatcherMac>();
 #elif defined(QT_DBUS_LIB)
         backend = std::make_unique<KColorSchemeWatcherXDG>();
 #endif
