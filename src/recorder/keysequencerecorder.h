@@ -93,7 +93,7 @@ public:
      * Start recording.
      * Calling startRecording when window() is `nullptr` has no effect.
      */
-    void Q_INVOKABLE startRecording();
+    Q_INVOKABLE void startRecording();
 
     bool isRecording() const;
 
