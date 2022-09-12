@@ -478,6 +478,15 @@ QKeySequence KeySequenceRecorder::currentKeySequence() const
     }
 }
 
+void KeySequenceRecorder::setCurrentKeySequence(const QKeySequence &sequence)
+{
+    if (d->m_currentKeySequence == sequence) {
+        return;
+    }
+    d->m_currentKeySequence = sequence;
+    Q_EMIT currentKeySequenceChanged();
+}
+
 QWindow *KeySequenceRecorder::window() const
 {
     return d->m_window;
