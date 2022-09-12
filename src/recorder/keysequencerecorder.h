@@ -108,6 +108,12 @@ public:
     void setModifierlessAllowed(bool allowed);
     bool modifierlessAllowed() const;
 
+public Q_SLOTS:
+    /**
+     * Stops the recording session
+     */
+    void cancelRecording();
+
 Q_SIGNALS:
     /**
      * This signal is emitted when a key sequence has been recorded.
