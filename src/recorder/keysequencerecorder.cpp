@@ -411,6 +411,9 @@ KeySequenceRecorder::KeySequenceRecorder(QWindow *window, QObject *parent)
 
 KeySequenceRecorder::~KeySequenceRecorder() noexcept
 {
+    if (d->m_inhibition && d->m_inhibition->shortcutsAreInhibited()) {
+        d->m_inhibition->disableInhibition();
+    }
 }
 
 void KeySequenceRecorder::startRecording()

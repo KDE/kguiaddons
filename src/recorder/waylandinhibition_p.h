@@ -23,9 +23,8 @@ public:
     void disableInhibition() override;
 
 private:
-    std::unique_ptr<ShortcutsInhibitManager> m_manager;
-    std::unique_ptr<ShortcutsInhibitor> m_inhibitor;
-    QWindow *m_window;
+    QWindow *const m_window;
+    std::shared_ptr<ShortcutsInhibitManager> m_manager;
 };
 
 #endif

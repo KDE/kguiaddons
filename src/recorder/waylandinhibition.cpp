@@ -5,34 +5,14 @@
 
 #include "waylandinhibition_p.h"
 
+#include <QDebug>
 #include <QGuiApplication>
+#include <QSharedPointer>
 #include <QtWaylandClient/QWaylandClientExtensionTemplate>
 #include <QtWaylandClient/QtWaylandClientVersion>
 #include <qpa/qplatformnativeinterface.h>
 
 #include "qwayland-keyboard-shortcuts-inhibit-unstable-v1.h"
-
-class ShortcutsInhibitManager : public QWaylandClientExtensionTemplate<ShortcutsInhibitManager>, public QtWayland::zwp_keyboard_shortcuts_inhibit_manager_v1
-{
-public:
-    ShortcutsInhibitManager()
-        : QWaylandClientExtensionTemplate<ShortcutsInhibitManager>(1)
-    {
-#if QTWAYLANDCLIENT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
-        initialize();
-#else
-        // QWaylandClientExtensionTemplate invokes this with a QueuedConnection but we want shortcuts
-        // to be inhibited immediately.
-        QMetaObject::invokeMethod(this, "addRegistryListener");
-#endif
-    }
-    ~ShortcutsInhibitManager() override
-    {
-        if (isInitialized()) {
-            destroy();
-        }
-    }
-};
 
 class ShortcutsInhibitor : public QtWayland::zwp_keyboard_shortcuts_inhibitor_v1
 {
@@ -66,10 +46,72 @@ private:
     bool m_active = false;
 };
 
+class ShortcutsInhibitManager : public QWaylandClientExtensionTemplate<ShortcutsInhibitManager>, public QtWayland::zwp_keyboard_shortcuts_inhibit_manager_v1
+{
+public:
+    ShortcutsInhibitManager()
+        : QWaylandClientExtensionTemplate<ShortcutsInhibitManager>(1)
+    {
+#if QTWAYLANDCLIENT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
+        initialize();
+#else
+        // QWaylandClientExtensionTemplate invokes this with a QueuedConnection but we want shortcuts
+        // to be inhibited immediately.
+        QMetaObject::invokeMethod(this, "addRegistryListener");
+#endif
+    }
+    ~ShortcutsInhibitManager() override
+    {
+        if (isInitialized()) {
+            destroy();
+        }
+    }
+
+    void startInhibition(QWindow *window)
+    {
+        if (m_inhibitions.contains(window)) {
+            return;
+        }
+        QPlatformNativeInterface *nativeInterface = qGuiApp->platformNativeInterface();
+        if (!nativeInterface) {
+            return;
+        }
+        auto seat = static_cast<wl_seat *>(nativeInterface->nativeResourceForIntegration("wl_seat"));
+        auto surface = static_cast<wl_surface *>(nativeInterface->nativeResourceForWindow("surface", window));
+        if (!seat || !surface) {
+            return;
+        }
+        m_inhibitions[window].reset(new ShortcutsInhibitor(inhibit_shortcuts(surface, seat)));
+    }
+
+    bool isInhibited(QWindow *window) const
+    {
+        return m_inhibitions.contains(window);
+    }
+
+    void stopInhibition(QWindow *window)
+    {
+        m_inhibitions.remove(window);
+    }
+
+    QHash<QWindow *, QSharedPointer<ShortcutsInhibitor>> m_inhibitions;
+};
+
+static std::shared_ptr<ShortcutsInhibitManager> theManager()
+{
+    static std::weak_ptr<ShortcutsInhibitManager> manager;
+    std::shared_ptr<ShortcutsInhibitManager> ret;
+    if (!ret) {
+        ret = std::make_shared<ShortcutsInhibitManager>();
+        manager = ret;
+    }
+    return ret;
+}
+
 WaylandInhibition::WaylandInhibition(QWindow *window)
     : ShortcutInhibition()
-    , m_manager(new ShortcutsInhibitManager)
     , m_window(window)
+    , m_manager(theManager())
 {
 }
 
@@ -77,30 +119,15 @@ WaylandInhibition::~WaylandInhibition() = default;
 
 bool WaylandInhibition::shortcutsAreInhibited() const
 {
-    return m_inhibitor && m_inhibitor->isActive();
+    return m_manager->isInhibited(m_window);
 }
 
 void WaylandInhibition::enableInhibition()
 {
-    if (m_inhibitor || !m_manager->isActive()) {
-        return;
-    }
-    QPlatformNativeInterface *nativeInterface = qGuiApp->platformNativeInterface();
-    if (!nativeInterface) {
-        return;
-    }
-    auto seat = static_cast<wl_seat *>(nativeInterface->nativeResourceForIntegration("wl_seat"));
-    auto surface = static_cast<wl_surface *>(nativeInterface->nativeResourceForWindow("surface", m_window));
-    if (!seat || !surface) {
-        return;
-    }
-    m_inhibitor.reset(new ShortcutsInhibitor(m_manager->inhibit_shortcuts(surface, seat)));
+    m_manager->startInhibition(m_window);
 }
 
 void WaylandInhibition::disableInhibition()
 {
-    if (!m_inhibitor) {
-        return;
-    }
-    m_inhibitor.reset();
+    m_manager->stopInhibition(m_window);
 }
