@@ -148,7 +148,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
     REQUIRED_HEADERS KGuiAddons_HEADERS
 )
 
-install(TARGETS KF5GuiAddons EXPORT KF5GuiAddonsTargets ${KF5_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS KF5GuiAddons EXPORT KF5GuiAddonsTargets ${KF_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_export.h
   util/kmodifierkeyinfoprovider_p.h
