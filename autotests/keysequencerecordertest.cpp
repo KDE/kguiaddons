@@ -164,6 +164,6 @@ void KeySequenceRecorderTest::testMultiKeyAllowed()
     QCOMPARE(recorder.currentKeySequence(), QKeySequence(Qt::Key_A | Qt::ControlModifier));
     QVERIFY(!recorder.isRecording());
     QCOMPARE(recordingSpy.count(), 5);
-    QCOMPARE(resultSpy.count(), 2);
-    QCOMPARE(resultSpy.takeAt(1).at(0).value<QKeySequence>(), QKeySequence(Qt::Key_A | Qt::ControlModifier));
+    QCOMPARE(resultSpy.count(), 1);
+    QCOMPARE(resultSpy.takeAt(0).at(0).value<QKeySequence>(), QKeySequence(Qt::Key_A | Qt::ControlModifier));
 }

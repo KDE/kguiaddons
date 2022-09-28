@@ -51,6 +51,7 @@ public:
     void handleKeyPress(QKeyEvent *event);
     void handleKeyRelease(QKeyEvent *event);
     void finishRecording();
+    void receivedRecording();
 
     KeySequenceRecorder *q;
     QKeySequence m_currentKeySequence;
@@ -401,7 +402,7 @@ void KeySequenceRecorderPrivate::handleKeyRelease(QKeyEvent *event)
     }
 }
 
-void KeySequenceRecorderPrivate::finishRecording()
+void KeySequenceRecorderPrivate::receivedRecording()
 {
     m_modifierlessTimer.stop();
     m_isRecording = false;
@@ -410,6 +411,11 @@ void KeySequenceRecorderPrivate::finishRecording()
         m_inhibition->disableInhibition();
     }
     Q_EMIT q->recordingChanged();
+}
+
+void KeySequenceRecorderPrivate::finishRecording()
+{
+    receivedRecording();
     Q_EMIT q->gotKeySequence(m_currentKeySequence);
 }
 
@@ -458,8 +464,9 @@ void KeySequenceRecorder::startRecording()
 
 void KeySequenceRecorder::cancelRecording()
 {
-    d->m_currentKeySequence = d->m_previousKeySequence;
-    d->finishRecording();
+    setCurrentKeySequence(d->m_previousKeySequence);
+    d->receivedRecording();
+    Q_ASSERT(!isRecording());
 }
 
 bool KeySequenceRecorder::isRecording() const
