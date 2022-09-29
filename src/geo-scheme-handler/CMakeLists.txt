@@ -3,6 +3,7 @@
 
 add_executable(kde-geo-uri-handler
     kgeourihandler.cpp
+    kgeourihandler_p.h
     main.cpp
 )
 target_include_directories(kde-geo-uri-handler PRIVATE ${CMAKE_BINARY_DIR}) # for kguiaddons_version.h
