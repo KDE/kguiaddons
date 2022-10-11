@@ -8,6 +8,8 @@
 
 #import <AppKit/AppKit.h>
 
+#include <QTimer>
+
 KColorSchemeWatcherMac::KColorSchemeWatcherMac()
 {
     // subscribe to the distributed notification centre
@@ -15,7 +17,14 @@ KColorSchemeWatcherMac::KColorSchemeWatcherMac()
     m_observer = [notificationCenter addObserverForName:@"AppleInterfaceThemeChangedNotification"
                                                  object:nil
                                                   queue:nil
-                                             usingBlock:^(NSNotification *) { Q_EMIT systemPreferenceChanged(); }];
+                                             usingBlock:^(NSNotification *) {
+                                                 // "fun" workaround to not emit the signal immediately after receiving the notification.
+                                                 // for some reason NSAppearance.currentDrawingAppearance is still set to the old value here, after a short
+                                                 // delay it is updated correctly
+                                                 QTimer::singleShot(0, [this]() {
+                                                     Q_EMIT systemPreferenceChanged();
+                                                 });
+                                             }];
 }
 
 KColorSchemeWatcherMac::~KColorSchemeWatcherMac()
