@@ -9,6 +9,7 @@
 #include <QDebug>
 
 #include <QtWaylandClient/qwaylandclientextension.h>
+#include <wayland-client-core.h>
 
 #include "qwayland-keystate.h"
 
@@ -19,6 +20,11 @@ public:
     KeyState()
         : QWaylandClientExtensionTemplate<KeyState>(3)
     {
+    }
+
+    ~KeyState()
+    {
+        wl_proxy_destroy(reinterpret_cast<struct wl_proxy *>(object()));
     }
 
     void org_kde_kwin_keystate_stateChanged(uint32_t key, uint32_t state) override
