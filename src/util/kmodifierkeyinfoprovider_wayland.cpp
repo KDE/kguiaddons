@@ -24,7 +24,9 @@ public:
 
     ~KeyState()
     {
-        wl_proxy_destroy(reinterpret_cast<struct wl_proxy *>(object()));
+        if (isInitialized()) {
+            wl_proxy_destroy(reinterpret_cast<struct wl_proxy *>(object()));
+        }
     }
 
     void org_kde_kwin_keystate_stateChanged(uint32_t key, uint32_t state) override
