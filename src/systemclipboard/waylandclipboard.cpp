@@ -456,7 +456,6 @@ void DataControlDevice::setSelection(std::unique_ptr<DataControlSource> selectio
     m_selection = std::move(selection);
     connect(m_selection.get(), &DataControlSource::cancelled, this, [this]() {
         m_selection.reset();
-        Q_EMIT selectionChanged();
     });
     set_selection(m_selection->object());
     Q_EMIT selectionChanged();
@@ -467,7 +466,6 @@ void DataControlDevice::setPrimarySelection(std::unique_ptr<DataControlSource> s
     m_primarySelection = std::move(selection);
     connect(m_primarySelection.get(), &DataControlSource::cancelled, this, [this]() {
         m_primarySelection.reset();
-        Q_EMIT primarySelectionChanged();
     });
 
     if (zwlr_data_control_device_v1_get_version(object()) >= ZWLR_DATA_CONTROL_DEVICE_V1_SET_PRIMARY_SELECTION_SINCE_VERSION) {
