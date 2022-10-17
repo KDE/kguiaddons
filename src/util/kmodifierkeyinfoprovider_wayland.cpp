@@ -18,14 +18,18 @@ class KeyState : public QWaylandClientExtensionTemplate<KeyState>, public QtWayl
     Q_OBJECT
 public:
     KeyState()
-        : QWaylandClientExtensionTemplate<KeyState>(3)
+        : QWaylandClientExtensionTemplate<KeyState>(4)
     {
     }
 
     ~KeyState()
     {
         if (isInitialized()) {
-            wl_proxy_destroy(reinterpret_cast<struct wl_proxy *>(object()));
+            if (QtWayland::org_kde_kwin_keystate::version() >= ORG_KDE_KWIN_KEYSTATE_DESTROY_SINCE_VERSION) {
+                destroy();
+            } else {
+                wl_proxy_destroy(reinterpret_cast<struct wl_proxy *>(object()));
+            }
         }
     }
 
