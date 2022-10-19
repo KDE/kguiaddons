@@ -7,6 +7,9 @@ find_dependency(Qt@QT_MAJOR_VERSION@Gui @REQUIRED_QT_VERSION@)
 
 if (NOT @BUILD_SHARED_LIBS@)
     if (@WITH_X11@)
+        find_dependency(X11)
+        find_dependency(XCB COMPONENTS XCB)
+
         if (NOT TARGET Qt6::Gui)
             find_dependency(Qt5X11Extras @REQUIRED_QT_VERSION@)
         endif()
