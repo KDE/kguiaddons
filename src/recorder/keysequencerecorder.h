@@ -79,6 +79,16 @@ class KGUIADDONS_EXPORT KeySequenceRecorder : public QObject
      * @see QKeySequence
      */
     Q_PROPERTY(bool multiKeyShortcutsAllowed READ multiKeyShortcutsAllowed WRITE setMultiKeyShortcutsAllowed NOTIFY multiKeyShortcutsAllowedChanged)
+
+    /**
+     * It makes it acceptable for the key sequence to be just a modifier (e.g. Shift or Control)
+     *
+     * By default, if only a modifier is pressed and then released, the component will remain waiting for the sequence.
+     * When enabled, it will take the modifier key as the key sequence.
+     *
+     * By default this is `false`.
+     */
+    Q_PROPERTY(bool modifierOnlyAllowed READ modifierOnlyAllowed WRITE setModifierOnlyAllowed NOTIFY modifierOnlyAllowedChanged)
 public:
     /**
      * Constructor.
@@ -109,6 +119,9 @@ public:
     void setModifierlessAllowed(bool allowed);
     bool modifierlessAllowed() const;
 
+    void setModifierOnlyAllowed(bool allowed);
+    bool modifierOnlyAllowed() const;
+
 public Q_SLOTS:
     /**
      * Stops the recording session
@@ -129,6 +142,7 @@ Q_SIGNALS:
     void currentKeySequenceChanged();
     void multiKeyShortcutsAllowedChanged();
     void modifierlessAllowedChanged();
+    void modifierOnlyAllowedChanged();
 
 private:
     friend class KeySequenceRecorderPrivate;

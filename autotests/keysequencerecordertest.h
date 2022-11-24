@@ -20,6 +20,8 @@ private Q_SLOTS:
     void testRecording();
     void testModifiers();
     void testModifierless();
+    void testModifierOnly();
+    void testModifierOnlyDisabled();
     void testMultiKeyAllowed();
 
 private:

@@ -60,6 +60,7 @@ public:
     bool m_isRecording;
     bool m_multiKeyShortcutsAllowed;
     bool m_modifierlessAllowed;
+    bool m_modifierOnlyAllowed = false;
 
     Qt::KeyboardModifiers m_currentModifiers;
     QTimer m_modifierlessTimer;
@@ -387,14 +388,36 @@ void KeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
 void KeySequenceRecorderPrivate::handleKeyRelease(QKeyEvent *event)
 {
     Qt::KeyboardModifiers modifiers = event->modifiers() & modifierMask;
+
+    /* The modifier release event (e.g. Qt::Key_Shift) also has the modifier
+       flag set so we were interpreting the "Shift" press as "Shift + Shift".
+       This function makes it so we just take the key part but not the modifier
+       if we are doing this one alone. */
+    const auto justKey = [&](Qt::KeyboardModifiers modifier) {
+        modifiers &= ~modifier;
+        if (m_currentKeySequence.isEmpty() && m_modifierOnlyAllowed) {
+            m_currentKeySequence = appendToSequence(m_currentKeySequence, event->key());
+        }
+    };
     switch (event->key()) {
     case -1:
         return;
     case Qt::Key_Super_L:
     case Qt::Key_Super_R:
-        // Qt doesn't properly recognize Super_L/Super_R as MetaModifier
-        modifiers &= ~Qt::MetaModifier;
+    case Qt::Key_Meta:
+        justKey(Qt::MetaModifier);
+        break;
+    case Qt::Key_Shift:
+        justKey(Qt::ShiftModifier);
+        break;
+    case Qt::Key_Control:
+        justKey(Qt::ControlModifier);
+        break;
+    case Qt::Key_Alt:
+        justKey(Qt::AltModifier);
+        break;
     }
+
     if ((modifiers & m_currentModifiers) < m_currentModifiers) {
         m_currentModifiers = modifiers;
         controlModifierlessTimeout();
@@ -555,6 +578,20 @@ void KeySequenceRecorder::setModifierlessAllowed(bool allowed)
     }
     d->m_modifierlessAllowed = allowed;
     Q_EMIT modifierlessAllowedChanged();
+}
+
+bool KeySequenceRecorder::modifierOnlyAllowed() const
+{
+    return d->m_modifierOnlyAllowed;
+}
+
+void KeySequenceRecorder::setModifierOnlyAllowed(bool allowed)
+{
+    if (allowed == d->m_modifierOnlyAllowed) {
+        return;
+    }
+    d->m_modifierOnlyAllowed = allowed;
+    Q_EMIT modifierOnlyAllowedChanged();
 }
 
 #include "keysequencerecorder.moc"
