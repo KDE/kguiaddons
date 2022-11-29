@@ -410,6 +410,8 @@ void KeySequenceRecorderPrivate::receivedRecording()
     if (m_inhibition) {
         m_inhibition->disableInhibition();
     }
+    QObject::disconnect(KeySequenceRecorderGlobal::self(), &KeySequenceRecorderGlobal::sequenceRecordingStarted,
+                        q, &KeySequenceRecorder::cancelRecording);
     Q_EMIT q->recordingChanged();
 }
 

@@ -159,11 +159,11 @@ void KeySequenceRecorderTest::testMultiKeyAllowed()
     recorder.setMultiKeyShortcutsAllowed(false);
     recorder.startRecording();
     QVERIFY(recorder.isRecording());
-    QCOMPARE(recordingSpy.count(), 4);
+    QCOMPARE(recordingSpy.count(), 3);
     QTest::keyPress(m_window, Qt::Key_A, Qt::ControlModifier);
     QCOMPARE(recorder.currentKeySequence(), QKeySequence(Qt::Key_A | Qt::ControlModifier));
     QVERIFY(!recorder.isRecording());
-    QCOMPARE(recordingSpy.count(), 5);
+    QCOMPARE(recordingSpy.count(), 4);
     QCOMPARE(resultSpy.count(), 1);
     QCOMPARE(resultSpy.takeAt(0).at(0).value<QKeySequence>(), QKeySequence(Qt::Key_A | Qt::ControlModifier));
 }
