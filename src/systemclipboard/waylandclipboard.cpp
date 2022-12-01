@@ -17,7 +17,6 @@
 #include <QWaylandClientExtension>
 #include <QWindow>
 #include <QtWaylandClientVersion>
-#include <qpa/qplatformnativeinterface.h>
 
 #include <errno.h>
 #include <poll.h>
@@ -206,8 +205,9 @@ QVariant DataControlOffer::retrieveData(const QString &mimeType, QMetaType type)
      * However this isn't actually any worse than X.
      */
 
-    QPlatformNativeInterface *native = qGuiApp->platformNativeInterface();
-    auto display = static_cast<struct ::wl_display *>(native->nativeResourceForIntegration("wl_display"));
+    auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+    auto display = waylandApp->display();
+
     wl_display_flush(display);
 
     QFile readPipe;
@@ -475,8 +475,8 @@ public:
         : QWaylandClientExtensionTemplate(5)
     {
         initialize();
-        auto native = qGuiApp->platformNativeInterface();
-        auto display = static_cast<struct ::wl_display *>(native->nativeResourceForIntegration("wl_display"));
+        auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+        auto display = waylandApp->display();
         // so we get capabilities
         wl_display_roundtrip(display);
     }
@@ -541,11 +541,12 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
 {
     connect(m_manager.get(), &DataControlDeviceManager::activeChanged, this, [this]() {
         if (m_manager->isActive()) {
-            QPlatformNativeInterface *native = qApp->platformNativeInterface();
-            if (!native) {
+            auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+            if (!waylandApp) {
                 return;
             }
-            auto seat = static_cast<struct ::wl_seat *>(native->nativeResourceForIntegration("wl_seat"));
+            auto seat = waylandApp->seat();
+
             if (!seat) {
                 return;
             }
@@ -593,8 +594,8 @@ void WaylandClipboard::setMimeData(QMimeData *mime, QClipboard::Mode mode)
     }
 
     // roundtrip to have accurate focus state when losing focus but setting mime data before processing wayland events.
-    auto native = qGuiApp->platformNativeInterface();
-    auto display = static_cast<struct ::wl_display *>(native->nativeResourceForIntegration("wl_display"));
+    auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+    auto display = waylandApp->display();
     wl_display_roundtrip(display);
 
     // If the application is focused, use the normal mechanism so a future paste will not deadlock itselfs
