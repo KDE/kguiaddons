@@ -80,6 +80,7 @@ if(WITH_WAYLAND)
                 "${CMAKE_CURRENT_SOURCE_DIR}/recorder/keyboard-shortcuts-inhibit-unstable-v1.xml"
                 "${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard/wlr-data-control-unstable-v1.xml"
                 "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
+                "${Wayland_DATADIR}/wayland.xml"
         )
     else()
         set(wayland_SRCS)
@@ -94,6 +95,10 @@ if(WITH_WAYLAND)
         ecm_add_qtwayland_client_protocol(wayland_SRCS
             PROTOCOL ${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml
             BASENAME keystate
+        )
+        ecm_add_qtwayland_client_protocol(wayland_SRCS
+            PROTOCOL ${Wayland_DATADIR}/wayland.xml
+            BASENAME wayland
         )
         target_sources(KF5GuiAddons PRIVATE
             ${wayland_SRCS}
