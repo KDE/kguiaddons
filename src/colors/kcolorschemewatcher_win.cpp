@@ -16,7 +16,7 @@ KColorSchemeWatcherWin::KColorSchemeWatcherWin()
 {
     QAbstractEventDispatcher::instance()->installNativeEventFilter(this);
 
-    m_preferDarkMode = !(m_settings.value(QStringLiteral("SystemUsesLightTheme")).value<bool>());
+    m_preferDarkMode = !(m_settings.value(QStringLiteral("AppsUseLightTheme"), true).value<bool>());
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
