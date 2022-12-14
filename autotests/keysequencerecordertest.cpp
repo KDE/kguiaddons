@@ -123,7 +123,7 @@ void KeySequenceRecorderTest::testModifierless()
     QCOMPARE(recorder.currentKeySequence(), QKeySequence());
 
     recorder.setModifierlessAllowed(true);
-    QTest::keyPress(m_window, Qt::Key_A);
+    QTest::keyClick(m_window, Qt::Key_A);
     QTest::qWait(800);
     QVERIFY(!recorder.isRecording());
     QCOMPARE(sequenceSpy.count(), 2);
