@@ -36,16 +36,16 @@ private:
 
 KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QIcon &overlay, Qt::Corner position)
     : QIconEngine()
+    , m_base(icon)
 {
-    m_base = icon;
     m_overlays.insert(position, overlay);
 }
 
 KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays)
     : QIconEngine()
+    , m_base(icon)
+    , m_overlays(overlays)
 {
-    m_base = icon;
-    m_overlays = overlays;
 }
 
 KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QStringList &overlays)

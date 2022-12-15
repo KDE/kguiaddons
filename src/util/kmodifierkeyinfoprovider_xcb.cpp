@@ -21,11 +21,11 @@
 
 struct ModifierDefinition {
     ModifierDefinition(Qt::Key _key, unsigned int _mask, const char *_name, KeySym _keysym)
+        : key(_key)
+        , mask(_mask)
+        , name(_name)
+        , keysym(_keysym)
     {
-        key = _key;
-        mask = _mask;
-        name = _name;
-        keysym = _keysym;
     }
     Qt::Key key;
     unsigned int mask;
