@@ -30,6 +30,16 @@ public:
     };
     Q_ENUM(ColorPreference)
 
+    /**
+     * @since 5.102
+     */
+    enum PreferenceType {
+        AppsColorPreference = 0, /** The returned color preference is for apps. This is the default. */
+        SystemColorPreference /** The returned color preference is for the system itself. Currently only supported on Windows */
+    };
+    Q_ENUM(PreferenceType)
+
+    KColorSchemeWatcher(PreferenceType type, QObject *parent = nullptr);
     KColorSchemeWatcher(QObject *parent = nullptr);
     ~KColorSchemeWatcher() override;
 

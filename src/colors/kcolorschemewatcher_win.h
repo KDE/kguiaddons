@@ -16,7 +16,7 @@ class KColorSchemeWatcherWin : public KColorSchemeWatcherBackend, public QAbstra
 {
     Q_OBJECT
 public:
-    KColorSchemeWatcherWin();
+    KColorSchemeWatcherWin(KColorSchemeWatcher::PreferenceType type);
     KColorSchemeWatcher::ColorPreference systemPreference() const override;
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -28,6 +28,7 @@ public:
 private:
     QSettings m_settings{QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"), QSettings::NativeFormat};
     bool m_preferDarkMode = false;
+    const QString m_settingName;
 };
 
 #endif

@@ -25,25 +25,34 @@ class KColorSchemeWatcherPrivate
 public:
     std::unique_ptr<KColorSchemeWatcherBackend> backend;
 
-    KColorSchemeWatcherPrivate()
+    KColorSchemeWatcherPrivate(KColorSchemeWatcher::PreferenceType type)
     {
 #ifdef Q_OS_WINDOWS
-        backend = std::make_unique<KColorSchemeWatcherWin>();
+        backend = std::make_unique<KColorSchemeWatcherWin>(type);
 #elif defined(Q_OS_MACOS)
-        backend = std::make_unique<KColorSchemeWatcherMac>();
+        if (type == KColorSchemeWatcher::AppsColorPreference) {
+            backend = std::make_unique<KColorSchemeWatcherMac>();
+        }
 #elif defined(QT_DBUS_LIB)
-        backend = std::make_unique<KColorSchemeWatcherXDG>();
+        if (type == KColorSchemeWatcher::AppsColorPreference) {
+            backend = std::make_unique<KColorSchemeWatcherXDG>();
+        }
 #endif
     }
 };
 
-KColorSchemeWatcher::KColorSchemeWatcher(QObject *parent)
+KColorSchemeWatcher::KColorSchemeWatcher(PreferenceType type, QObject *parent)
     : QObject(parent)
-    , d(new KColorSchemeWatcherPrivate)
+    , d(new KColorSchemeWatcherPrivate(type))
 {
     if (d->backend) {
         connect(d->backend.get(), &KColorSchemeWatcherBackend::systemPreferenceChanged, this, &KColorSchemeWatcher::systemPreferenceChanged);
     }
+}
+
+KColorSchemeWatcher::KColorSchemeWatcher(QObject *parent)
+    : KColorSchemeWatcher(AppsColorPreference, parent)
+{
 }
 
 KColorSchemeWatcher::~KColorSchemeWatcher()

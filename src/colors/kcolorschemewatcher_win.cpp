@@ -12,11 +12,12 @@
 
 #include <QDebug>
 
-KColorSchemeWatcherWin::KColorSchemeWatcherWin()
+KColorSchemeWatcherWin::KColorSchemeWatcherWin(KColorSchemeWatcher::PreferenceType type)
+    : m_settingName(type == KColorSchemeWatcher::AppsColorPreference ? QStringLiteral("AppsUseLightTheme") : QStringLiteral("SystemUsesLightTheme"))
 {
     QAbstractEventDispatcher::instance()->installNativeEventFilter(this);
 
-    m_preferDarkMode = !(m_settings.value(QStringLiteral("AppsUseLightTheme"), true).value<bool>());
+    m_preferDarkMode = !(m_settings.value(m_settingName, true).value<bool>());
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -29,7 +30,7 @@ bool KColorSchemeWatcherWin::nativeEventFilter(const QByteArray &eventType, void
     switch (msg->message) {
     case WM_SETTINGCHANGE: {
         m_settings.sync();
-        const bool preferDarkModeNow = !(m_settings.value(QStringLiteral("AppsUseLightTheme"), true).value<bool>());
+        const bool preferDarkModeNow = !(m_settings.value(m_settingName, true).value<bool>());
         if (m_preferDarkMode != preferDarkModeNow) {
             m_preferDarkMode = preferDarkModeNow;
             Q_EMIT systemPreferenceChanged();
