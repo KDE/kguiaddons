@@ -14,6 +14,7 @@
 #include <QImageWriter>
 #include <QMimeData>
 #include <QPointer>
+#include <QWindow>
 #include <QtWaylandClient/QWaylandClientExtension>
 #include <qpa/qplatformnativeinterface.h>
 #include <qtwaylandclientversion.h>
@@ -609,7 +610,8 @@ void WaylandClipboard::setMimeData(QMimeData *mime, QClipboard::Mode mode)
         return;
     }
     // If the application is focused, use the normal mechanism so a future paste will not deadlock itself
-    if (m_keyboardFocusWatcher->hasFocus()) {
+    // On enter Qt delays processing of the enter event but when a window is hidden the leave event arrives after hiding the window
+    if (const auto fw = QGuiApplication::focusWindow(); (fw && fw->isVisible()) || (!fw && m_keyboardFocusWatcher->hasFocus())) {
         QGuiApplication::clipboard()->setMimeData(mime, mode);
         return;
     }
