@@ -7,8 +7,8 @@
 #include <kguiaddons_version.h>
 
 #include <QCommandLineParser>
+#include <QCoreApplication>
 #include <QDesktopServices>
-#include <QGuiApplication>
 #include <QUrl>
 
 int main(int argc, char **argv)
@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     QCoreApplication::setOrganizationDomain(QStringLiteral("kde.org"));
     QCoreApplication::setApplicationVersion(QStringLiteral(KGUIADDONS_VERSION_STRING));
 
-    QGuiApplication app(argc, argv);
+    QCoreApplication app(argc, argv);
 
     QCommandLineParser parser;
     QCommandLineOption coordTmplOpt(QStringLiteral("coordinate-template"),
