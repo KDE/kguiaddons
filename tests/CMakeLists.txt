@@ -8,7 +8,7 @@ find_package(Qt${QT_MAJOR_VERSION} ${REQUIRED_QT_VERSION} CONFIG REQUIRED Test W
 macro(kguiaddons_executable_tests)
   foreach(_testname ${ARGN})
     add_executable(${_testname} ${_testname}.cpp)
-    target_link_libraries(${_testname} Qt${QT_MAJOR_VERSION}::Widgets KF5::GuiAddons)
+    target_link_libraries(${_testname} Qt${QT_MAJOR_VERSION}::Widgets KF6::GuiAddons)
     ecm_mark_as_test(${_testname})
   endforeach(_testname)
 endmacro()

@@ -72,8 +72,8 @@ endif()
 
 ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS
                         VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_version.h"
-                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF5GuiAddonsConfigVersion.cmake"
-                        SOVERSION 5)
+                        PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF6GuiAddonsConfigVersion.cmake"
+                        SOVERSION 6)
 
 ecm_set_disabled_deprecation_versions(
     QT 5.15.2
@@ -86,33 +86,33 @@ if (BUILD_TESTING)
 endif()
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them
-set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF5GuiAddons")
+set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6GuiAddons")
 
 if (BUILD_QCH)
     ecm_install_qch_export(
-        TARGETS KF5GuiAddons_QCH
-        FILE KF5GuiAddonsQchTargets.cmake
+        TARGETS KF6GuiAddons_QCH
+        FILE KF6GuiAddonsQchTargets.cmake
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         COMPONENT Devel
     )
-    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF5GuiAddonsQchTargets.cmake\")")
+    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF6GuiAddonsQchTargets.cmake\")")
 endif()
 
 include(CMakePackageConfigHelpers)
 
-configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/KF5GuiAddonsConfig.cmake.in"
-                              "${CMAKE_CURRENT_BINARY_DIR}/KF5GuiAddonsConfig.cmake"
+configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/KF6GuiAddonsConfig.cmake.in"
+                              "${CMAKE_CURRENT_BINARY_DIR}/KF6GuiAddonsConfig.cmake"
                               INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
                               )
 
-install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/KF5GuiAddonsConfig.cmake"
-               "${CMAKE_CURRENT_BINARY_DIR}/KF5GuiAddonsConfigVersion.cmake"
+install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/KF6GuiAddonsConfig.cmake"
+               "${CMAKE_CURRENT_BINARY_DIR}/KF6GuiAddonsConfigVersion.cmake"
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         COMPONENT Devel )
 
 
-install(EXPORT KF5GuiAddonsTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-        FILE KF5GuiAddonsTargets.cmake NAMESPACE KF5:: COMPONENT Devel)
+install(EXPORT KF6GuiAddonsTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+        FILE KF6GuiAddonsTargets.cmake NAMESPACE KF6:: COMPONENT Devel)
 
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_version.h

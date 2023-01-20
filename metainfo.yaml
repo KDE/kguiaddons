@@ -13,8 +13,8 @@ deprecated: false
 release: true
 libraries:
  - qmake: KGuiAddons
-   cmake: "KF5::GuiAddons"
-cmakename: KF5GuiAddons
+   cmake: "KF6::GuiAddons"
+cmakename: KF6GuiAddons
 
 public_lib: true
 group: Frameworks

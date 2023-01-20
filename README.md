@@ -12,7 +12,7 @@ of colors, fonts, text, images, keyboard input.
 To use KGuiAddons, you'll want to look for it using
 
 ```cmake
-find_package(KF5GuiAddons)
+find_package(KF6GuiAddons)
 ```
 
 or its QMake counterpart.

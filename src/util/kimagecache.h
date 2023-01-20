@@ -12,9 +12,9 @@
 // defined means that we are not linked against KCoreAddons)
 #if defined(KGUIADDONS_LIB) && !defined(KCOREADDONS_LIB)
 #ifdef __GNUC__
-#warning "KImageCache requires KF5CoreAddons (for kshareddatacache.h)"
+#warning "KImageCache requires KF6CoreAddons (for kshareddatacache.h)"
 #else
-#pragma message("KImageCache requires KF5CoreAddons (for kshareddatacache.h)")
+#pragma message("KImageCache requires KF6CoreAddons (for kshareddatacache.h)")
 #endif
 #endif
 
