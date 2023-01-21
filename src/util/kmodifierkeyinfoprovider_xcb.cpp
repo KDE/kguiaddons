@@ -9,9 +9,6 @@
 #include "kmodifierkeyinfo.h"
 
 #include <QGuiApplication>
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QX11Info>
-#endif
 
 #define XK_MISCELLANY
 #define XK_XKB_KEYS
@@ -58,11 +55,7 @@ unsigned int xkbVirtualModifier(XkbDescPtr xkb, const char *name)
 
 static Display *display()
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    return QX11Info::display();
-#else
     return qGuiApp->nativeInterface<QNativeInterface::QX11Application>()->display();
-#endif
 }
 
 KModifierKeyInfoProviderXcb::KModifierKeyInfoProviderXcb()
@@ -211,11 +204,7 @@ typedef union {
 } _xkb_event;
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 bool KModifierKeyInfoProviderXcb::nativeEventFilter(const QByteArray &eventType, void *message, qintptr *)
-#else
-bool KModifierKeyInfoProviderXcb::nativeEventFilter(const QByteArray &eventType, void *message, long *)
-#endif
 {
     if (!m_xkbAvailable || eventType != "xcb_generic_event_t") {
         return false;

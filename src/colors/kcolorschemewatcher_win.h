@@ -19,11 +19,7 @@ public:
     KColorSchemeWatcherWin();
     KColorSchemeWatcher::ColorPreference systemPreference() const override;
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long *) override;
-#else
     bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *) override;
-#endif
 
 private:
     QSettings m_settings{QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"), QSettings::NativeFormat};

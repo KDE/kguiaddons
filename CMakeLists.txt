@@ -45,29 +45,21 @@ if (WITH_WAYLAND)
     set(_qtgui_find_components COMPONENTS Private)
 endif()
 # QtGui must be found before Qt5WaylandClient
-find_package(Qt${QT_MAJOR_VERSION}Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE ${_qtgui_find_components})
+find_package(Qt6Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE ${_qtgui_find_components})
 
 if (WITH_X11)
     find_package(X11 REQUIRED MODULE)
     find_package(XCB REQUIRED MODULE COMPONENTS XCB)
-    if (QT_MAJOR_VERSION STREQUAL "5")
-        find_package(Qt5X11Extras ${REQUIRED_QT_VERSION} REQUIRED CONFIG)
-    endif()
 endif()
 
 if (WITH_WAYLAND)
     find_package(PlasmaWaylandProtocols 1.10.0 REQUIRED)
-    find_package(Qt${QT_MAJOR_VERSION}WaylandClient ${REQUIRED_QT_VERSION} REQUIRED CONFIG)
-    # With Qt6 use qt_generate_wayland_protocol_client_sources instead of
-    # ecm_add_qtwayland_client_protocol (in QtWaylandScanner from ECM)
-    if (NOT TARGET Qt6::WaylandClient)
-        find_package(QtWaylandScanner REQUIRED)
-    endif()
+    find_package(Qt6WaylandClient ${REQUIRED_QT_VERSION} REQUIRED CONFIG)
     find_package(Wayland 1.9 REQUIRED Client)
 endif()
 
 if (WITH_DBUS)
-    find_package(Qt${QT_MAJOR_VERSION}DBus ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
+    find_package(Qt6DBus ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
 endif()
 
 ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS

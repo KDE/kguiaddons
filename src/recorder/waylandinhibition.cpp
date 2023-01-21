@@ -52,13 +52,7 @@ public:
     ShortcutsInhibitManager()
         : QWaylandClientExtensionTemplate<ShortcutsInhibitManager>(1)
     {
-#if QTWAYLANDCLIENT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
         initialize();
-#else
-        // QWaylandClientExtensionTemplate invokes this with a QueuedConnection but we want shortcuts
-        // to be inhibited immediately.
-        QMetaObject::invokeMethod(this, "addRegistryListener");
-#endif
     }
     ~ShortcutsInhibitManager() override
     {

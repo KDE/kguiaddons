@@ -74,13 +74,7 @@ public:
 
     void instantiate()
     {
-#if QTWAYLANDCLIENT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
         initialize();
-#else
-        // QWaylandClientExtensionTemplate invokes this with a QueuedConnection but we want shortcuts
-        // to be have access to data_control immediately.
-        QMetaObject::invokeMethod(this, "addRegistryListener");
-#endif
     }
 
     ~DataControlDeviceManager()
@@ -156,11 +150,7 @@ protected:
         m_receivedFormats << mime_type;
     }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QVariant retrieveData(const QString &mimeType, QMetaType type) const override;
-#else
-    QVariant retrieveData(const QString &mimeType, QVariant::Type type) const override;
-#endif
 
 private:
     /** reads data from a file descriptor with a timeout of 1 second
@@ -170,11 +160,7 @@ private:
     QStringList m_receivedFormats;
 };
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 QVariant DataControlOffer::retrieveData(const QString &mimeType, QMetaType type) const
-#else
-QVariant DataControlOffer::retrieveData(const QString &mimeType, QVariant::Type type) const
-#endif
 {
     Q_UNUSED(type);
 
@@ -488,11 +474,7 @@ public:
     KeyboardFocusWatcher()
         : QWaylandClientExtensionTemplate(5)
     {
-#if QTWAYLANDCLIENT_VERSION >= QT_VERSION_CHECK(6, 2, 0)
         initialize();
-#else
-        QMetaObject::invokeMethod(this, "addRegistryListener");
-#endif
         auto native = qGuiApp->platformNativeInterface();
         auto display = static_cast<struct ::wl_display *>(native->nativeResourceForIntegration("wl_display"));
         // so we get capabilities

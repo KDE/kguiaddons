@@ -70,40 +70,17 @@ endif()
 
 if(WITH_DBUS)
     target_sources(KF6GuiAddons PRIVATE colors/kcolorschemewatcher_xdg.cpp)
-    target_link_libraries(KF6GuiAddons PRIVATE Qt${QT_MAJOR_VERSION}::DBus)
+    target_link_libraries(KF6GuiAddons PRIVATE Qt6::DBus)
 endif()
 
 if(WITH_WAYLAND)
-    if (TARGET Qt6::WaylandClient)
-        qt_generate_wayland_protocol_client_sources(KF6GuiAddons
-            FILES
-                "${CMAKE_CURRENT_SOURCE_DIR}/recorder/keyboard-shortcuts-inhibit-unstable-v1.xml"
-                "${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard/wlr-data-control-unstable-v1.xml"
-                "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
-                "${Wayland_DATADIR}/wayland.xml"
-        )
-    else()
-        set(wayland_SRCS)
-        ecm_add_qtwayland_client_protocol(wayland_SRCS
-            PROTOCOL recorder/keyboard-shortcuts-inhibit-unstable-v1.xml
-            BASENAME keyboard-shortcuts-inhibit-unstable-v1
-        )
-        ecm_add_qtwayland_client_protocol(wayland_SRCS
-            PROTOCOL  systemclipboard/wlr-data-control-unstable-v1.xml
-            BASENAME wlr-data-control-unstable-v1
-        )
-        ecm_add_qtwayland_client_protocol(wayland_SRCS
-            PROTOCOL ${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml
-            BASENAME keystate
-        )
-        ecm_add_qtwayland_client_protocol(wayland_SRCS
-            PROTOCOL ${Wayland_DATADIR}/wayland.xml
-            BASENAME wayland
-        )
-        target_sources(KF6GuiAddons PRIVATE
-            ${wayland_SRCS}
-        )
-    endif()
+    qt_generate_wayland_protocol_client_sources(KF6GuiAddons
+        FILES
+            "${CMAKE_CURRENT_SOURCE_DIR}/recorder/keyboard-shortcuts-inhibit-unstable-v1.xml"
+            "${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard/wlr-data-control-unstable-v1.xml"
+            "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
+            "${Wayland_DATADIR}/wayland.xml"
+    )
     target_sources(KF6GuiAddons PRIVATE
         recorder/waylandinhibition.cpp
         systemclipboard/waylandclipboard.cpp
@@ -113,14 +90,11 @@ if(WITH_WAYLAND)
         util/kmodifierkeyinfoprovider_wayland.h
     )
     target_compile_definitions(KF6GuiAddons PRIVATE WITH_WAYLAND)
-    target_link_libraries(KF6GuiAddons PRIVATE Qt${QT_MAJOR_VERSION}::GuiPrivate Qt${QT_MAJOR_VERSION}::WaylandClient Wayland::Client)
+    target_link_libraries(KF6GuiAddons PRIVATE Qt6::GuiPrivate Qt6::WaylandClient Wayland::Client)
 endif()
 
 if(WITH_X11)
     target_sources(KF6GuiAddons PRIVATE util/kmodifierkeyinfoprovider_xcb.cpp util/kmodifierkeyinfoprovider_xcb.h)
-    if (TARGET Qt5::X11Extras)
-        target_link_libraries(KF6GuiAddons PRIVATE Qt5::X11Extras)
-    endif()
     target_link_libraries(KF6GuiAddons PRIVATE X11::Xkb XCB::XCB)
 endif()
 
@@ -137,7 +111,7 @@ set(kguiaddons_INCLUDES
 target_include_directories(KF6GuiAddons PUBLIC "$<BUILD_INTERFACE:${kguiaddons_INCLUDES}>")
 target_include_directories(KF6GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons>" )
 target_compile_definitions(KF6GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
-target_link_libraries(KF6GuiAddons PUBLIC Qt${QT_MAJOR_VERSION}::Gui)
+target_link_libraries(KF6GuiAddons PUBLIC Qt6::Gui)
 
 ecm_generate_headers(KGuiAddons_HEADERS
   HEADER_NAMES
