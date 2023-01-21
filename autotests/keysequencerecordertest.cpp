@@ -188,7 +188,7 @@ void KeySequenceRecorderTest::testMultiKeyAllowed()
         QVERIFY(recorder.isRecording());
         QCOMPARE(recordingSpy.count(), 1);
         QCOMPARE(resultSpy.count(), 0);
-        keys[i] = Qt::Key_A | Qt::ControlModifier;
+        keys[i] = (Qt::Key_A | Qt::ControlModifier).toCombined();
         QKeySequence result(keys[0], keys[1], keys[2], keys[3]);
         QTest::keyPress(m_window, Qt::Key_A, Qt::ControlModifier);
         QTest::keyRelease(m_window, Qt::Key_A, Qt::ControlModifier);

@@ -283,7 +283,10 @@ static QKeySequence appendToSequence(const QKeySequence &sequence, int key)
         return sequence;
     }
 
-    std::array<int, KeySequenceRecorderPrivate::MaxKeyCount> keys{sequence[0], sequence[1], sequence[2], sequence[3]};
+    std::array<int, KeySequenceRecorderPrivate::MaxKeyCount> keys{sequence[0].toCombined(),
+                                                                  sequence[1].toCombined(),
+                                                                  sequence[2].toCombined(),
+                                                                  sequence[3].toCombined()};
     keys[sequence.count()] = key;
     return QKeySequence(keys[0], keys[1], keys[2], keys[3]);
 }
@@ -363,7 +366,7 @@ void KeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
 
         // We now have a valid key press.
         if ((key == Qt::Key_Backtab) && (m_currentModifiers & Qt::ShiftModifier)) {
-            key = Qt::Key_Tab | m_currentModifiers;
+            key = QKeyCombination(Qt::Key_Tab).toCombined() | m_currentModifiers;
         } else if (isShiftAsModifierAllowed(key)) {
             key |= m_currentModifiers;
         } else {
