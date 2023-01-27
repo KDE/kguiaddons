@@ -591,9 +591,14 @@ void WaylandClipboard::setMimeData(QMimeData *mime, QClipboard::Mode mode)
     if (!m_device) {
         return;
     }
-    // If the application is focused, use the normal mechanism so a future paste will not deadlock itself
-    // On enter Qt delays processing of the enter event but when a window is hidden the leave event arrives after hiding the window
-    if (const auto fw = QGuiApplication::focusWindow(); (fw && fw->isVisible()) || (!fw && m_keyboardFocusWatcher->hasFocus())) {
+
+    // roundtrip to have accurate focus state when losing focus but setting mime data before processing wayland events.
+    auto native = qGuiApp->platformNativeInterface();
+    auto display = static_cast<struct ::wl_display *>(native->nativeResourceForIntegration("wl_display"));
+    wl_display_roundtrip(display);
+
+    // If the application is focused, use the normal mechanism so a future paste will not deadlock itselfs
+    if (m_keyboardFocusWatcher->hasFocus()) {
         QGuiApplication::clipboard()->setMimeData(mime, mode);
         return;
     }
