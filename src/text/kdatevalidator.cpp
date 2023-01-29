@@ -29,10 +29,10 @@ public:
 
 KDateValidator::KDateValidator(QObject *parent)
     : QValidator(parent)
-    , d(nullptr)
 {
-    Q_UNUSED(d);
 }
+
+KDateValidator::~KDateValidator() = default;
 
 QValidator::State KDateValidator::validate(QString &text, int &unused) const
 {

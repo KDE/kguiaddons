@@ -14,6 +14,10 @@
 
 #include <QValidator>
 
+#include <memory>
+
+class KDateValidatorPrivate;
+
 /**
  * @class KDateValidator kdatevalidator.h KDateValidator
  *
@@ -24,14 +28,15 @@ class KGUIADDONS_EXPORT KDateValidator : public QValidator
     Q_OBJECT
 public:
     explicit KDateValidator(QObject *parent = nullptr);
+    ~KDateValidator() override;
+
+public:
     State validate(QString &text, int &e) const override;
     void fixup(QString &input) const override;
     State date(const QString &text, QDate &date) const;
 
 private:
-    // KF6 TODO: add explicit destructor, use std::unique_ptr
-    friend class KDateValidatorPrivate;
-    class KDateValidatorPrivate *const d;
+    std::unique_ptr<KDateValidatorPrivate> const d;
 };
 
 #endif // KDATEVALIDATOR_H
