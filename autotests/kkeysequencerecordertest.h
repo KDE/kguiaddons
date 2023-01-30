@@ -3,14 +3,14 @@
     SPDX-FileCopyrightText: 2020 David Redondo <kde@david-redondo.de>
 */
 
-#ifndef KEYSEQUENCERECORDERTEST_H
-#define KEYSEQUENCERECORDERTEST_H
+#ifndef KKEYSEQUENCERECORDERTEST_H
+#define KKEYSEQUENCERECORDERTEST_H
 
 #include <QObject>
 
 class QWindow;
 
-class KeySequenceRecorderTest : public QObject
+class KKeySequenceRecorderTest : public QObject
 {
     Q_OBJECT
 private Q_SLOTS:

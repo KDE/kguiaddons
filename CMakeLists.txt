@@ -26,7 +26,7 @@ option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, 
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
 
 if (UNIX AND NOT ANDROID AND NOT APPLE)
-    option(WITH_WAYLAND "Build with support for KModifierKeyInfo, KSystemClipboard and KeySequenceRecorder inhibiting shortcuts on Wayland" ON)
+    option(WITH_WAYLAND "Build with support for KModifierKeyInfo, KSystemClipboard and KKeySequenceRecorder inhibiting shortcuts on Wayland" ON)
     add_feature_info(WAYLAND ${WITH_WAYLAND} "KeySequenceEditor inhibiting shortcuts on Wayland")
 
     option(WITH_X11 "Build with support for KModifierKeyInfo on X11" ON)

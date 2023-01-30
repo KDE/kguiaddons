@@ -6,8 +6,8 @@
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
-#ifndef KSHORTCUTRECORDER_H
-#define KSHORTCUTRECORDER_H
+#ifndef KKEYSEQUENCERECORDER_H
+#define KKEYSEQUENCERECORDER_H
 
 #include <kguiaddons_export.h>
 
@@ -17,10 +17,10 @@
 
 #include <memory>
 
-class KeySequenceRecorderPrivate;
+class KKeySequenceRecorderPrivate;
 
 /**
- * @class KeySequenceRecorder keysequencerecorder.h KeySequenceRecorder
+ * @class KKeySequenceRecorder kkeysequencerecorder.h KKeySequenceRecorder
  *
  * @short Record a QKeySequence by listening to key events in a window.
  *
@@ -34,11 +34,15 @@ class KeySequenceRecorderPrivate;
  *
  * For graphical elements that record key sequences and can optionally perform conflict checking
  * against existing shortcuts see KKeySequenceWidget and KeySequenceItem.
- * @since 5.77
+ *
+ * Porting from KF5 to KF6:
+ *
+ * The class KeySequenceRecorder was renamed to KKeySequenceRecorder.
+ *
  * @see KKeySequenceWidget, KeySequenceItem
+ * @since 6.0
  */
-
-class KGUIADDONS_EXPORT KeySequenceRecorder : public QObject
+class KGUIADDONS_EXPORT KKeySequenceRecorder : public QObject
 {
     Q_OBJECT
 
@@ -96,8 +100,8 @@ public:
      * @par window The window whose key events will be recorded.
      * @see window
      */
-    explicit KeySequenceRecorder(QWindow *window, QObject *parent = nullptr);
-    ~KeySequenceRecorder() override;
+    explicit KKeySequenceRecorder(QWindow *window, QObject *parent = nullptr);
+    ~KKeySequenceRecorder() override;
 
     /**
      * Start recording.
@@ -145,8 +149,8 @@ Q_SIGNALS:
     void modifierOnlyAllowedChanged();
 
 private:
-    friend class KeySequenceRecorderPrivate;
-    std::unique_ptr<KeySequenceRecorderPrivate> const d;
+    friend class KKeySequenceRecorderPrivate;
+    std::unique_ptr<KKeySequenceRecorderPrivate> const d;
 };
 
 #endif

@@ -9,7 +9,7 @@ ecm_add_tests(
   kcolorutilstest.cpp
   kiconutilstest.cpp
   kcursorsavertest.cpp
-  keysequencerecordertest.cpp
+  kkeysequencerecordertest.cpp
   kurlhandlertest.cpp
   LINK_LIBRARIES KF6::GuiAddons Qt6::Test
 )

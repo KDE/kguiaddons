@@ -35,7 +35,7 @@ that can be used to draw a text centered in a rectangle using word wrapping.
 
 ### Keyboard utilities
 
-KeySequenceRecorder is a utility that records a QKeySequence by listening to key events in a window.
+KKeySequenceRecorder is a utility that records a QKeySequence by listening to key events in a window.
 This can be used to let the user modify predefined keyboard shortcuts for example.
 
 ### Icon utilities

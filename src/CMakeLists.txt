@@ -26,7 +26,7 @@ target_sources(KF6GuiAddons PRIVATE
  util/kurlhandler_p.cpp
  util/kcursorsaver.cpp
  recorder/keyboardgrabber.cpp
- recorder/keysequencerecorder.cpp
+ recorder/kkeysequencerecorder.cpp
  systemclipboard/qtclipboard.cpp
  systemclipboard/ksystemclipboard.cpp
 
@@ -44,7 +44,7 @@ target_sources(KF6GuiAddons PRIVATE
  util/kurlhandler_p.h
  util/kcursorsaver.h
  recorder/keyboardgrabber_p.h
- recorder/keysequencerecorder.h
+ recorder/kkeysequencerecorder.h
  systemclipboard/qtclipboard_p.h
  systemclipboard/ksystemclipboard.h
 )
@@ -151,7 +151,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
 
 ecm_generate_headers(KGuiAddons_HEADERS
     HEADER_NAMES
-    KeySequenceRecorder
+    KKeySequenceRecorder
 
     RELATIVE recorder
     REQUIRED_HEADERS KGuiAddons_HEADERS

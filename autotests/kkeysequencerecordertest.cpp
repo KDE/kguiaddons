@@ -3,30 +3,30 @@
     SPDX-FileCopyrightText: 2020 David Redondo <kde@david-redondo.de>
 */
 
-#include "keysequencerecordertest.h"
+#include "kkeysequencerecordertest.h"
 
-#include "keysequencerecorder.h"
+#include "kkeysequencerecorder.h"
 
 #include <QSignalSpy>
 #include <QTest>
 #include <QWindow>
 
-QTEST_MAIN(KeySequenceRecorderTest)
+QTEST_MAIN(KKeySequenceRecorderTest)
 
-void KeySequenceRecorderTest::initTestCase()
+void KKeySequenceRecorderTest::initTestCase()
 {
     m_window = new QWindow;
 }
 
-void KeySequenceRecorderTest::cleanupTestCase()
+void KKeySequenceRecorderTest::cleanupTestCase()
 {
     delete m_window;
 }
 
-void KeySequenceRecorderTest::testValidWindow()
+void KKeySequenceRecorderTest::testValidWindow()
 {
-    KeySequenceRecorder recorder(nullptr);
-    QSignalSpy recordingSpy(&recorder, &KeySequenceRecorder::recordingChanged);
+    KKeySequenceRecorder recorder(nullptr);
+    QSignalSpy recordingSpy(&recorder, &KKeySequenceRecorder::recordingChanged);
 
     recorder.startRecording();
     QCOMPARE(recordingSpy.count(), 0);
@@ -38,12 +38,12 @@ void KeySequenceRecorderTest::testValidWindow()
     QVERIFY(recorder.isRecording());
 }
 
-void KeySequenceRecorderTest::testRecording()
+void KKeySequenceRecorderTest::testRecording()
 {
-    KeySequenceRecorder recorder(m_window);
-    QSignalSpy recordingSpy(&recorder, &KeySequenceRecorder::recordingChanged);
-    QSignalSpy sequenceSpy(&recorder, &KeySequenceRecorder::currentKeySequenceChanged);
-    QSignalSpy resultSpy(&recorder, &KeySequenceRecorder::gotKeySequence);
+    KKeySequenceRecorder recorder(m_window);
+    QSignalSpy recordingSpy(&recorder, &KKeySequenceRecorder::recordingChanged);
+    QSignalSpy sequenceSpy(&recorder, &KKeySequenceRecorder::currentKeySequenceChanged);
+    QSignalSpy resultSpy(&recorder, &KKeySequenceRecorder::gotKeySequence);
 
     recorder.startRecording();
     QVERIFY(recorder.isRecording());
@@ -66,12 +66,12 @@ void KeySequenceRecorderTest::testRecording()
     QCOMPARE(resultSpy.takeFirst().at(0).value<QKeySequence>(), QKeySequence(Qt::Key_A | Qt::ControlModifier));
 }
 
-void KeySequenceRecorderTest::testModifiers()
+void KKeySequenceRecorderTest::testModifiers()
 {
-    KeySequenceRecorder recorder(m_window);
-    QSignalSpy recordingSpy(&recorder, &KeySequenceRecorder::recordingChanged);
-    QSignalSpy sequenceSpy(&recorder, &KeySequenceRecorder::currentKeySequenceChanged);
-    QSignalSpy resultSpy(&recorder, &KeySequenceRecorder::gotKeySequence);
+    KKeySequenceRecorder recorder(m_window);
+    QSignalSpy recordingSpy(&recorder, &KKeySequenceRecorder::recordingChanged);
+    QSignalSpy sequenceSpy(&recorder, &KKeySequenceRecorder::currentKeySequenceChanged);
+    QSignalSpy resultSpy(&recorder, &KKeySequenceRecorder::gotKeySequence);
 
     recorder.startRecording();
     QCOMPARE(sequenceSpy.count(), 1);
@@ -104,11 +104,11 @@ void KeySequenceRecorderTest::testModifiers()
     QCOMPARE(resultSpy.count(), 0); // modifierless not allowed
 }
 
-void KeySequenceRecorderTest::testModifierless()
+void KKeySequenceRecorderTest::testModifierless()
 {
-    KeySequenceRecorder recorder(m_window);
-    QSignalSpy resultSpy(&recorder, &KeySequenceRecorder::gotKeySequence);
-    QSignalSpy sequenceSpy(&recorder, &KeySequenceRecorder::currentKeySequenceChanged);
+    KKeySequenceRecorder recorder(m_window);
+    QSignalSpy resultSpy(&recorder, &KKeySequenceRecorder::gotKeySequence);
+    QSignalSpy sequenceSpy(&recorder, &KKeySequenceRecorder::currentKeySequenceChanged);
 
     recorder.startRecording();
     QVERIFY(recorder.isRecording());
@@ -131,14 +131,14 @@ void KeySequenceRecorderTest::testModifierless()
     QCOMPARE(recorder.currentKeySequence(), QKeySequence(Qt::Key_A));
 }
 
-void KeySequenceRecorderTest::testModifierOnly()
+void KKeySequenceRecorderTest::testModifierOnly()
 {
-    KeySequenceRecorder recorder(m_window);
+    KKeySequenceRecorder recorder(m_window);
     recorder.setModifierOnlyAllowed(true);
     recorder.setModifierlessAllowed(true);
-    QSignalSpy resultSpy(&recorder, &KeySequenceRecorder::gotKeySequence);
-    QSignalSpy recordingSpy(&recorder, &KeySequenceRecorder::recordingChanged);
-    QSignalSpy sequenceSpy(&recorder, &KeySequenceRecorder::currentKeySequenceChanged);
+    QSignalSpy resultSpy(&recorder, &KKeySequenceRecorder::gotKeySequence);
+    QSignalSpy recordingSpy(&recorder, &KKeySequenceRecorder::recordingChanged);
+    QSignalSpy sequenceSpy(&recorder, &KKeySequenceRecorder::currentKeySequenceChanged);
 
     recorder.startRecording();
     QVERIFY(recorder.isRecording());
@@ -152,14 +152,14 @@ void KeySequenceRecorderTest::testModifierOnly()
     QCOMPARE(recorder.currentKeySequence(), QKeySequence(Qt::Key_Shift));
 }
 
-void KeySequenceRecorderTest::testModifierOnlyDisabled()
+void KKeySequenceRecorderTest::testModifierOnlyDisabled()
 {
-    KeySequenceRecorder recorder(m_window);
+    KKeySequenceRecorder recorder(m_window);
     recorder.setModifierOnlyAllowed(false);
     recorder.setModifierlessAllowed(true);
-    QSignalSpy resultSpy(&recorder, &KeySequenceRecorder::gotKeySequence);
-    QSignalSpy recordingSpy(&recorder, &KeySequenceRecorder::recordingChanged);
-    QSignalSpy sequenceSpy(&recorder, &KeySequenceRecorder::currentKeySequenceChanged);
+    QSignalSpy resultSpy(&recorder, &KKeySequenceRecorder::gotKeySequence);
+    QSignalSpy recordingSpy(&recorder, &KKeySequenceRecorder::recordingChanged);
+    QSignalSpy sequenceSpy(&recorder, &KKeySequenceRecorder::currentKeySequenceChanged);
 
     recorder.startRecording();
     QVERIFY(recorder.isRecording());
@@ -174,11 +174,11 @@ void KeySequenceRecorderTest::testModifierOnlyDisabled()
     QCOMPARE(recorder.currentKeySequence(), QKeySequence());
 }
 
-void KeySequenceRecorderTest::testMultiKeyAllowed()
+void KKeySequenceRecorderTest::testMultiKeyAllowed()
 {
-    KeySequenceRecorder recorder(m_window);
-    QSignalSpy recordingSpy(&recorder, &KeySequenceRecorder::recordingChanged);
-    QSignalSpy resultSpy(&recorder, &KeySequenceRecorder::gotKeySequence);
+    KKeySequenceRecorder recorder(m_window);
+    QSignalSpy recordingSpy(&recorder, &KKeySequenceRecorder::recordingChanged);
+    QSignalSpy resultSpy(&recorder, &KKeySequenceRecorder::gotKeySequence);
 
     recorder.startRecording();
 
