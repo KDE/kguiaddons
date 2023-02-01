@@ -99,11 +99,11 @@ public:
 
 static std::shared_ptr<ShortcutsInhibitManager> theManager()
 {
-    static std::weak_ptr<ShortcutsInhibitManager> manager;
-    std::shared_ptr<ShortcutsInhibitManager> ret;
+    static std::weak_ptr<ShortcutsInhibitManager> managerInstance;
+    std::shared_ptr<ShortcutsInhibitManager> ret = managerInstance.lock();
     if (!ret) {
         ret = std::make_shared<ShortcutsInhibitManager>();
-        manager = ret;
+        managerInstance = ret;
     }
     return ret;
 }
