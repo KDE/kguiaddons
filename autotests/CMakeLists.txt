@@ -11,6 +11,7 @@ ecm_add_tests(
   kcursorsavertest.cpp
   kkeysequencerecordertest.cpp
   kurlhandlertest.cpp
+  kcountryflagemojiiconenginetest.cpp
   LINK_LIBRARIES KF6::GuiAddons Qt6::Test
 )
 ecm_add_tests(kgeourihandlertest.cpp LINK_LIBRARIES Qt6::Test)
