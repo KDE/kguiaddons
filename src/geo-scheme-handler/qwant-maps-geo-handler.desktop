@@ -31,6 +31,7 @@ Name[uk]=Карти Qwant
 Name[vi]=Bản đồ Qwant
 Name[x-test]=xxQwant Mapsxx
 Name[zh_CN]=Qwant Maps
+Name[zh_TW]=Qwant 地圖
 Icon=map-globe
 MimeType=x-scheme-handler/geo;
 Terminal=false
