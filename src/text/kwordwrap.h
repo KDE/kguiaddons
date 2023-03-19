@@ -138,7 +138,8 @@ public:
     static void drawTruncateText(QPainter *p, int x, int y, int maxW, const QString &t);
 
 private:
-    KWordWrap(const QRect &r);
+    KGUIADDONS_NO_EXPORT explicit KWordWrap(const QRect &r);
+
     QExplicitlySharedDataPointer<KWordWrapPrivate> d;
 };
 
