@@ -98,7 +98,13 @@ if(WITH_X11)
     target_link_libraries(KF6GuiAddons PRIVATE X11::Xkb XCB::XCB)
 endif()
 
-generate_export_header(KF6GuiAddons BASE_NAME KGuiAddons)
+ecm_generate_export_header(KF6GuiAddons
+    BASE_NAME KGuiAddons
+    GROUP_BASE_NAME KF
+    VERSION ${KF_VERSION}
+    USE_VERSION_HEADER
+    DEPRECATED_BASE_VERSION 0
+)
 
 set(kguiaddons_INCLUDES
   ${CMAKE_CURRENT_SOURCE_DIR}/colors
