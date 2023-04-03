@@ -6,7 +6,7 @@ add_executable(kde-geo-uri-handler
     kgeourihandler_p.h
     main.cpp
 )
-target_include_directories(kde-geo-uri-handler PRIVATE ${CMAKE_BINARY_DIR}) # for kguiaddons_version.h
+target_include_directories(kde-geo-uri-handler PRIVATE "${CMAKE_BINARY_DIR}/src") # for kguiaddons_version.h
 target_link_libraries(kde-geo-uri-handler PRIVATE Qt6::Gui)
 
 install(TARGETS kde-geo-uri-handler ${KF_INSTALL_TARGETS_DEFAULT_ARGS})

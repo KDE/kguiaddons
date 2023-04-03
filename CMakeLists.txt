@@ -62,8 +62,9 @@ if (WITH_DBUS)
     find_package(Qt6DBus ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
 endif()
 
+set(kguiaddons_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/kguiaddons_version.h")
 ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS
-                        VERSION_HEADER "${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_version.h"
+                        VERSION_HEADER "${kguiaddons_version_header}"
                         PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KF6GuiAddonsConfigVersion.cmake"
                         SOVERSION 6)
 
@@ -107,7 +108,7 @@ install(EXPORT KF6GuiAddonsTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         FILE KF6GuiAddonsTargets.cmake NAMESPACE KF6:: COMPONENT Devel)
 
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kguiaddons_version.h
+install(FILES ${kguiaddons_version_header}
         DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons COMPONENT Devel)
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
