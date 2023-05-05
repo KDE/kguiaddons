@@ -3,6 +3,7 @@ Type=Application
 Exec=kde-geo-uri-handler --coordinate-template "https://wheelmap.org/?lat=<LAT>&lon=<LON>" --query-template "https://wheelmap.org/search?q=<Q>" --fallback "https://wheelmap.org" %u
 Name=wheelmap.org
 Name[ar]=wheelmap.org
+Name[ast]=wheelmap.org
 Name[ca]=wheelmap.org
 Name[ca@valencia]=wheelmap.org
 Name[cs]=wheelmap.org
