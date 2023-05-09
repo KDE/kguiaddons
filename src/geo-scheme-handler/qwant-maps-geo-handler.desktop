@@ -3,6 +3,7 @@ Type=Application
 Exec=kde-geo-uri-handler --coordinate-template "https://www.qwant.com/maps/#map=<Z>/<LAT>/<LON>" --query-template "https://www.qwant.com/maps/?q=<Q>&client=opensearch" --fallback "https://www.qwant.com/maps/" %u
 Name=Qwant Maps
 Name[ar]=خرائط كوانت
+Name[ast]=Qwant Maps
 Name[ca]=Qwant Maps
 Name[ca@valencia]=Qwant Maps
 Name[cs]=Mapy Qwant
