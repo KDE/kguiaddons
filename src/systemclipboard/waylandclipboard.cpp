@@ -14,10 +14,10 @@
 #include <QImageWriter>
 #include <QMimeData>
 #include <QPointer>
+#include <QWaylandClientExtension>
 #include <QWindow>
-#include <QtWaylandClient/QWaylandClientExtension>
+#include <QtWaylandClientVersion>
 #include <qpa/qplatformnativeinterface.h>
-#include <qtwaylandclientversion.h>
 
 #include <errno.h>
 #include <poll.h>

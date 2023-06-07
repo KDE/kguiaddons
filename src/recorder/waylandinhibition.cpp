@@ -8,8 +8,8 @@
 #include <QDebug>
 #include <QGuiApplication>
 #include <QSharedPointer>
-#include <QtWaylandClient/QWaylandClientExtensionTemplate>
-#include <QtWaylandClient/QtWaylandClientVersion>
+#include <QWaylandClientExtensionTemplate>
+#include <QtWaylandClientVersion>
 #include <qpa/qplatformnativeinterface.h>
 
 #include "qwayland-keyboard-shortcuts-inhibit-unstable-v1.h"
