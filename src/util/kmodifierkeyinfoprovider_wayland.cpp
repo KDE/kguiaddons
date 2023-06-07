@@ -8,7 +8,7 @@
 #include "kmodifierkeyinfoprovider_wayland.h"
 #include <QDebug>
 
-#include <QtWaylandClient/qwaylandclientextension.h>
+#include <QWaylandClientExtensionTemplate>
 #include <wayland-client-core.h>
 
 #include "qwayland-keystate.h"
