@@ -243,6 +243,6 @@ if(BUILD_TESTING)
     )
 endif()
 
-if (NOT ANDROID)
+if (NOT ANDROID AND BUILD_GEO_SCHEME_HANDLER)
     add_subdirectory(geo-scheme-handler)
 endif()
