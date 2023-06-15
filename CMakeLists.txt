@@ -24,6 +24,7 @@ include(ECMGenerateExportHeader)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
+option(BUILD_GEO_SCHEME_HANDLER "Build the geo: URI scheme handler. Disable this if you are building two major versions for co-installability in the older variant." ON)
 
 if (UNIX AND NOT ANDROID AND NOT APPLE)
     option(WITH_WAYLAND "Build with support for KModifierKeyInfo, KSystemClipboard and KKeySequenceRecorder inhibiting shortcuts on Wayland" ON)
