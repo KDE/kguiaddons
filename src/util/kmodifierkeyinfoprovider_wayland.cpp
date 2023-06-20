@@ -7,6 +7,7 @@
 
 #include "kmodifierkeyinfoprovider_wayland.h"
 #include <QDebug>
+#include <QGuiApplication>
 
 #include <QWaylandClientExtensionTemplate>
 #include <wayland-client-core.h>
@@ -24,7 +25,7 @@ public:
 
     ~KeyState()
     {
-        if (isInitialized()) {
+        if (isInitialized() && qGuiApp) {
             if (QtWayland::org_kde_kwin_keystate::version() >= ORG_KDE_KWIN_KEYSTATE_DESTROY_SINCE_VERSION) {
                 destroy();
             } else {
