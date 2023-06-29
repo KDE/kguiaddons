@@ -91,3 +91,5 @@ void KModifierKeyInfoProvider::stateUpdated(Qt::Key key, KModifierKeyInfoProvide
         }
     }
 }
+
+#include "moc_kmodifierkeyinfoprovider_p.cpp"

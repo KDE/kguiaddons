@@ -597,3 +597,4 @@ void KKeySequenceRecorder::setModifierOnlyAllowed(bool allowed)
 }
 
 #include "kkeysequencerecorder.moc"
+#include "moc_kkeysequencerecorder.cpp"

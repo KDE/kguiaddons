@@ -210,3 +210,5 @@ void KKeySequenceRecorderTest::testMultiKeyAllowed()
     QCOMPARE(resultSpy.count(), 1);
     QCOMPARE(resultSpy.takeAt(0).at(0).value<QKeySequence>(), QKeySequence(Qt::Key_A | Qt::ControlModifier));
 }
+
+#include "moc_kkeysequencerecordertest.cpp"

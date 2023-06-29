@@ -32,3 +32,5 @@ void KCursorSaverTest::ignoreWarning()
         saverB.restoreCursor();
     }
 }
+
+#include "moc_kcursorsavertest.cpp"

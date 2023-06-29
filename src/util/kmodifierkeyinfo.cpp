@@ -93,3 +93,5 @@ bool KModifierKeyInfo::isButtonPressed(Qt::MouseButton button) const
 {
     return p->isButtonPressed(button);
 }
+
+#include "moc_kmodifierkeyinfo.cpp"

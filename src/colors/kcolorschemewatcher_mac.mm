@@ -47,3 +47,5 @@ KColorSchemeWatcher::ColorPreference KColorSchemeWatcherMac::systemPreference() 
 
     return appearance.name == NSAppearanceNameDarkAqua ? KColorSchemeWatcher::PreferDark : KColorSchemeWatcher::PreferLight;
 }
+
+#include "moc_kcolorschemewatcher_mac.cpp"

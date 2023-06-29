@@ -64,3 +64,5 @@ KColorSchemeWatcher::ColorPreference KColorSchemeWatcherXDG::fdoToInternal(uint 
         return KColorSchemeWatcher::NoPreference;
     }
 }
+
+#include "moc_kcolorschemewatcher_xdg.cpp"

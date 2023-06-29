@@ -58,3 +58,5 @@ KColorSchemeWatcher::ColorPreference KColorSchemeWatcher::systemPreference() con
 
     return NoPreference;
 }
+
+#include "moc_kcolorschemewatcher.cpp"

@@ -5,3 +5,5 @@
  */
 
 #include "kcolorschemewatcherbackend.h"
+
+#include "moc_kcolorschemewatcherbackend.cpp"

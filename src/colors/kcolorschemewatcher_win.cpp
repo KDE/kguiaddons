@@ -43,3 +43,5 @@ KColorSchemeWatcher::ColorPreference KColorSchemeWatcherWin::systemPreference() 
 {
     return m_preferDarkMode ? KColorSchemeWatcher::PreferDark : KColorSchemeWatcher::PreferLight;
 }
+
+#include "moc_kcolorschemewatcher_win.cpp"
