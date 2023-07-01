@@ -187,3 +187,5 @@ void KIconUtilsTest::addOverlaysTest()
     QCOMPARE(bluePixels, 3072);
     QCOMPARE(redPixels, 6144);
 }
+
+#include "moc_kiconutilstest.cpp"

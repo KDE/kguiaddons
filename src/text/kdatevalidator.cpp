@@ -62,3 +62,5 @@ QValidator::State KDateValidator::date(const QString &text, QDate &d) const
 void KDateValidator::fixup(QString &) const
 {
 }
+
+#include "moc_kdatevalidator.cpp"

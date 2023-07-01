@@ -98,3 +98,4 @@ bool KModifierKeyInfoProviderWayland::setKeyLocked(Qt::Key /*key*/, bool /*locke
 }
 
 #include "kmodifierkeyinfoprovider_wayland.moc"
+#include "moc_kmodifierkeyinfoprovider_wayland.cpp"

@@ -125,3 +125,5 @@ static void initializeGlobalSettings()
 }
 
 Q_COREAPP_STARTUP_FUNCTION(initializeGlobalSettings)
+
+#include "moc_kurlhandler_p.cpp"

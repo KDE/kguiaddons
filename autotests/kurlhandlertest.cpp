@@ -56,3 +56,5 @@ void KUrlHandlerTest::testOpeningDocsUrls()
 }
 
 QTEST_MAIN(KUrlHandlerTest)
+
+#include "moc_kurlhandlertest.cpp"

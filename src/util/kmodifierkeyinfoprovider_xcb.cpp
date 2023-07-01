@@ -352,3 +352,5 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
         XkbFreeKeyboard(xkb, 0, true);
     }
 }
+
+#include "moc_kmodifierkeyinfoprovider_xcb.cpp"

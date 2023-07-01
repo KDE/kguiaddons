@@ -56,3 +56,5 @@ KSystemClipboard::KSystemClipboard(QObject *parent)
     : QObject(parent)
 {
 }
+
+#include "moc_ksystemclipboard.cpp"

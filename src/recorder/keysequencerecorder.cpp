@@ -595,3 +595,4 @@ void KeySequenceRecorder::setModifierOnlyAllowed(bool allowed)
 }
 
 #include "keysequencerecorder.moc"
+#include "moc_keysequencerecorder.cpp"
