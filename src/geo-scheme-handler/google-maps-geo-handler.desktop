@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=kde-geo-uri-handler --coordinate-template "https://www.google.com/maps/@<LAT>,<LON>,<Z>" --query-template "https://www.google.com/maps/search/<Q>" --fallback "https://www.google.com/maps/" %u
+Exec=kde-geo-uri-handler --coordinate-template "https://www.google.com/maps/@<LAT>,<LON>,<Z>z" --query-template "https://www.google.com/maps/search/<Q>" --fallback "https://www.google.com/maps/" %u
 Name=Google Maps
 Name[ar]=خرائط غوغل
 Name[ast]=Google Maps
