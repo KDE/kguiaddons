@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 // SPDX-FileCopyrightText: 2022-2023 Harald Sitter <sitter@kde.org>
 
-#pragma once
+#ifndef KCOUNTRYFLAGEMOJIICONENGINE_H
+#define KCOUNTRYFLAGEMOJIICONENGINE_H
 
 #include <QIconEngine>
 
@@ -58,3 +59,5 @@ public:
 private:
     std::unique_ptr<KCountryFlagEmojiIconEnginePrivate> const d;
 };
+
+#endif
