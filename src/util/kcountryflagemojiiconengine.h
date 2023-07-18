@@ -30,7 +30,7 @@ public:
      */
     explicit KCountryFlagEmojiIconEngine(const QString &regionOrCountry);
     ~KCountryFlagEmojiIconEngine() override;
-    Q_DISABLE_COPY_MOVE(KCountryFlagEmojiIconEngine);
+    Q_DISABLE_COPY_MOVE(KCountryFlagEmojiIconEngine)
 
     QIconEngine *clone() const override;
     QString key() const override;
