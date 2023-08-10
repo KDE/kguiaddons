@@ -4,6 +4,7 @@ Exec=kde-geo-uri-handler --coordinate-template "https://www.qwant.com/maps/#map=
 Name=Qwant Maps
 Name[ar]=خرائط كوانت
 Name[ast]=Qwant Maps
+Name[bg]=Qwant Maps
 Name[ca]=Qwant Maps
 Name[ca@valencia]=Qwant Maps
 Name[cs]=Mapy Qwant

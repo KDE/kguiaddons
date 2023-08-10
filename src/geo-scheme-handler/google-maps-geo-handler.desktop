@@ -4,6 +4,7 @@ Exec=kde-geo-uri-handler --coordinate-template "https://www.google.com/maps/@<LA
 Name=Google Maps
 Name[ar]=خرائط غوغل
 Name[ast]=Google Maps
+Name[bg]=Google карти
 Name[ca]=Google Maps
 Name[ca@valencia]=Google Maps
 Name[cs]=Mapy Google

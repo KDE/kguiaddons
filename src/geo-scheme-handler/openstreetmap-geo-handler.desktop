@@ -4,6 +4,7 @@ Exec=kde-geo-uri-handler --coordinate-template "https://www.openstreetmap.org/#m
 Name=OpenStreetMap
 Name[ar]=خريطة الشّوارع المفتوحة
 Name[ast]=OpenStreetMap
+Name[bg]=OpenStreetMap
 Name[ca]=OpenStreetMap
 Name[ca@valencia]=OpenStreetMap
 Name[cs]=OpenStreetMap

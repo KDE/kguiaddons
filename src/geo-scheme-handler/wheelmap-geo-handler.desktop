@@ -4,6 +4,7 @@ Exec=kde-geo-uri-handler --coordinate-template "https://wheelmap.org/?lat=<LAT>&
 Name=wheelmap.org
 Name[ar]=wheelmap.org
 Name[ast]=wheelmap.org
+Name[bg]=wheelmap.org
 Name[ca]=wheelmap.org
 Name[ca@valencia]=wheelmap.org
 Name[cs]=wheelmap.org
