@@ -83,7 +83,7 @@ static bool isShiftAsModifierAllowed(int keyQt)
         return true;
     }
 
-    if (QChar(keyQt).isLetter()) {
+    if (QChar::isLetter(keyQt)) {
         return true;
     }
 

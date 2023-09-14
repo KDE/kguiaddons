@@ -90,8 +90,7 @@ void KKeySequenceRecorderTest::testModifiers()
     QCOMPARE(recordingSpy.count(), 1);
     QVERIFY(recorder.isRecording());
 
-    QTest::qWait(800);
-    QVERIFY(recorder.isRecording());
+    QTRY_VERIFY_WITH_TIMEOUT(recorder.isRecording(), 800);
 
     QTest::keyPress(m_window, Qt::Key_Control);
     QCOMPARE(sequenceSpy.count(), 4);
@@ -116,16 +115,14 @@ void KKeySequenceRecorderTest::testModifierless()
 
     recorder.setModifierlessAllowed(false);
     QTest::keyPress(m_window, Qt::Key_A);
-    QTest::qWait(800);
-    QVERIFY(recorder.isRecording());
+    QTRY_VERIFY_WITH_TIMEOUT(recorder.isRecording(), 800);
     QCOMPARE(sequenceSpy.count(), 1);
     QCOMPARE(resultSpy.count(), 0);
     QCOMPARE(recorder.currentKeySequence(), QKeySequence());
 
     recorder.setModifierlessAllowed(true);
     QTest::keyClick(m_window, Qt::Key_A);
-    QTest::qWait(800);
-    QVERIFY(!recorder.isRecording());
+    QTRY_VERIFY_WITH_TIMEOUT(!recorder.isRecording(), 800);
     QCOMPARE(sequenceSpy.count(), 2);
     QCOMPARE(resultSpy.count(), 1);
     QCOMPARE(recorder.currentKeySequence(), QKeySequence(Qt::Key_A));
@@ -209,6 +206,31 @@ void KKeySequenceRecorderTest::testMultiKeyAllowed()
     QCOMPARE(recordingSpy.count(), 4);
     QCOMPARE(resultSpy.count(), 1);
     QCOMPARE(resultSpy.takeAt(0).at(0).value<QKeySequence>(), QKeySequence(Qt::Key_A | Qt::ControlModifier));
+}
+
+void KKeySequenceRecorderTest::testKeyNonLetterNoModifier()
+{
+    KKeySequenceRecorder recorder(m_window);
+    QSignalSpy resultSpy(&recorder, &KKeySequenceRecorder::gotKeySequence);
+    QSignalSpy sequenceSpy(&recorder, &KKeySequenceRecorder::currentKeySequenceChanged);
+
+    recorder.startRecording();
+    QVERIFY(recorder.isRecording());
+    QCOMPARE(sequenceSpy.count(), 1);
+
+    recorder.setModifierlessAllowed(false);
+    QTest::keyPress(m_window, Qt::Key_Insert);
+    QTRY_VERIFY_WITH_TIMEOUT(recorder.isRecording(), 800);
+    QCOMPARE(sequenceSpy.count(), 2);
+    QCOMPARE(resultSpy.count(), 0);
+    QCOMPARE(recorder.currentKeySequence(), QKeySequence(Qt::Key_Insert));
+
+    recorder.setModifierlessAllowed(true);
+    QTest::keyClick(m_window, Qt::Key_Insert);
+    QTRY_VERIFY_WITH_TIMEOUT(!recorder.isRecording(), 800);
+    QCOMPARE(sequenceSpy.count(), 3);
+    QCOMPARE(resultSpy.count(), 1);
+    QCOMPARE(recorder.currentKeySequence(), QKeySequence(Qt::Key_Insert, Qt::Key_Insert));
 }
 
 #include "moc_kkeysequencerecordertest.cpp"
