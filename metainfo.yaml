@@ -12,8 +12,7 @@ portingAid: false
 deprecated: false
 release: true
 libraries:
- - qmake: KGuiAddons
-   cmake: "KF6::GuiAddons"
+ - cmake: "KF6::GuiAddons"
 cmakename: KF6GuiAddons
 
 public_lib: true
