@@ -6,6 +6,7 @@ add_executable(kde-geo-uri-handler
     kgeourihandler_p.h
     main.cpp
 )
+ecm_mark_nongui_executable(kde-geo-uri-handler)
 target_include_directories(kde-geo-uri-handler PRIVATE "${CMAKE_BINARY_DIR}/src") # for kguiaddons_version.h
 target_link_libraries(kde-geo-uri-handler PRIVATE Qt6::Gui)
 
