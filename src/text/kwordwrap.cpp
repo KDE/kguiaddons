@@ -6,15 +6,15 @@
 
 #include "kwordwrap.h"
 
+#include <QList>
 #include <QPainter>
-#include <QVector>
 
 class KWordWrapPrivate : public QSharedData
 {
 public:
     QRect m_constrainingRect;
-    QVector<int> m_breakPositions;
-    QVector<int> m_lineWidths;
+    QList<int> m_breakPositions;
+    QList<int> m_lineWidths;
     QRect m_boundingRect;
     QString m_text;
 };
