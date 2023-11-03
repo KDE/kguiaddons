@@ -40,5 +40,5 @@ int main(int argc, char **argv)
 
     qDebug() << "Watching for new clipboard content...";
 
-    app.exec();
+    return app.exec();
 }

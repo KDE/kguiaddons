@@ -10,7 +10,7 @@
 int main(int argc, char **argv)
 {
     QApplication::setApplicationName(QStringLiteral("KColorCollectionTest"));
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
 
     QStringList collections = KColorCollection::installedCollections();
     for (QStringList::ConstIterator it = collections.constBegin(); it != collections.constEnd(); ++it) {
@@ -29,4 +29,5 @@ int main(int argc, char **argv)
             printf("#%d Name = \"%s\" #%02x%02x%02x\n", i, myColorCollection.name(i).toLatin1().constData(), r, g, b);
         }
     }
+    return EXIT_SUCCESS;
 }
