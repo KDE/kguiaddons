@@ -31,6 +31,7 @@ Name[sv]=OpenStreetMap
 Name[tr]=OpenStreetMap
 Name[uk]=OpenStreetMap
 Name[vi]=OpenStreetMap
+Name[x-test]=xxOpenStreetMapxx
 Name[zh_CN]=OpenStreetMap
 Icon=map-globe
 MimeType=x-scheme-handler/geo;
