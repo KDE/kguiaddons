@@ -16,6 +16,7 @@ target_sources(KF6GuiAddons PRIVATE
  colors/kcolormimedata.cpp
  colors/kcolorschemewatcher.cpp
  colors/kcolorschemewatcherbackend.cpp
+ colors/kcolorschemewatcher_qt.cpp
  text/kdatevalidator.cpp
  text/kwordwrap.cpp
  fonts/kfontutils.cpp

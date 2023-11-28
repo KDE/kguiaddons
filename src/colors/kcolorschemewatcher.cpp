@@ -6,6 +6,7 @@
 
 #include "kcolorschemewatcher.h"
 
+#include "kcolorschemewatcher_qt.h"
 #include "kcolorschemewatcherbackend.h"
 
 #ifdef Q_OS_WINDOWS
@@ -33,6 +34,8 @@ public:
         backend = std::make_unique<KColorSchemeWatcherMac>();
 #elif defined(QT_DBUS_LIB)
         backend = std::make_unique<KColorSchemeWatcherXDG>();
+#else
+        backend = std::make_unique<KColorSchemeWatcherQt>();
 #endif
     }
 };
