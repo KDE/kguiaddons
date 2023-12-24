@@ -33,6 +33,7 @@ Name[uk]=Карти Google
 Name[vi]=Google Bản đồ
 Name[x-test]=xxGoogle Mapsxx
 Name[zh_CN]=Google Maps
+Name[zh_TW]=Google 地圖
 Icon=map-globe
 MimeType=x-scheme-handler/geo;
 Terminal=false
