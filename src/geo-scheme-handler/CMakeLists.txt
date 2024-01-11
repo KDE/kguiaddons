@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2021 Volker Krause <vkrause@kde.org>
 # SPDX-License-Identifier: BSD-2-Clause
 
-add_executable(kde-geo-uri-handler
+qt_add_executable(kde-geo-uri-handler
     kgeourihandler.cpp
     kgeourihandler_p.h
     main.cpp

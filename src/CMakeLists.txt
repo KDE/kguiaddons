@@ -219,7 +219,7 @@ ecm_qt_install_logging_categories(
 )
 
 if(BUILD_TESTING)
-    add_executable(pasteclient systemclipboard/tests/paste.cpp)
+    qt_add_executable(pasteclient systemclipboard/tests/paste.cpp)
 
     target_link_libraries(pasteclient
         KF6GuiAddons

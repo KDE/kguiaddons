@@ -28,7 +28,9 @@ static bool openWithKHelpCenter(const QUrl &url)
             u.setPath(appName);
         }
 
+#if QT_CONFIG(process)
         QProcess::startDetached(helpcenter, QStringList(u.toString()));
+#endif
         return true;
     }
 
