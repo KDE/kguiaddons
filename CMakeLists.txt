@@ -21,6 +21,7 @@ include(ECMQtDeclareLoggingCategory)
 include(ECMDeprecationSettings)
 include(ECMAddQch)
 include(ECMGenerateExportHeader)
+include(ECMGeneratePkgConfigFile)
 include(ECMMarkNonGuiExecutable)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
@@ -112,6 +113,13 @@ install(EXPORT KF6GuiAddonsTargets DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
 
 install(FILES ${kguiaddons_version_header}
         DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons COMPONENT Devel)
+
+if (NOT WIN32)
+    ecm_generate_pkgconfig_file(BASE_NAME KF6GuiAddons
+      INCLUDE_INSTALL_DIR ${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons
+      DEPS Qt6Gui
+    INSTALL)
+endif()
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
