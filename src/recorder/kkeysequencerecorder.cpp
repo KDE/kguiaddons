@@ -287,6 +287,17 @@ static QKeySequence appendToSequence(const QKeySequence &sequence, int key)
                                                                    sequence[1].toCombined(),
                                                                    sequence[2].toCombined(),
                                                                    sequence[3].toCombined()};
+    // When the user presses Mod(s)+Alt+Print, the SysReq event is fired only
+    // when the Alt key is released. Before we get the Mod(s)+SysReq event, we
+    // first get a Mod(s)+Alt event, which we have to ignore.
+    // Known limitation: only works when the Alt key is released before the Mod(s) key(s).
+    if ((key & ~Qt::KeyboardModifierMask) == Qt::Key_SysReq) {
+        key = Qt::Key_Print | (key & Qt::KeyboardModifierMask) | Qt::AltModifier;
+        if (sequence.count() > 0 && (sequence[sequence.count() - 1].toCombined() & ~Qt::KeyboardModifierMask) == Qt::Key_Alt) {
+            keys[sequence.count() - 1] = key;
+            return QKeySequence(keys[0], keys[1], keys[2], keys[3]);
+        }
+    }
     keys[sequence.count()] = key;
     return QKeySequence(keys[0], keys[1], keys[2], keys[3]);
 }
