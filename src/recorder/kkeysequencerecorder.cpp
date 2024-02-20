@@ -21,6 +21,7 @@
 #include <QWindow>
 
 #include <array>
+#include <chrono>
 
 /// Singleton whose only purpose is to tell us about other sequence recorders getting started
 class KKeySequenceRecorderGlobal : public QObject
@@ -65,6 +66,10 @@ public:
     Qt::KeyboardModifiers m_currentModifiers;
     QTimer m_modifierlessTimer;
     std::unique_ptr<ShortcutInhibition> m_inhibition;
+    // For use in modifier only shortcuts
+    Qt::KeyboardModifiers m_lastPressedModifiers;
+    bool m_isReleasingModifierOnly = false;
+    std::chrono::nanoseconds m_modifierFirstReleaseTime;
 };
 
 constexpr Qt::KeyboardModifiers modifierMask = Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier | Qt::KeypadModifier;
@@ -340,8 +345,28 @@ bool KKeySequenceRecorderPrivate::eventFilter(QObject *watched, QEvent *event)
     return QObject::eventFilter(watched, event);
 }
 
+static Qt::KeyboardModifiers keyToModifier(int key)
+{
+    switch (key) {
+    case Qt::Key_Meta:
+    case Qt::Key_Super_L:
+    case Qt::Key_Super_R:
+        // Qt doesn't properly recognize Super_L/Super_R as MetaModifier
+        return Qt::MetaModifier;
+    case Qt::Key_Shift:
+        return Qt::ShiftModifier;
+    case Qt::Key_Control:
+        return Qt::ControlModifier;
+    case Qt::Key_Alt:
+        return Qt::AltModifier;
+    default:
+        return Qt::NoModifier;
+    }
+}
+
 void KKeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
 {
+    m_isReleasingModifierOnly = false;
     m_currentModifiers = event->modifiers() & modifierMask;
     int key = event->key();
     switch (key) {
@@ -356,17 +381,17 @@ void KKeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
         break;
     case Qt::Key_Super_L:
     case Qt::Key_Super_R:
-        // Qt doesn't properly recognize Super_L/Super_R as MetaModifier
-        m_currentModifiers |= Qt::MetaModifier;
-        Q_FALLTHROUGH();
     case Qt::Key_Shift:
     case Qt::Key_Control:
     case Qt::Key_Alt:
     case Qt::Key_Meta:
+        m_currentModifiers |= keyToModifier(key);
+        m_lastPressedModifiers = m_currentModifiers;
         controlModifierlessTimeout();
         Q_EMIT q->currentKeySequenceChanged();
         break;
     default:
+        m_lastPressedModifiers = Qt::NoModifier;
         if (m_currentKeySequence.count() == 0 && !(m_currentModifiers & ~Qt::ShiftModifier)) {
             // It's the first key and no modifier pressed. Check if this is allowed
             if (!(isOkWhenModifierless(key) || m_modifierlessAllowed)) {
@@ -399,44 +424,56 @@ void KKeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
     event->accept();
 }
 
+// Turn a bunch of modifiers into mods + key
+// so that the ordering is always Meta + Ctrl + Alt + Shift
+static int prettifyModifierOnly(Qt::KeyboardModifiers modifier)
+{
+    if (modifier & Qt::ShiftModifier) {
+        return (Qt::Key_Shift | (modifier & ~Qt::ShiftModifier)).toCombined();
+    } else if (modifier & Qt::AltModifier) {
+        return (Qt::Key_Alt | (modifier & ~Qt::AltModifier)).toCombined();
+    } else if (modifier & Qt::ControlModifier) {
+        return (Qt::Key_Control | (modifier & ~Qt::ControlModifier)).toCombined();
+    } else if (modifier & Qt::MetaModifier) {
+        return (Qt::Key_Meta | (modifier & ~Qt::MetaModifier)).toCombined();
+    } else {
+        return Qt::Key(0);
+    }
+}
+
 void KKeySequenceRecorderPrivate::handleKeyRelease(QKeyEvent *event)
 {
     Qt::KeyboardModifiers modifiers = event->modifiers() & modifierMask;
 
-    /* The modifier release event (e.g. Qt::Key_Shift) also has the modifier
-       flag set so we were interpreting the "Shift" press as "Shift + Shift".
-       This function makes it so we just take the key part but not the modifier
-       if we are doing this one alone. */
-    const auto justKey = [&](Qt::KeyboardModifiers modifier) {
-        modifiers &= ~modifier;
-        if (m_currentKeySequence.isEmpty() && m_modifierOnlyAllowed) {
-            m_currentKeySequence = appendToSequence(m_currentKeySequence, event->key());
-        }
-    };
     switch (event->key()) {
     case -1:
         return;
     case Qt::Key_Super_L:
     case Qt::Key_Super_R:
     case Qt::Key_Meta:
-        justKey(Qt::MetaModifier);
-        break;
     case Qt::Key_Shift:
-        justKey(Qt::ShiftModifier);
-        break;
     case Qt::Key_Control:
-        justKey(Qt::ControlModifier);
-        break;
     case Qt::Key_Alt:
-        justKey(Qt::AltModifier);
-        break;
+        modifiers &= ~keyToModifier(event->key());
     }
-
     if ((modifiers & m_currentModifiers) < m_currentModifiers) {
+        constexpr auto releaseTimeout = std::chrono::milliseconds(200);
+        const auto currentTime = std::chrono::steady_clock::now().time_since_epoch();
+        if (!m_isReleasingModifierOnly) {
+            m_isReleasingModifierOnly = true;
+            m_modifierFirstReleaseTime = currentTime;
+        }
+        if (m_modifierOnlyAllowed && !modifiers && (currentTime - m_modifierFirstReleaseTime) < releaseTimeout) {
+            m_currentKeySequence = appendToSequence(m_currentKeySequence, prettifyModifierOnly(m_lastPressedModifiers));
+            m_lastPressedModifiers = Qt::NoModifier;
+        }
         m_currentModifiers = modifiers;
-        controlModifierlessTimeout();
         Q_EMIT q->currentKeySequenceChanged();
-    }
+        if (m_currentKeySequence.count() == (m_multiKeyShortcutsAllowed ? MaxKeyCount : 1)) {
+            finishRecording();
+        }
+        controlModifierlessTimeout();
+    };
 }
 
 void KKeySequenceRecorderPrivate::receivedRecording()
@@ -444,6 +481,8 @@ void KKeySequenceRecorderPrivate::receivedRecording()
     m_modifierlessTimer.stop();
     m_isRecording = false;
     m_currentModifiers = Qt::NoModifier;
+    m_lastPressedModifiers = Qt::NoModifier;
+    m_isReleasingModifierOnly = false;
     if (m_inhibition) {
         m_inhibition->disableInhibition();
     }

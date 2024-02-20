@@ -149,6 +149,63 @@ void KKeySequenceRecorderTest::testModifierOnly()
     QCOMPARE(recorder.currentKeySequence(), QKeySequence(Qt::Key_Shift));
 }
 
+void KKeySequenceRecorderTest::testModifierOnlyMultiple()
+{
+    KKeySequenceRecorder recorder(m_window);
+    recorder.setModifierOnlyAllowed(true);
+    recorder.setModifierlessAllowed(true);
+    QSignalSpy resultSpy(&recorder, &KKeySequenceRecorder::gotKeySequence);
+    QSignalSpy recordingSpy(&recorder, &KKeySequenceRecorder::recordingChanged);
+
+    recorder.startRecording();
+    QVERIFY(recorder.isRecording());
+
+    QTest::keyPress(m_window, Qt::Key_Shift);
+    Qt::KeyboardModifiers modifiers = Qt::ShiftModifier;
+    QTest::keyPress(m_window, Qt::Key_Control, modifiers);
+    modifiers |= Qt::ControlModifier;
+    modifiers |= Qt::AltModifier;
+    QTest::keyPress(m_window, Qt::Key_Alt, modifiers);
+    QTest::keyPress(m_window, Qt::Key_Meta, modifiers);
+    modifiers |= Qt::MetaModifier;
+    QTest::qWait(200);
+    QTest::keyRelease(m_window, Qt::Key_Control, modifiers);
+    modifiers &= ~Qt::ControlModifier;
+    QTest::qWait(10);
+    QTest::keyRelease(m_window, Qt::Key_Alt, modifiers);
+    modifiers &= ~Qt::AltModifier;
+    modifiers &= ~Qt::ShiftModifier;
+    QTest::qWait(10);
+    QTest::keyRelease(m_window, Qt::Key_Shift, modifiers);
+    QTest::qWait(10);
+    QTest::keyRelease(m_window, Qt::Key_Meta, modifiers);
+    recordingSpy.wait();
+    QVERIFY(!recorder.isRecording());
+    QCOMPARE(resultSpy.count(), 1);
+    QCOMPARE(resultSpy.takeFirst().at(0).value<QKeySequence>(), QKeySequence(Qt::MetaModifier | Qt::ControlModifier | Qt::AltModifier | Qt::Key_Shift));
+}
+
+void KKeySequenceRecorderTest::testModifierOnlyMultipleInterrupt()
+{
+    KKeySequenceRecorder recorder(m_window);
+    recorder.setModifierOnlyAllowed(true);
+    recorder.setModifierlessAllowed(true);
+    QSignalSpy resultSpy(&recorder, &KKeySequenceRecorder::gotKeySequence);
+    QSignalSpy recordingSpy(&recorder, &KKeySequenceRecorder::recordingChanged);
+
+    recorder.startRecording();
+    QVERIFY(recorder.isRecording());
+
+    QTest::keyPress(m_window, Qt::Key_Control);
+    QTest::keyPress(m_window, Qt::Key_Meta, Qt::ControlModifier);
+    QTest::keyClick(m_window, Qt::Key_A, Qt::ControlModifier);
+
+    recordingSpy.wait();
+    QVERIFY(!recorder.isRecording());
+    QCOMPARE(resultSpy.count(), 1);
+    QCOMPARE(resultSpy.takeFirst().at(0).value<QKeySequence>(), QKeySequence(Qt::ControlModifier | Qt::Key_A));
+}
+
 void KKeySequenceRecorderTest::testModifierOnlyDisabled()
 {
     KKeySequenceRecorder recorder(m_window);

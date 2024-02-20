@@ -21,6 +21,8 @@ private Q_SLOTS:
     void testModifiers();
     void testModifierless();
     void testModifierOnly();
+    void testModifierOnlyMultiple();
+    void testModifierOnlyMultipleInterrupt();
     void testModifierOnlyDisabled();
     void testMultiKeyAllowed();
     void testKeyNonLetterNoModifier();
