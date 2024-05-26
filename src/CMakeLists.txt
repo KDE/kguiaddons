@@ -134,12 +134,15 @@ target_include_directories(KF6GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INS
 target_compile_definitions(KF6GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
 target_link_libraries(KF6GuiAddons PUBLIC Qt6::Gui)
 
+qt_extract_metatypes(KF6GuiAddons)
+
 ecm_generate_headers(KGuiAddons_HEADERS
   HEADER_NAMES
   KColorUtils
   KColorCollection
   KColorMimeData
   KColorSchemeWatcher
+  KWindowInsetsController
 
   RELATIVE colors
   REQUIRED_HEADERS KGuiAddons_HEADERS
@@ -238,4 +241,8 @@ endif()
 
 if (NOT ANDROID AND BUILD_GEO_SCHEME_HANDLER)
     add_subdirectory(geo-scheme-handler)
+endif()
+
+if (TARGET Qt6::Qml)
+    add_subdirectory(qml)
 endif()

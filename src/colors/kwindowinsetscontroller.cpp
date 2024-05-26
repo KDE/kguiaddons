@@ -36,7 +36,7 @@ QColor KWindowInsetsController::statusBarBackgroundColor() const // NOLINT reada
 #endif
 }
 
-void KWindowInsetsController::setStatatusBarBackgroundColor(const QColor &color) // NOLINT readability-convert-member-functions-to-static
+void KWindowInsetsController::setStatusBarBackgroundColor(const QColor &color) // NOLINT readability-convert-member-functions-to-static
 {
 #ifdef Q_OS_ANDROID
     d->m_statusBarColor = color;
@@ -49,7 +49,7 @@ void KWindowInsetsController::setStatatusBarBackgroundColor(const QColor &color)
                                            color.rgba());
     });
 #else
-    Q_UNUSED(color);
+    Q_UNUSED(color)
 #endif
 }
 
@@ -75,7 +75,7 @@ void KWindowInsetsController::setNavigationBarBackgroundColor(const QColor &colo
                                            color.rgba());
     });
 #else
-    Q_UNUSED(color);
+    Q_UNUSED(color)
 #endif
 }
 
