@@ -109,6 +109,7 @@ ecm_generate_export_header(KF6GuiAddons
     VERSION ${KF_VERSION}
     USE_VERSION_HEADER
     DEPRECATED_BASE_VERSION 0
+    DEPRECATION_VERSIONS 6.3
 )
 
 set(kguiaddons_INCLUDES

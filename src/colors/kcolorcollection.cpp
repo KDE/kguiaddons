@@ -8,6 +8,7 @@
 
 #include "kcolorcollection.h"
 
+#if KGUIADDONS_BUILD_DEPRECATED_SINCE(6, 3)
 #include <QDir>
 #include <QFile>
 #include <QSaveFile>
@@ -240,3 +241,5 @@ int KColorCollection::changeColor(const QColor &oldColor, const QColor &newColor
 {
     return changeColor(findColor(oldColor), newColor, newColorName);
 }
+
+#endif

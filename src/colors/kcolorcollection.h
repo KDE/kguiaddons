@@ -16,6 +16,7 @@
 #include <QString>
 #include <QStringList>
 
+#if KGUIADDONS_ENABLE_DEPRECATED_SINCE(6, 3)
 /**
  * @class KColorCollection kcolorcollection.h KColorCollection
  *
@@ -27,8 +28,10 @@
  * This class uses the "GIMP" palette file format.
  *
  * @author Waldo Bastian (bastian@kde.org)
+ *
+ * @deprecated since 6.3, unused and backing data no longer available
  */
-class KGUIADDONS_EXPORT KColorCollection
+class KGUIADDONS_EXPORT KGUIADDONS_DEPRECATED_VERSION(6, 3, "unused") KColorCollection
 {
 public:
     /**
@@ -187,5 +190,6 @@ public:
 private:
     QSharedDataPointer<class KColorCollectionPrivate> d;
 };
+#endif
 
 #endif // KDELIBS_KCOLORCOLLECTION_H
