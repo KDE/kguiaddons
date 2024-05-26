@@ -17,6 +17,7 @@ target_sources(KF6GuiAddons PRIVATE
  colors/kcolorschemewatcher.cpp
  colors/kcolorschemewatcherbackend.cpp
  colors/kcolorschemewatcher_qt.cpp
+ colors/kwindowinsetscontroller.cpp
  text/kdatevalidator.cpp
  text/kwordwrap.cpp
  fonts/kfontutils.cpp
@@ -105,6 +106,10 @@ endif()
 if(WITH_X11)
     target_sources(KF6GuiAddons PRIVATE util/kmodifierkeyinfoprovider_xcb.cpp util/kmodifierkeyinfoprovider_xcb.h)
     target_link_libraries(KF6GuiAddons PRIVATE X11::Xkb XCB::XCB)
+endif()
+
+if(ANDROID)
+    add_subdirectory(android)
 endif()
 
 ecm_generate_export_header(KF6GuiAddons

@@ -72,6 +72,10 @@ if(USE_DBUS)
     set(WITH_DBUS ON)
 endif()
 
+if (ANDROID)
+    find_package(Gradle REQUIRED)
+endif()
+
 set(kguiaddons_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/kguiaddons_version.h")
 ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS
                         VERSION_HEADER "${kguiaddons_version_header}"
