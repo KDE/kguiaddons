@@ -28,19 +28,15 @@ option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, 
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
 option(BUILD_GEO_SCHEME_HANDLER "Build the geo: URI scheme handler. Disable this if you are building two major versions for co-installability in the older variant." ON)
 
-if (UNIX AND NOT ANDROID AND NOT APPLE)
+if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT HAIKU)
     option(WITH_WAYLAND "Build with support for KModifierKeyInfo, KSystemClipboard and KKeySequenceRecorder inhibiting shortcuts on Wayland" ON)
     add_feature_info(WAYLAND ${WITH_WAYLAND} "KeySequenceEditor inhibiting shortcuts on Wayland")
 
     option(WITH_X11 "Build with support for KModifierKeyInfo on X11" ON)
     add_feature_info(X11 ${WITH_X11} "KeySequenceEditor inhibiting shortcuts on X11")
-
-    option(WITH_DBUS "Build with support for color scheme information via XDG portals" ON)
-
 else()
     set(WITH_WAYLAND OFF)
     set(WITH_X11 OFF)
-    set(WITH_DBUS OFF)
 endif()
 
 set(REQUIRED_QT_VERSION 6.5.0)
@@ -61,8 +57,16 @@ if (WITH_WAYLAND)
     find_package(Wayland 1.9 REQUIRED Client)
 endif()
 
-if (WITH_DBUS)
+# shall we use DBus?
+# enabled per default on Linux & BSD systems
+set(USE_DBUS_DEFAULT OFF)
+if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT HAIKU)
+    set(USE_DBUS_DEFAULT ON)
+endif()
+option(USE_DBUS "Build components using DBus (get color scheme information via XDG portals)" ${USE_DBUS_DEFAULT})
+if(USE_DBUS)
     find_package(Qt6DBus ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
+    set(WITH_DBUS ON)
 endif()
 
 set(kguiaddons_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/kguiaddons_version.h")
