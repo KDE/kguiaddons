@@ -600,6 +600,10 @@ void WaylandClipboard::setMimeData(QMimeData *mime, QClipboard::Mode mode)
     // If the application is focused, use the normal mechanism so a future paste will not deadlock itselfs
     if (m_keyboardFocusWatcher->hasFocus()) {
         QGuiApplication::clipboard()->setMimeData(mime, mode);
+        // if we short-circuit the wlr_data_device, when we receive the data
+        // we cannot identify ourselves as the owner
+        // because of that we act like it's a synchronous action to not confuse klipper.
+        wl_display_roundtrip(display);
         return;
     }
     // If not, set the clipboard once the app receives focus to avoid the deadlock
