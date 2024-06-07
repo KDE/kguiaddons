@@ -27,8 +27,6 @@ public:
     bool isValid();
 
 private:
-    void gainedFocus();
-    std::unique_ptr<KeyboardFocusWatcher> m_keyboardFocusWatcher;
     std::unique_ptr<DataControlDeviceManager> m_manager;
     std::unique_ptr<DataControlDevice> m_device;
 };
