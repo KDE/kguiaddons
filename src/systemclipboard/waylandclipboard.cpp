@@ -259,107 +259,7 @@ bool DataControlOffer::readData(int fd, QByteArray &data)
             }
         }
     }
-}
-
-class DataControlSource : public QObject, public QtWayland::zwlr_data_control_source_v1
-{
-    Q_OBJECT
-public:
-    DataControlSource(struct ::zwlr_data_control_source_v1 *id, QMimeData *mimeData);
-    DataControlSource() = default;
-    ~DataControlSource()
-    {
-        destroy();
-    }
-
-    QMimeData *mimeData()
-    {
-        return m_mimeData.get();
-    }
-    std::unique_ptr<QMimeData> releaseMimeData()
-    {
-        return std::move(m_mimeData);
-    }
-
-Q_SIGNALS:
-    void cancelled();
-
-protected:
-    void zwlr_data_control_source_v1_send(const QString &mime_type, int32_t fd) override;
-    void zwlr_data_control_source_v1_cancelled() override;
-
-private:
-    std::unique_ptr<QMimeData> m_mimeData;
 };
-
-DataControlSource::DataControlSource(struct ::zwlr_data_control_source_v1 *id, QMimeData *mimeData)
-    : QtWayland::zwlr_data_control_source_v1(id)
-    , m_mimeData(mimeData)
-{
-    const auto formats = mimeData->formats();
-    for (const QString &format : formats) {
-        offer(format);
-    }
-    if (mimeData->hasText()) {
-        // ensure GTK applications get this mimetype to avoid them discarding the offer
-        offer(QStringLiteral("text/plain;charset=utf-8"));
-    }
-
-    if (mimeData->hasImage()) {
-        const QStringList imageFormats = imageWriteMimeFormats();
-        for (const QString &imageFormat : imageFormats) {
-            if (!formats.contains(imageFormat)) {
-                offer(imageFormat);
-            }
-        }
-    }
-}
-
-void DataControlSource::zwlr_data_control_source_v1_send(const QString &mime_type, int32_t fd)
-{
-    QString send_mime_type = mime_type;
-    if (send_mime_type == QStringLiteral("text/plain;charset=utf-8")) {
-        // if we get a request on the fallback mime, send the data from the original mime type
-        send_mime_type = QStringLiteral("text/plain");
-    }
-
-    QByteArray ba;
-    if (m_mimeData->hasImage()) {
-        // adapted from QInternalMimeData::renderDataHelper
-        if (mime_type == applicationQtXImageLiteral()) {
-            QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
-            QBuffer buf(&ba);
-            buf.open(QBuffer::WriteOnly);
-            // would there not be PNG ??
-            image.save(&buf, "PNG");
-
-        } else if (mime_type.startsWith(QLatin1String("image/"))) {
-            QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
-            QBuffer buf(&ba);
-            buf.open(QBuffer::WriteOnly);
-            image.save(&buf, mime_type.mid(mime_type.indexOf(QLatin1Char('/')) + 1).toLatin1().toUpper().data());
-        }
-        // end adapted
-    } else {
-        ba = m_mimeData->data(send_mime_type);
-    }
-
-    // Create a sigpipe handler that does nothing, or clients may be forced to terminate
-    // if the pipe is closed in the other end.
-    struct sigaction action, oldAction;
-    action.sa_handler = SIG_IGN;
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    sigaction(SIGPIPE, &action, &oldAction);
-    write(fd, ba.constData(), ba.size());
-    sigaction(SIGPIPE, &oldAction, nullptr);
-    close(fd);
-}
-
-void DataControlSource::zwlr_data_control_source_v1_cancelled()
-{
-    Q_EMIT cancelled();
-}
 
 class DataControlDevice : public QObject, public QtWayland::zwlr_data_control_device_v1
 {
@@ -375,26 +275,15 @@ public:
         destroy();
     }
 
-    void setSelection(std::unique_ptr<DataControlSource> selection);
     QMimeData *receivedSelection()
     {
         return m_receivedSelection.get();
     }
-    QMimeData *selection()
-    {
-        return m_selection ? m_selection->mimeData() : nullptr;
-    }
 
-    void setPrimarySelection(std::unique_ptr<DataControlSource> selection);
     QMimeData *receivedPrimarySelection()
     {
         return m_receivedPrimarySelection.get();
     }
-    QMimeData *primarySelection()
-    {
-        return m_primarySelection ? m_primarySelection->mimeData() : nullptr;
-    }
-
 Q_SIGNALS:
     void receivedSelectionChanged();
     void selectionChanged();
@@ -435,108 +324,13 @@ protected:
     }
 
 private:
-    std::unique_ptr<DataControlSource> m_selection; // selection set locally
     std::unique_ptr<DataControlOffer> m_receivedSelection; // latest selection set from externally to here
-
-    std::unique_ptr<DataControlSource> m_primarySelection; // selection set locally
     std::unique_ptr<DataControlOffer> m_receivedPrimarySelection; // latest selection set from externally to here
     friend WaylandClipboard;
 };
 
-void DataControlDevice::setSelection(std::unique_ptr<DataControlSource> selection)
-{
-    m_selection = std::move(selection);
-    connect(m_selection.get(), &DataControlSource::cancelled, this, [this]() {
-        m_selection.reset();
-    });
-    set_selection(m_selection->object());
-    Q_EMIT selectionChanged();
-}
-
-void DataControlDevice::setPrimarySelection(std::unique_ptr<DataControlSource> selection)
-{
-    m_primarySelection = std::move(selection);
-    connect(m_primarySelection.get(), &DataControlSource::cancelled, this, [this]() {
-        m_primarySelection.reset();
-    });
-
-    if (zwlr_data_control_device_v1_get_version(object()) >= ZWLR_DATA_CONTROL_DEVICE_V1_SET_PRIMARY_SELECTION_SINCE_VERSION) {
-        set_primary_selection(m_primarySelection->object());
-        Q_EMIT primarySelectionChanged();
-    }
-}
-class Keyboard;
-// We are binding to Seat/Keyboard manually because we want to react to gaining focus but inside Qt the events are Qt and arrive to late
-class KeyboardFocusWatcher : public QWaylandClientExtensionTemplate<KeyboardFocusWatcher>, public QtWayland::wl_seat
-{
-    Q_OBJECT
-public:
-    KeyboardFocusWatcher()
-        : QWaylandClientExtensionTemplate(5)
-    {
-        initialize();
-        auto native = qGuiApp->platformNativeInterface();
-        auto display = static_cast<struct ::wl_display *>(native->nativeResourceForIntegration("wl_display"));
-        // so we get capabilities
-        wl_display_roundtrip(display);
-    }
-    ~KeyboardFocusWatcher() override
-    {
-        if (isActive()) {
-            release();
-        }
-    }
-    void seat_capabilities(uint32_t capabilities) override
-    {
-        const bool hasKeyboard = capabilities & capability_keyboard;
-        if (hasKeyboard && !m_keyboard) {
-            m_keyboard = std::make_unique<Keyboard>(get_keyboard(), *this);
-        } else if (!hasKeyboard && m_keyboard) {
-            m_keyboard.reset();
-        }
-    }
-    bool hasFocus() const
-    {
-        return m_focus;
-    }
-Q_SIGNALS:
-    void keyboardEntered();
-
-private:
-    friend Keyboard;
-    bool m_focus = false;
-    std::unique_ptr<Keyboard> m_keyboard;
-};
-
-class Keyboard : public QtWayland::wl_keyboard
-{
-public:
-    Keyboard(::wl_keyboard *keyboard, KeyboardFocusWatcher &seat)
-        : wl_keyboard(keyboard)
-        , m_seat(seat)
-    {
-    }
-    ~Keyboard()
-    {
-        release();
-    }
-
-private:
-    void keyboard_enter([[maybe_unused]] uint32_t serial, [[maybe_unused]] wl_surface *surface, [[maybe_unused]] wl_array *keys) override
-    {
-        m_seat.m_focus = true;
-        Q_EMIT m_seat.keyboardEntered();
-    }
-    void keyboard_leave([[maybe_unused]] uint32_t serial, [[maybe_unused]] wl_surface *surface) override
-    {
-        m_seat.m_focus = false;
-    }
-    KeyboardFocusWatcher &m_seat;
-};
-
 WaylandClipboard::WaylandClipboard(QObject *parent)
     : KSystemClipboard(parent)
-    , m_keyboardFocusWatcher(new KeyboardFocusWatcher)
     , m_manager(new DataControlDeviceManager)
 {
     connect(m_manager.get(), &DataControlDeviceManager::activeChanged, this, [this]() {
@@ -552,27 +346,34 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
             m_device.reset(new DataControlDevice(m_manager->get_data_device(seat)));
 
             connect(m_device.get(), &DataControlDevice::receivedSelectionChanged, this, [this]() {
-                // When our source is still valid, so the offer is for setting it or we emit changed when it is cancelled
-                if (!m_device->selection()) {
-                    Q_EMIT changed(QClipboard::Clipboard);
-                }
-            });
-            connect(m_device.get(), &DataControlDevice::selectionChanged, this, [this]() {
+                // // When our source is still valid, so the offer is for setting it or we emit changed when it is cancelled
+                // if (!m_device->selection()) {
+                // }
                 Q_EMIT changed(QClipboard::Clipboard);
             });
 
             connect(m_device.get(), &DataControlDevice::receivedPrimarySelectionChanged, this, [this]() {
                 // When our source is still valid, so the offer is for setting it or we emit changed when it is cancelled
-                if (!m_device->primarySelection()) {
-                    Q_EMIT changed(QClipboard::Selection);
-                }
-            });
-            connect(m_device.get(), &DataControlDevice::primarySelectionChanged, this, [this]() {
+                // if (!m_device->primarySelection()) {
+                // }
                 Q_EMIT changed(QClipboard::Selection);
             });
 
         } else {
             m_device.reset();
+        }
+    });
+
+    connect(QGuiApplication::clipboard(), &QClipboard::changed, this, [this](QClipboard::Mode mode) {
+        if (mode == QClipboard::Clipboard) {
+            if (QGuiApplication::clipboard()->ownsClipboard()) {
+                Q_EMIT changed(QClipboard::Clipboard);
+            }
+        }
+        if (mode == QClipboard::Selection) {
+            if (QGuiApplication::clipboard()->ownsSelection()) {
+                Q_EMIT changed(QClipboard::Selection);
+            }
         }
     });
 
@@ -588,48 +389,7 @@ bool WaylandClipboard::isValid()
 
 void WaylandClipboard::setMimeData(QMimeData *mime, QClipboard::Mode mode)
 {
-    if (!m_device) {
-        return;
-    }
-
-    // roundtrip to have accurate focus state when losing focus but setting mime data before processing wayland events.
-    auto native = qGuiApp->platformNativeInterface();
-    auto display = static_cast<struct ::wl_display *>(native->nativeResourceForIntegration("wl_display"));
-    wl_display_roundtrip(display);
-
-    // If the application is focused, use the normal mechanism so a future paste will not deadlock itselfs
-    if (m_keyboardFocusWatcher->hasFocus()) {
-        QGuiApplication::clipboard()->setMimeData(mime, mode);
-        // if we short-circuit the wlr_data_device, when we receive the data
-        // we cannot identify ourselves as the owner
-        // because of that we act like it's a synchronous action to not confuse klipper.
-        wl_display_roundtrip(display);
-        return;
-    }
-    // If not, set the clipboard once the app receives focus to avoid the deadlock
-    connect(m_keyboardFocusWatcher.get(), &KeyboardFocusWatcher::keyboardEntered, this, &WaylandClipboard::gainedFocus, Qt::UniqueConnection);
-    auto source = std::make_unique<DataControlSource>(m_manager->create_data_source(), mime);
-    if (mode == QClipboard::Clipboard) {
-        m_device->setSelection(std::move(source));
-    } else if (mode == QClipboard::Selection) {
-        m_device->setPrimarySelection(std::move(source));
-    }
-}
-
-void WaylandClipboard::gainedFocus()
-{
-    disconnect(m_keyboardFocusWatcher.get(), &KeyboardFocusWatcher::keyboardEntered, this, nullptr);
-    // QClipboard takes ownership of the QMimeData so we need to transfer and unset our selections
-    if (auto &selection = m_device->m_selection) {
-        std::unique_ptr<QMimeData> data = selection->releaseMimeData();
-        WaylandClipboard::clear(QClipboard::Clipboard);
-        QGuiApplication::clipboard()->setMimeData(data.release(), QClipboard::Clipboard);
-    }
-    if (auto &primarySelection = m_device->m_primarySelection) {
-        std::unique_ptr<QMimeData> data = primarySelection->releaseMimeData();
-        WaylandClipboard::clear(QClipboard::Selection);
-        QGuiApplication::clipboard()->setMimeData(data.release(), QClipboard::Selection);
-    }
+    QGuiApplication::clipboard()->setMimeData(mime, mode);
 }
 
 void WaylandClipboard::clear(QClipboard::Mode mode)
@@ -637,14 +397,11 @@ void WaylandClipboard::clear(QClipboard::Mode mode)
     if (!m_device) {
         return;
     }
-    if (mode == QClipboard::Clipboard) {
-        m_device->set_selection(nullptr);
-        m_device->m_selection.reset();
-    } else if (mode == QClipboard::Selection) {
-        if (zwlr_data_control_device_v1_get_version(m_device->object()) >= ZWLR_DATA_CONTROL_DEVICE_V1_SET_PRIMARY_SELECTION_SINCE_VERSION) {
-            m_device->set_primary_selection(nullptr);
-            m_device->m_primarySelection.reset();
-        }
+    if (QGuiApplication::clipboard()->ownsClipboard() && mode == QClipboard::Clipboard) {
+        QGuiApplication::clipboard()->setMimeData(nullptr, mode);
+    }
+    if (QGuiApplication::clipboard()->ownsSelection() && mode == QClipboard::Selection) {
+        QGuiApplication::clipboard()->setMimeData(nullptr, mode);
     }
 }
 
@@ -656,18 +413,12 @@ const QMimeData *WaylandClipboard::mimeData(QClipboard::Mode mode) const
 
     // return our locally set selection if it's not cancelled to avoid copying data to ourselves
     if (mode == QClipboard::Clipboard) {
-        if (m_device->selection()) {
-            return m_device->selection();
-        }
         // This application owns the clipboard via the regular data_device, use it so we don't block ourselves
         if (QGuiApplication::clipboard()->ownsClipboard()) {
             return QGuiApplication::clipboard()->mimeData(mode);
         }
         return m_device->receivedSelection();
     } else if (mode == QClipboard::Selection) {
-        if (m_device->primarySelection()) {
-            return m_device->primarySelection();
-        }
         // This application owns the primary selection via the regular primary_selection_device, use it so we don't block ourselves
         if (QGuiApplication::clipboard()->ownsSelection()) {
             return QGuiApplication::clipboard()->mimeData(mode);
