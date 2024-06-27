@@ -58,7 +58,8 @@ class KGUIADDONS_EXPORT KKeySequenceRecorder : public QObject
      *
      * After recording it contains the last recorded QKeySequence
      */
-    Q_PROPERTY(QKeySequence currentKeySequence READ currentKeySequence WRITE setCurrentKeySequence NOTIFY currentKeySequenceChanged)
+    Q_PROPERTY(
+        QKeySequence currentKeySequence READ currentKeySequence WRITE setCurrentKeySequence NOTIFY currentKeySequenceChanged RESET resetCurrentKeySequence)
     /**
      * The window in which the key events are happening that should be recorded
      */
@@ -113,6 +114,7 @@ public:
 
     QKeySequence currentKeySequence() const;
     void setCurrentKeySequence(const QKeySequence &sequence);
+    void resetCurrentKeySequence();
 
     QWindow *window() const;
     void setWindow(QWindow *window);

@@ -577,6 +577,11 @@ void KKeySequenceRecorder::setCurrentKeySequence(const QKeySequence &sequence)
     Q_EMIT currentKeySequenceChanged();
 }
 
+void KKeySequenceRecorder::resetCurrentKeySequence()
+{
+    d->m_currentKeySequence = {};
+}
+
 QWindow *KKeySequenceRecorder::window() const
 {
     return d->m_window;
