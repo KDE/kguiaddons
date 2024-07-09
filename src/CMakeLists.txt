@@ -29,6 +29,7 @@ target_sources(KF6GuiAddons PRIVATE
  util/kcountryflagemojiiconengine.cpp
  util/kjobwindows.cpp
  recorder/keyboardgrabber.cpp
+ recorder/kinputsequence.cpp
  recorder/kkeysequencerecorder.cpp
  systemclipboard/qtclipboard.cpp
  systemclipboard/ksystemclipboard.cpp
@@ -48,6 +49,7 @@ target_sources(KF6GuiAddons PRIVATE
  util/kcursorsaver.h
  util/kcountryflagemojiiconengine.h
  util/kjobwindows.h
+ recorder/kinputsequence.h
  recorder/keyboardgrabber_p.h
  recorder/kkeysequencerecorder.h
  systemclipboard/qtclipboard_p.h
@@ -166,6 +168,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
 ecm_generate_headers(KGuiAddons_HEADERS
     HEADER_NAMES
     KKeySequenceRecorder
+    KInputSequence
 
     RELATIVE recorder
     REQUIRED_HEADERS KGuiAddons_HEADERS

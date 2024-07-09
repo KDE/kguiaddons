@@ -9,6 +9,7 @@ ecm_add_tests(
   kcolorutilstest.cpp
   kiconutilstest.cpp
   kcursorsavertest.cpp
+  kinputsequencetest.cpp
   kkeysequencerecordertest.cpp
   kurlhandlertest.cpp
   kcountryflagemojiiconenginetest.cpp
