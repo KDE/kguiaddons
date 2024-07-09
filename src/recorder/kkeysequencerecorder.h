@@ -11,6 +11,8 @@
 
 #include <kguiaddons_export.h>
 
+#include <KInputSequence>
+
 #include <QKeySequence>
 #include <QObject>
 #include <QWindow>
@@ -57,8 +59,21 @@ class KGUIADDONS_EXPORT KKeySequenceRecorder : public QObject
      * During recording it is continuously updated with the newest user input.
      *
      * After recording it contains the last recorded QKeySequence
+     *
+     * @note This is empty if extraInputAllowed is true.
      */
     Q_PROPERTY(QKeySequence currentKeySequence READ currentKeySequence WRITE setCurrentKeySequence NOTIFY currentKeySequenceChanged)
+    /**
+      * The recorded input sequence.
+      * After construction this is empty.
+      *
+      * During recording it is continuously updated with the newest user input.
+      *
+      * After recording it contains the last recorded KInputSequence
+
+      * @note This is empty if extraInputAllowed is false.
+      */
+    Q_PROPERTY(KInputSequence currentInputSequence READ currentInputSequence WRITE setCurrentInputSequence NOTIFY currentInputSequenceChanged)
     /**
      * The window in which the key events are happening that should be recorded
      */
@@ -93,6 +108,14 @@ class KGUIADDONS_EXPORT KKeySequenceRecorder : public QObject
      * By default this is `false`.
      */
     Q_PROPERTY(bool modifierOnlyAllowed READ modifierOnlyAllowed WRITE setModifierOnlyAllowed NOTIFY modifierOnlyAllowedChanged)
+    /**
+     * It makes it acceptable for the recorder to record from input devices other than the keyboard.
+     *
+     * Currently the only additional input device considered is mouse b uttons.
+     *
+     * By default this is `false`.
+     */
+    Q_PROPERTY(bool extraInputAllowed READ extraInputAllowed WRITE setExtraInputAllowed NOTIFY extraInputAllowedChanged)
 public:
     /**
      * Constructor.
@@ -114,6 +137,9 @@ public:
     QKeySequence currentKeySequence() const;
     void setCurrentKeySequence(const QKeySequence &sequence);
 
+    KInputSequence currentInputSequence() const;
+    void setCurrentInputSequence(const KInputSequence &sequence);
+
     QWindow *window() const;
     void setWindow(QWindow *window);
 
@@ -125,6 +151,9 @@ public:
 
     void setModifierOnlyAllowed(bool allowed);
     bool modifierOnlyAllowed() const;
+
+    void setExtraInputAllowed(bool allowed);
+    bool extraInputAllowed() const;
 
 public Q_SLOTS:
     /**
@@ -138,15 +167,29 @@ Q_SIGNALS:
      *
      * Compared to currentKeySequenceChanged and currentKeySequence this is signal is not emitted
      * continuously during recording but only after recording has finished.
+     *
+     * @note This signal is not emitted with extraInputAllowed is true.
      */
     void gotKeySequence(const QKeySequence &keySequence);
+
+    /**
+     * This signal is emitted when an input sequence has been recorded.
+     *
+     * Compared to currentInputSequenceChanged and currentInputSequence this is signal is not emitted
+     * continuously during recording but only after recording has finished.
+     *
+     * @note This signal is not emitted with extraInputAllowed is false.
+     */
+    void gotInputSequence(const KInputSequence &inputSequence);
 
     void recordingChanged();
     void windowChanged();
     void currentKeySequenceChanged();
+    void currentInputSequenceChanged();
     void multiKeyShortcutsAllowedChanged();
     void modifierlessAllowedChanged();
     void modifierOnlyAllowedChanged();
+    void extraInputAllowedChanged();
 
 private:
     friend class KKeySequenceRecorderPrivate;

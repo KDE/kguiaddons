@@ -51,17 +51,20 @@ public:
     bool eventFilter(QObject *watched, QEvent *event) override;
     void handleKeyPress(QKeyEvent *event);
     void handleKeyRelease(QKeyEvent *event);
+    void handleMousePress(QMouseEvent *event);
+    void handleMouseRelease(QMouseEvent *event);
     void finishRecording();
     void receivedRecording();
 
     KKeySequenceRecorder *q;
-    QKeySequence m_currentKeySequence;
-    QKeySequence m_previousKeySequence;
+    KInputSequence m_currentKeySequence;
+    KInputSequence m_previousKeySequence;
     QPointer<QWindow> m_window;
     bool m_isRecording;
     bool m_multiKeyShortcutsAllowed;
     bool m_modifierlessAllowed;
     bool m_modifierOnlyAllowed = false;
+    bool m_extraInputAllowed = false;
 
     Qt::KeyboardModifiers m_currentModifiers;
     QTimer m_modifierlessTimer;
@@ -287,30 +290,35 @@ static bool isOkWhenModifierless(int key)
     }
 }
 
-static QKeySequence appendToSequence(const QKeySequence &sequence, int key)
+static KInputSequence appendToSequence(const KInputSequence &sequence, int key)
 {
     if (sequence.count() >= KKeySequenceRecorderPrivate::MaxKeyCount) {
         qCWarning(KGUIADDONS_LOG) << "Cannot append to a key to a sequence which is already of length" << sequence.count();
         return sequence;
     }
 
-    std::array<int, KKeySequenceRecorderPrivate::MaxKeyCount> keys{sequence[0].toCombined(),
-                                                                   sequence[1].toCombined(),
-                                                                   sequence[2].toCombined(),
-                                                                   sequence[3].toCombined()};
+    std::array<int, KKeySequenceRecorderPrivate::MaxKeyCount> keys{sequence.keySequence()[0].toCombined(),
+                                                                   sequence.keySequence()[1].toCombined(),
+                                                                   sequence.keySequence()[2].toCombined(),
+                                                                   sequence.keySequence()[3].toCombined()};
     // When the user presses Mod(s)+Alt+Print, the SysReq event is fired only
     // when the Alt key is released. Before we get the Mod(s)+SysReq event, we
     // first get a Mod(s)+Alt event, which we have to ignore.
     // Known limitation: only works when the Alt key is released before the Mod(s) key(s).
     if ((key & ~Qt::KeyboardModifierMask) == Qt::Key_SysReq) {
         key = Qt::Key_Print | (key & Qt::KeyboardModifierMask) | Qt::AltModifier;
-        if (sequence.count() > 0 && (sequence[sequence.count() - 1].toCombined() & ~Qt::KeyboardModifierMask) == Qt::Key_Alt) {
+        if (sequence.count() > 0 && (sequence.keySequence()[sequence.count() - 1].toCombined() & ~Qt::KeyboardModifierMask) == Qt::Key_Alt) {
             keys[sequence.count() - 1] = key;
-            return QKeySequence(keys[0], keys[1], keys[2], keys[3]);
+            return KInputSequence(QKeySequence(keys[0], keys[1], keys[2], keys[3]), {});
         }
     }
     keys[sequence.count()] = key;
-    return QKeySequence(keys[0], keys[1], keys[2], keys[3]);
+    return KInputSequence(QKeySequence(keys[0], keys[1], keys[2], keys[3]), {});
+}
+
+static KInputSequence appendMouseButtonToSequence(const KInputSequence &sequence, Qt::MouseButton button)
+{
+    return KInputSequence(sequence.keySequence(), button);
 }
 
 KKeySequenceRecorderPrivate::KKeySequenceRecorderPrivate(KKeySequenceRecorder *qq)
@@ -347,6 +355,16 @@ bool KKeySequenceRecorderPrivate::eventFilter(QObject *watched, QEvent *event)
     if (event->type() == QEvent::KeyPress) {
         handleKeyPress(static_cast<QKeyEvent *>(event));
         return true;
+    }
+    if (m_extraInputAllowed) {
+        if (event->type() == QEvent::MouseButtonRelease) {
+            handleMouseRelease(static_cast<QMouseEvent *>(event));
+            return true;
+        }
+        if (event->type() == QEvent::MouseButtonPress) {
+            handleMousePress(static_cast<QMouseEvent *>(event));
+            return true;
+        }
     }
     return QObject::eventFilter(watched, event);
 }
@@ -482,6 +500,17 @@ void KKeySequenceRecorderPrivate::handleKeyRelease(QKeyEvent *event)
     };
 }
 
+void KKeySequenceRecorderPrivate::handleMousePress(QMouseEvent *event)
+{
+    m_currentKeySequence = appendMouseButtonToSequence(m_currentKeySequence, event->button());
+    Q_EMIT q->currentKeySequenceChanged();
+}
+
+void KKeySequenceRecorderPrivate::handleMouseRelease(QMouseEvent *event)
+{
+    finishRecording();
+}
+
 void KKeySequenceRecorderPrivate::receivedRecording()
 {
     m_modifierlessTimer.stop();
@@ -499,7 +528,11 @@ void KKeySequenceRecorderPrivate::receivedRecording()
 void KKeySequenceRecorderPrivate::finishRecording()
 {
     receivedRecording();
-    Q_EMIT q->gotKeySequence(m_currentKeySequence);
+    if (m_extraInputAllowed) {
+        Q_EMIT q->gotInputSequence(m_currentKeySequence);
+    } else {
+        Q_EMIT q->gotKeySequence(m_currentKeySequence.keySequence());
+    }
 }
 
 KKeySequenceRecorder::KKeySequenceRecorder(QWindow *window, QObject *parent)
@@ -537,7 +570,7 @@ void KKeySequenceRecorder::startRecording()
         return;
     }
     d->m_isRecording = true;
-    d->m_currentKeySequence = QKeySequence();
+    d->m_currentKeySequence = KInputSequence();
     if (d->m_inhibition) {
         d->m_inhibition->enableInhibition();
     }
@@ -547,7 +580,7 @@ void KKeySequenceRecorder::startRecording()
 
 void KKeySequenceRecorder::cancelRecording()
 {
-    setCurrentKeySequence(d->m_previousKeySequence);
+    setCurrentInputSequence(d->m_previousKeySequence);
     d->receivedRecording();
     Q_ASSERT(!isRecording());
 }
@@ -559,6 +592,38 @@ bool KKeySequenceRecorder::isRecording() const
 
 QKeySequence KKeySequenceRecorder::currentKeySequence() const
 {
+    if (d->m_extraInputAllowed) {
+        return {};
+    }
+
+    // We need a check for count() here because there's a race between the
+    // state of recording and a length of currentKeySequence.
+    if (d->m_isRecording && d->m_currentKeySequence.count() < KKeySequenceRecorderPrivate::MaxKeyCount) {
+        return appendToSequence(d->m_currentKeySequence, d->m_currentModifiers).keySequence();
+    } else {
+        return d->m_currentKeySequence.keySequence();
+    }
+}
+
+void KKeySequenceRecorder::setCurrentKeySequence(const QKeySequence &sequence)
+{
+    if (d->m_extraInputAllowed) {
+        return;
+    }
+
+    if (d->m_currentKeySequence == sequence) {
+        return;
+    }
+    d->m_currentKeySequence = KInputSequence(sequence, {});
+    Q_EMIT currentKeySequenceChanged();
+}
+
+KInputSequence KKeySequenceRecorder::currentInputSequence() const
+{
+    if (!d->m_extraInputAllowed) {
+        return {};
+    }
+
     // We need a check for count() here because there's a race between the
     // state of recording and a length of currentKeySequence.
     if (d->m_isRecording && d->m_currentKeySequence.count() < KKeySequenceRecorderPrivate::MaxKeyCount) {
@@ -568,13 +633,17 @@ QKeySequence KKeySequenceRecorder::currentKeySequence() const
     }
 }
 
-void KKeySequenceRecorder::setCurrentKeySequence(const QKeySequence &sequence)
+void KKeySequenceRecorder::setCurrentInputSequence(const KInputSequence &sequence)
 {
+    if (!d->m_extraInputAllowed) {
+        return;
+    }
+
     if (d->m_currentKeySequence == sequence) {
         return;
     }
     d->m_currentKeySequence = sequence;
-    Q_EMIT currentKeySequenceChanged();
+    Q_EMIT currentInputSequenceChanged();
 }
 
 QWindow *KKeySequenceRecorder::window() const
@@ -650,6 +719,20 @@ void KKeySequenceRecorder::setModifierOnlyAllowed(bool allowed)
     }
     d->m_modifierOnlyAllowed = allowed;
     Q_EMIT modifierOnlyAllowedChanged();
+}
+
+bool KKeySequenceRecorder::extraInputAllowed() const
+{
+    return d->m_extraInputAllowed;
+}
+
+void KKeySequenceRecorder::setExtraInputAllowed(bool allowed)
+{
+    if (allowed == d->m_extraInputAllowed) {
+        return;
+    }
+    d->m_extraInputAllowed = allowed;
+    Q_EMIT extraInputAllowedChanged();
 }
 
 #include "kkeysequencerecorder.moc"
