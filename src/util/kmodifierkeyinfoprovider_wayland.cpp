@@ -19,7 +19,7 @@ class KeyState : public QWaylandClientExtensionTemplate<KeyState>, public QtWayl
     Q_OBJECT
 public:
     KeyState()
-        : QWaylandClientExtensionTemplate<KeyState>(4)
+        : QWaylandClientExtensionTemplate<KeyState>(5)
     {
     }
 
@@ -48,6 +48,8 @@ public:
             return KModifierKeyInfoProvider::Locked;
         case KeyState::state::state_latched:
             return KModifierKeyInfoProvider::Latched;
+        case KeyState::state::state_pressed:
+            return KModifierKeyInfoProvider::Pressed;
         }
         Q_UNREACHABLE();
         return KModifierKeyInfoProvider::Nothing;
@@ -62,6 +64,16 @@ public:
             return Qt::Key_NumLock;
         case KeyState::key::key_scrolllock:
             return Qt::Key_ScrollLock;
+        case KeyState::key_alt:
+            return Qt::Key_Alt;
+        case KeyState::key_shift:
+            return Qt::Key_Shift;
+        case KeyState::key_control:
+            return Qt::Key_Control;
+        case KeyState::key_meta:
+            return Qt::Key_Meta;
+        case KeyState::key_altgr:
+            return Qt::Key_AltGr;
         }
         Q_UNREACHABLE();
         return {};
@@ -85,6 +97,11 @@ KModifierKeyInfoProviderWayland::KModifierKeyInfoProviderWayland()
     stateUpdated(Qt::Key_CapsLock, KModifierKeyInfoProvider::Nothing);
     stateUpdated(Qt::Key_NumLock, KModifierKeyInfoProvider::Nothing);
     stateUpdated(Qt::Key_ScrollLock, KModifierKeyInfoProvider::Nothing);
+    stateUpdated(Qt::Key_Alt, KModifierKeyInfoProvider::Nothing);
+    stateUpdated(Qt::Key_Shift, KModifierKeyInfoProvider::Nothing);
+    stateUpdated(Qt::Key_Control, KModifierKeyInfoProvider::Nothing);
+    stateUpdated(Qt::Key_Meta, KModifierKeyInfoProvider::Nothing);
+    stateUpdated(Qt::Key_AltGr, KModifierKeyInfoProvider::Nothing);
 }
 
 KModifierKeyInfoProviderWayland::~KModifierKeyInfoProviderWayland()
