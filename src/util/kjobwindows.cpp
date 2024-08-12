@@ -7,12 +7,13 @@
 
 #include "kjobwindows.h"
 #include <QObject>
+#include <QPointer>
 #include <QVariant>
 #include <QWindow>
 
 void KJobWindows::setWindow(QObject *job, QWindow *window)
 {
-    job->setProperty("window", QVariant::fromValue(window));
+    job->setProperty("window", QVariant::fromValue(QPointer<QWindow>(window)));
     if (window) {
         job->setProperty("window-id", QVariant::fromValue(window->winId()));
     }
@@ -20,5 +21,5 @@ void KJobWindows::setWindow(QObject *job, QWindow *window)
 
 QWindow *KJobWindows::window(QObject *job)
 {
-    return job->property("window").value<QWindow *>();
+    return job->property("window").value<QPointer<QWindow>>();
 }
