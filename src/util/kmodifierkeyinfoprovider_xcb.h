@@ -10,6 +10,7 @@
 
 #include "kmodifierkeyinfoprovider_p.h"
 #include <QAbstractNativeEventFilter>
+
 class KModifierKeyInfoProviderXcb : public KModifierKeyInfoProvider, public QAbstractNativeEventFilter
 {
     Q_OBJECT

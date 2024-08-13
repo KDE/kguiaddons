@@ -49,6 +49,9 @@ find_package(Qt6Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE ${_qtgui_find_comp
 if (WITH_X11)
     find_package(X11 REQUIRED MODULE)
     find_package(XCB REQUIRED MODULE COMPONENTS XCB)
+    if(NOT QT_FEATURE_xcb)
+        message(FATAL_ERROR "Qt xcb feature is missing for compilation with X11")
+    endif()
 endif()
 
 if (WITH_WAYLAND)
