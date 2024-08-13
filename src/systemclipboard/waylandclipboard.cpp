@@ -13,6 +13,8 @@
 #include <QImageReader>
 #include <QImageWriter>
 #include <QMimeData>
+#include <QMimeDatabase>
+#include <QMimeType>
 #include <QPointer>
 #include <QWaylandClientExtension>
 #include <QWindow>
@@ -27,6 +29,8 @@
 
 #include "qwayland-wayland.h"
 #include "qwayland-wlr-data-control-unstable-v1.h"
+
+using namespace Qt::StringLiterals;
 
 static inline QString applicationQtXImageLiteral()
 {
@@ -330,14 +334,34 @@ void DataControlSource::zwlr_data_control_source_v1_send(const QString &mime_typ
             QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
             QBuffer buf(&ba);
             buf.open(QBuffer::WriteOnly);
-            // would there not be PNG ??
-            image.save(&buf, "PNG");
-
+            QByteArray format;
+            // Get format from suggested filename if writable
+            auto suggestedFilename = QString::fromUtf8(m_mimeData->data(u"application/x-kde-suggestedfilename"_s));
+            if (!suggestedFilename.isEmpty()) {
+                auto mimetype = QMimeDatabase().mimeTypeForFile(suggestedFilename).name();
+                format = QImageWriter::imageFormatsForMimeType(mimetype.toUtf8()).value(0);
+            }
+            // Get format for first writable image mimetype
+            if (format.isEmpty()) {
+                const auto mimetypes = m_mimeData->formats();
+                for (const auto &mimetype : mimetypes) {
+                    format = QImageWriter::imageFormatsForMimeType(mimetype.toUtf8()).value(0);
+                }
+            }
+            if (!format.isEmpty()) {
+                image.save(&buf, format.data());
+            } else {
+                // Fallback to PNG
+                image.save(&buf, "PNG");
+            }
         } else if (mime_type.startsWith(QLatin1String("image/"))) {
-            QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
-            QBuffer buf(&ba);
-            buf.open(QBuffer::WriteOnly);
-            image.save(&buf, mime_type.mid(mime_type.indexOf(QLatin1Char('/')) + 1).toLatin1().toUpper().data());
+            ba = m_mimeData->data(send_mime_type);
+            if (ba.isEmpty()) {
+                QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
+                QBuffer buf(&ba);
+                buf.open(QBuffer::WriteOnly);
+                image.save(&buf, mime_type.mid(mime_type.indexOf(QLatin1Char('/')) + 1).toLatin1().toUpper().data());
+            }
         }
         // end adapted
     } else {
