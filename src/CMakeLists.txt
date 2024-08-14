@@ -79,12 +79,16 @@ if(WITH_DBUS)
 endif()
 
 if(WITH_WAYLAND)
+    if (Qt6_VERSION VERSION_GREATER_EQUAL "6.8.0")
+        set(private_code_option  "PRIVATE_CODE")
+    endif()
     qt_generate_wayland_protocol_client_sources(KF6GuiAddons
         FILES
             "${CMAKE_CURRENT_SOURCE_DIR}/recorder/keyboard-shortcuts-inhibit-unstable-v1.xml"
             "${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard/wlr-data-control-unstable-v1.xml"
             "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
             "${Wayland_DATADIR}/wayland.xml"
+        ${private_code_option}
     )
     target_sources(KF6GuiAddons PRIVATE
         recorder/waylandinhibition.cpp
