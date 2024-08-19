@@ -622,12 +622,12 @@ void WaylandClipboard::gainedFocus()
     // QClipboard takes ownership of the QMimeData so we need to transfer and unset our selections
     if (auto &selection = m_device->m_selection) {
         std::unique_ptr<QMimeData> data = selection->releaseMimeData();
-        WaylandClipboard::clear(QClipboard::Clipboard);
+        selection.reset();
         QGuiApplication::clipboard()->setMimeData(data.release(), QClipboard::Clipboard);
     }
     if (auto &primarySelection = m_device->m_primarySelection) {
         std::unique_ptr<QMimeData> data = primarySelection->releaseMimeData();
-        WaylandClipboard::clear(QClipboard::Selection);
+        primarySelection.reset();
         QGuiApplication::clipboard()->setMimeData(data.release(), QClipboard::Selection);
     }
 }
