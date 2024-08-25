@@ -17,6 +17,7 @@ class QColor;
 
 /**
  * A set of methods used to work with colors.
+ * @deprecated Use KColorManipulation instead
  */
 namespace KColorUtils
 {
@@ -108,6 +109,7 @@ KGUIADDONS_EXPORT qreal contrastRatio(const QColor &, const QColor &);
  * @param chromaInverseGain (optional) factor by which to adjust the chroma
  * component of the color; 1.0 means no change, 0.0 maximizes chroma
  * @see KColorUtils::shade
+ * @deprecated Use KColorManipulation::lighter instead
  */
 KGUIADDONS_EXPORT QColor lighten(const QColor &, qreal amount = 0.5, qreal chromaInverseGain = 1.0);
 
@@ -125,6 +127,7 @@ KGUIADDONS_EXPORT QColor lighten(const QColor &, qreal amount = 0.5, qreal chrom
  * @param chromaGain (optional) factor by which to adjust the chroma
  * component of the color; 1.0 means no change, 0.0 minimizes chroma
  * @see KColorUtils::shade
+ * @deprecated Use KColorManipulation::darker instead
  */
 KGUIADDONS_EXPORT QColor darken(const QColor &, qreal amount = 0.5, qreal chromaGain = 1.0);
 
@@ -139,6 +142,7 @@ KGUIADDONS_EXPORT QColor darken(const QColor &, qreal amount = 0.5, qreal chroma
  * component of the color; 0.0 results in no change, -1.0 minimizes chroma,
  * 1.0 maximizes chroma
  * @see KColorUtils::luma
+ * @deprecated Use KColorManipulation::adjustLightness instead
  */
 KGUIADDONS_EXPORT QColor shade(const QColor &, qreal lumaAmount, qreal chromaAmount = 0.0);
 
@@ -153,6 +157,7 @@ KGUIADDONS_EXPORT QColor shade(const QColor &, qreal lumaAmount, qreal chromaAmo
  * @param color color with which to tint
  * @param amount how strongly to tint the base; 0.0 gives @p base,
  * 1.0 gives @p color
+ * @deprecated Use KColorManipulation::tint instead
  */
 KGUIADDONS_EXPORT QColor tint(const QColor &base, const QColor &color, qreal amount = 0.3);
 
@@ -166,6 +171,7 @@ KGUIADDONS_EXPORT QColor tint(const QColor &base, const QColor &color, qreal amo
  * @param bias weight to be used for the mix. @p bias <= 0 gives @p c1,
  * @p bias >= 1 gives @p c2. @p bias == 0.5 gives a 50% blend of @p c1
  * and @p c2.
+ * @deprecated Use KColorManipulation::lerp instead
  */
 KGUIADDONS_EXPORT QColor mix(const QColor &c1, const QColor &c2, qreal bias = 0.5);
 
