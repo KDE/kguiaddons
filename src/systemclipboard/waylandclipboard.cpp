@@ -223,6 +223,16 @@ QVariant DataControlOffer::retrieveData(const QString &mimeType, QMetaType type)
                 if (!img.isNull()) {
                     return img;
                 }
+            } else if (data.size() > 1 && mimeType == u"text/uri-list") {
+                const auto urls = data.split('\n');
+                QVariantList list;
+                list.reserve(urls.size());
+                for (const QByteArray &s : urls) {
+                    if (QUrl url(QUrl::fromEncoded(QByteArrayView(s).trimmed())); url.isValid()) {
+                        list.emplace_back(std::move(url));
+                    }
+                }
+                return list;
             }
             return data;
         }
