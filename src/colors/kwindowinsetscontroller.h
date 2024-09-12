@@ -31,7 +31,7 @@ class KWindowInsetsControllerPrivate;
  *  }
  *  @endcode
  *
- *  @since 6.4
+ *  @since 6.7
  */
 class KGUIADDONS_EXPORT KWindowInsetsController : public QObject
 {
