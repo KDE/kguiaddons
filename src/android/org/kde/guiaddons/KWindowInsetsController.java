@@ -25,16 +25,16 @@ public class KWindowInsetsController
 
         if (Build.VERSION.SDK_INT >= 30) {
             if (isDark(color)) {
-                window.getInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
-            } else {
                 window.getInsetsController().setSystemBarsAppearance(0, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
+            } else {
+                window.getInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
             }
         } else {
             int visibility = window.getDecorView().getVisibility();
             if (isDark(color)) {
-                visibility |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            } else {
                 visibility &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            } else {
+                visibility |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             }
             window.getDecorView().setSystemUiVisibility(visibility);
         }
@@ -49,16 +49,16 @@ public class KWindowInsetsController
 
         if (Build.VERSION.SDK_INT >= 30) {
             if (isDark(color)) {
-                window.getInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS, WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
-            } else {
                 window.getInsetsController().setSystemBarsAppearance(0, WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
+            } else {
+                window.getInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS, WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
             }
         } else {
             int visibility = window.getDecorView().getVisibility();
             if (isDark(color)) {
-                visibility |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-            } else {
                 visibility &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            } else {
+                visibility |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
             }
             window.getDecorView().setSystemUiVisibility(visibility);
         }
@@ -66,7 +66,7 @@ public class KWindowInsetsController
 
     private static double luma(int color)
     {
-        return (0.299 * (color >> 24) + 0.587 * ((color >> 16) | 0xff) + 0.114 * ((color >> 8) | 0xff)) / 255.0;
+        return (0.299 * (color >> 24) + 0.587 * ((color >> 16) & 0xff) + 0.114 * ((color >> 8) & 0xff)) / 255.0;
     }
 
     private static boolean isDark(int color)
