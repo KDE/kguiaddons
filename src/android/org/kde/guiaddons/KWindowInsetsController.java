@@ -30,7 +30,7 @@ public class KWindowInsetsController
                 window.getInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS);
             }
         } else {
-            int visibility = window.getDecorView().getVisibility();
+            int visibility = window.getDecorView().getSystemUiVisibility();
             if (isDark(color)) {
                 visibility &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             } else {
@@ -54,7 +54,7 @@ public class KWindowInsetsController
                 window.getInsetsController().setSystemBarsAppearance(WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS, WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS);
             }
         } else {
-            int visibility = window.getDecorView().getVisibility();
+            int visibility = window.getDecorView().getSystemUiVisibility();
             if (isDark(color)) {
                 visibility &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
             } else {
