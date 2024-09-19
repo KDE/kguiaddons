@@ -202,6 +202,8 @@ install(FILES
   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons COMPONENT Devel
 )
 
+ecm_generate_qdoc(KF6GuiAddons kguiaddons.qdocconf)
+
 if(BUILD_QCH)
     ecm_add_qch(
         KF6GuiAddons_QCH
