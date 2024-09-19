@@ -14,7 +14,12 @@
 
 class KWindowInsetsControllerPrivate;
 
-/** Access to window insets colors.
+/*!
+ * \qmltype WindowInsetsController
+ * \inqmlmodule org.kde.guiaddons
+ * \nativetype KWindowInsetsController
+ *
+ *  Access to window insets colors.
  *
  *  On most platforms this does nothing, on Android it allows
  *  to customize the (top) status bar and (botton) navigation bar
@@ -24,21 +29,62 @@ class KWindowInsetsControllerPrivate;
  *  Note that the foreground colors on Android are automatically
  *  chosen based on the background color.
  *
- *  @code
+ *  \code
  *  Component.onComplete: {
  *      WindowInsetsController.statusBarBackgroundColor = Kirigami.Theme.backgroundColor;
  *      WindowInsetsController.navigationBarBackgroundColor = Kirigami.Theme.backgroundColor;
  *  }
- *  @endcode
+ *  \endcode
  *
- *  @since 6.7
+ *  \since 6.7
+ *
+ */
+
+/*!
+ * \qmlproperty color WindowInsetsController::statusBarBackgroundColor
+ * Background color of the status bar.
+ */
+
+/*!
+ * \qmlproperty color WindowInsetsController::navigationBarBackgroundColor
+ * Background color of the navigation bar.
+ */
+
+/*!
+ *  \class KWindowInsetsController
+ *
+ *  \brief Access to window insets colors.
+ *
+ *  On most platforms this does nothing, on Android it allows
+ *  to customize the (top) status bar and (botton) navigation bar
+ *  background colors, e.g. to match the current window or application
+ *  colors.
+ *
+ *  Note that the foreground colors on Android are automatically
+ *  chosen based on the background color.
+ *
+ *  \code
+ *  Component.onComplete: {
+ *      WindowInsetsController.statusBarBackgroundColor = Kirigami.Theme.backgroundColor;
+ *      WindowInsetsController.navigationBarBackgroundColor = Kirigami.Theme.backgroundColor;
+ *  }
+ *  \endcode
+ *
+ *  \since 6.7
  */
 class KGUIADDONS_EXPORT KWindowInsetsController : public QObject
 {
     Q_OBJECT
-    /** Background color of the status bar. */
+
+    /*!
+     * \property KWindowInsetsController::statusBarBackgroundColor
+     * Background color of the status bar.
+     */
     Q_PROPERTY(QColor statusBarBackgroundColor READ statusBarBackgroundColor WRITE setStatusBarBackgroundColor NOTIFY statusBarBackgroundColorChanged)
-    /** Background color of the navigation bar. */
+    /*!
+     * \property KWindowInsetsController::navigationBarBackgroundColor
+     * Background color of the navigation bar.
+     */
     Q_PROPERTY(
         QColor navigationBarBackgroundColor READ navigationBarBackgroundColor WRITE setNavigationBarBackgroundColor NOTIFY navigationBarBackgroundColorChanged)
 
