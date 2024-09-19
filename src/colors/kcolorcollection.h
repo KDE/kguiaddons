@@ -17,8 +17,9 @@
 #include <QStringList>
 
 #if KGUIADDONS_ENABLE_DEPRECATED_SINCE(6, 3)
-/**
- * @class KColorCollection kcolorcollection.h KColorCollection
+/*!
+ * \class KColorCollection
+ * \inmodule KGuiAddons
  *
  * Class for handling color collections ("palettes").
  *
@@ -27,162 +28,194 @@
  *
  * This class uses the "GIMP" palette file format.
  *
- * @author Waldo Bastian (bastian@kde.org)
+ * Unused and backing data no longer available
  *
- * @deprecated since 6.3, unused and backing data no longer available
+ * \deprecated [6.3]
  */
 class KGUIADDONS_EXPORT KGUIADDONS_DEPRECATED_VERSION(6, 3, "unused") KColorCollection
 {
 public:
-    /**
+    /*!
      * Query which KDE color collections are installed.
      *
-     * @return A list with installed color collection names.
+     * Returns a list with installed color collection names.
      */
     static QStringList installedCollections();
 
-    /**
+    /*!
      * KColorCollection constructor. Creates a KColorCollection from a file
      * the filename is derived from the name.
-     * @param name The name of collection as returned by installedCollections()
+     *
+     * \a name The name of collection as returned by installedCollections()
      */
     explicit KColorCollection(const QString &name = QString());
 
-    /**
+    /*!
      * KColorCollection copy constructor.
      */
     KColorCollection(const KColorCollection &);
 
-    /**
+    /*!
      * KColorCollection destructor.
      */
     ~KColorCollection();
 
-    /**
+    /*!
      * KColorCollection assignment operator
      */
     KColorCollection &operator=(const KColorCollection &);
 
-    /**
+    /*!
      * Save the collection
      *
-     * @return 'true' if successful
+     * Returns \c true if successful
      */
     bool save();
 
-    /**
+    /*!
      * Get the description of the collection.
-     * @return the description of the collection.
+     *
+     * Returns the description of the collection.
      */
     QString description() const;
 
-    /**
+    /*!
      * Set the description of the collection.
-     * @param desc the new description
+     *
+     * \a desc the new description
      */
     void setDescription(const QString &desc);
 
-    /**
+    /*!
      * Get the name of the collection.
-     * @return the name of the collection
+     *
+     * Returns the name of the collection
      */
     QString name() const;
 
-    /**
+    /*!
      * Set the name of the collection.
-     * @param name the name of the collection
+     *
+     * \a name the name of the collection
      */
     void setName(const QString &name);
 
-    /**
+    /*!
      * Used to specify whether a collection may be edited.
-     * @see editable()
-     * @see setEditable()
+     * \sa editable()
+     * \sa setEditable()
+     *
+     * \value Yes Collection may be edited
+     * \value No Collection may not be edited
+     * \value Ask Ask user before editing
+     *
      */
     enum Editable {
-        Yes, ///< Collection may be edited
-        No, ///< Collection may not be edited
-        Ask, ///< Ask user before editing
+        Yes,
+        No,
+        Ask,
     };
 
-    /**
+    /*!
      * Returns whether the collection may be edited.
-     * @return the state of the collection
+     * Returns the state of the collection
      */
     Editable editable() const;
 
-    /**
+    /*!
      * Change whether the collection may be edited.
-     * @param editable the state of the collection
+     *
+     * \a editable the state of the collection
      */
     void setEditable(Editable editable);
 
-    /**
+    /*!
      * Return the number of colors in the collection.
-     * @return the number of colors
+     * Returns the number of colors
      */
     int count() const;
 
-    /**
+    /*!
      * Find color by index.
-     * @param index the index of the desired color
-     * @return The @p index -th color of the collection, null if not found.
+     *
+     * \a index the index of the desired color
+     *
+     * Returns The \a index -th color of the collection, null if not found.
      */
     QColor color(int index) const;
 
-    /**
-     * Find index by @p color.
-     * @param color the color to find
-     * @return The index of the color in the collection or -1 if the
+    /*!
+     * Find index by \a color.
+     *
+     * \a color the color to find
+     *
+     * Returns The index of the color in the collection or -1 if the
      * color is not found.
      */
     int findColor(const QColor &color) const;
 
-    /**
-     * Find color name by @p index.
-     * @param index the index of the color
-     * @return The name of the @p index -th color.
+    /*!
+     * Find color name by \a index.
+     *
+     * \a index the index of the color
+     *
+     * Returns The name of the \a index -th color.
+     *
      * Note that not all collections have named the colors. Null is
      * returned if the color does not exist or has no name.
      */
     QString name(int index) const;
 
-    /**
-     * Find color name by @p color.
-     * @return The name of color according to this collection.
+    /*!
+     * Find color name by \a color.
+     *
+     * Returns The name of color according to this collection.
+     *
      * Note that not all collections have named the colors.
+     *
      * Note also that each collection can give the same color
      * a different name.
      */
     QString name(const QColor &color) const;
 
-    /**
+    /*!
      * Add a color.
-     * @param newColor The color to add.
-     * @param newColorName The name of the color, null to remove
+     *
+     * \a newColor The color to add.
+     *
+     * \a newColorName The name of the color, null to remove
      *                     the name.
-     * @return The index of the added color.
+     *
+     * Returns The index of the added color.
      */
     int addColor(const QColor &newColor, const QString &newColorName = QString());
 
-    /**
+    /*!
      * Change a color.
-     * @param index Index of the color to change
-     * @param newColor The new color.
-     * @param newColorName The new color name, null to remove
+     *
+     * \a index Index of the color to change
+     *
+     * \a newColor The new color.
+     *
+     * \a newColorName The new color name, null to remove
      *                     the name.
-     * @return The index of the new color or -1 if the color couldn't
+     *
+     * Returns the index of the new color or -1 if the color couldn't
      * be changed.
      */
     int changeColor(int index, const QColor &newColor, const QString &newColorName = QString());
 
-    /**
+    /*!
      * Change a color.
-     * @param oldColor The original color
-     * @param newColor The new color.
-     * @param newColorName The new color name, null to remove
+     *
+     * \a oldColor The original color
+     *
+     * \a newColor The new color.
+     *
+     * \a newColorName The new color name, null to remove
      *                     the name.
-     * @return The index of the new color or -1 if the color couldn't
+     *
+     * Returns the index of the new color or -1 if the color couldn't
      * be changed.
      */
     int changeColor(const QColor &oldColor, const QColor &newColor, const QString &newColorName = QString());

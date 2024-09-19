@@ -202,28 +202,7 @@ install(FILES
   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons COMPONENT Devel
 )
 
-if(BUILD_QCH)
-    ecm_add_qch(
-        KF6GuiAddons_QCH
-        NAME KGuiAddons
-        BASE_NAME KF6GuiAddons
-        VERSION ${KF_VERSION}
-        ORG_DOMAIN org.kde
-        SOURCES # using only public headers, to cover only public API
-            ${KGuiAddons_HEADERS}
-        MD_MAINPAGE "${CMAKE_SOURCE_DIR}/README.md"
-        LINK_QCHS
-            Qt6Gui_QCH
-        INCLUDE_DIRS
-            ${CMAKE_CURRENT_BINARY_DIR}
-            ${kguiaddons_INCLUDES}
-        BLANK_MACROS
-            KGUIADDONS_EXPORT
-        TAGFILE_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        QCH_INSTALL_DESTINATION ${KDE_INSTALL_QTQCHDIR}
-        COMPONENT Devel
-    )
-endif()
+ecm_generate_qdoc(KF6GuiAddons kguiaddons.qdocconf)
 
 ecm_qt_install_logging_categories(
     EXPORT KGUIADDONS

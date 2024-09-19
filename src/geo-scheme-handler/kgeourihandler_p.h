@@ -10,7 +10,7 @@
 
 class QUrl;
 
-/** Fallback handler for geo: URIs by forwarding them to a web service.
+/*! Fallback handler for geo: URIs by forwarding them to a web service.
  *
  *  This handles three cases of geo: URIs:
  *  - when containing a query argument, the query URL template is used
@@ -18,13 +18,15 @@ class QUrl;
  *  - otherwise the fallback URL is returned
  *
  *  URL templates can contain any number of the following placeholders in angle brackets:
- *  - @c LAT - the latitude
- *  - @c LON - the longitude
- *  - @c Q - the query string
- *  - @c Z - the zoom level for a Web Mercator map projection
+ *  - LAT - the latitude
+ *  - LON - the longitude
+ *  - Q - the query string
+ *  - Z - the zoom level for a Web Mercator map projection
  *
- *  @see https://en.wikipedia.org/wiki/Geo_URI_scheme
- *  @see https://datatracker.ietf.org/doc/html/rfc5870
+ *  \sa https://en.wikipedia.org/wiki/Geo_URI_scheme
+ *  \sa https://datatracker.ietf.org/doc/html/rfc5870
+ *
+ * \internal
  */
 class KGeoUriHandler
 {

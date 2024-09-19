@@ -15,31 +15,41 @@
 
 class KColorSchemeWatcherPrivate;
 
-/**
- * Information about system-wide color preferences.
- * @since 5.100
+/*!
+ * \class KColorSchemeWatcher
+ * \inmodule KGuiAddons
+ * \brief Information about system-wide color preferences.
+ * \since 5.100
  */
 class KGUIADDONS_EXPORT KColorSchemeWatcher : public QObject
 {
     Q_OBJECT
 public:
+    /*!
+     * \value NoPreference No preference available
+     * \value PreferDark The user prefers a dark color scheme
+     * \value PreferLight The user prefers a light color scheme
+     */
     enum ColorPreference {
-        NoPreference = 0, /** No preference available */
-        PreferDark, /** The user prefers a dark color scheme */
-        PreferLight, /** The user prefers a light color scheme */
+        NoPreference = 0,
+        PreferDark,
+        PreferLight,
     };
     Q_ENUM(ColorPreference)
 
+    /*!
+     *
+     */
     KColorSchemeWatcher(QObject *parent = nullptr);
     ~KColorSchemeWatcher() override;
 
-    /**
+    /*!
      * The system-wide color preference.
      */
     ColorPreference systemPreference() const;
 
 Q_SIGNALS:
-    /**
+    /*!
      * Emitted when systemPreference changes.
      */
     void systemPreferenceChanged();

@@ -19,10 +19,10 @@ class QByteArray;
 class QDateTime;
 class QString;
 
-/**
+/*!
  * You are not supposed to use this class directly, use KImageCache instead
  *
- * @internal
+ * \internal
  */
 class KGUIADDONS_EXPORT KLocalImageCacheImplementation
 {
