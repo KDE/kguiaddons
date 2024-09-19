@@ -1,0 +1,20 @@
+/*!
+    \module KGuiAddons
+    \title KGuiAddons C++ Classes
+    \ingroup modules
+    \cmakepackage KF6
+    \cmakecomponent GuiAddons
+
+    \brief Provides Stuff
+
+    Stuff
+*/
+
+/*!
+    \qmlmodule org.kde.guiaddons
+    \title KGuiAddons QML Types
+    \ingroup qmlmodules
+    \brief Stuff
+
+    lalala
+*/
