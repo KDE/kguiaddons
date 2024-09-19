@@ -18,10 +18,10 @@
 
 class KDateValidatorPrivate;
 
-/**
- * @class KDateValidator kdatevalidator.h KDateValidator
+/*!
+ * \class KDateValidator
  *
- * Validates user-entered dates.
+ * \brief Validates user-entered dates.
  */
 class KGUIADDONS_EXPORT KDateValidator : public QValidator
 {
@@ -31,8 +31,16 @@ public:
     ~KDateValidator() override;
 
 public:
+    /*!
+     * \reimp
+     */
     State validate(QString &text, int &e) const override;
+
+    /*!
+     * \reimp
+     */
     void fixup(QString &input) const override;
+
     State date(const QString &text, QDate &date) const;
 
 private:
