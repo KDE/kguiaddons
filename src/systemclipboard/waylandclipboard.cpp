@@ -155,7 +155,7 @@ protected:
     QVariant retrieveData(const QString &mimeType, QMetaType type) const override;
 
 private:
-    /** reads data from a file descriptor with a timeout of 1 second
+    /* reads data from a file descriptor with a timeout of 1 second
      *  true if data is read successfully
      */
     static bool readData(int fd, QByteArray &data);

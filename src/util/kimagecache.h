@@ -26,16 +26,20 @@
 
 #define KImageCache KSharedPixmapCacheMixin<KSharedDataCache>
 
-/**
- * @brief A simple wrapping layer over KSharedDataCache to support caching
+/*!
+ * \class KSharedPixmapCacheMixin
+ * \inmodule KGuiAddons
+ * \inheaderfile KImageCache
+ *
+ * \brief A simple wrapping layer over KSharedDataCache to support caching
  * images and pixmaps.
  *
  * This class can be used to share images between different processes, which
  * is useful when it is known that such images will be used across many
  * processes, or when creating the image is expensive.
  *
- * In addition, the class also supports caching QPixmaps <em>in a single
- * process</em> using the setPixmapCaching() function.
+ * In addition, the class also supports caching QPixmaps \e{in a single
+ * process} using the setPixmapCaching() function.
  *
  * Tips for use: If you already have QPixmaps that you intend to use, and
  * you do not need access to the actual image data, then try to store and
@@ -47,26 +51,28 @@
  *
  * KSharedPixmapCacheMixin is a subclass of KSharedDataCache, so all of the methods that
  * can be used with KSharedDataCache can be used with KSharedPixmapCacheMixin,
- * <em>with the exception of KSharedDataCache::insert() and
- * KSharedDataCache::find()</em>.
+ * \e{with the exception of KSharedDataCache::insert() and
+ * KSharedDataCache::find()}.
  *
- * @author Michael Pyne <mpyne@kde.org>
- * @since 4.5
+ * \since 4.5
  */
 template<class T>
 class KSharedPixmapCacheMixin : public T, private KLocalImageCacheImplementation
 {
 public:
-    /**
-     * Constructs an image cache, named by @p cacheName, with a default
-     * size of @p defaultCacheSize.
+    /*!
+     * Constructs an image cache, named by \a cacheName, with a default
+     * size of \a defaultCacheSize.
      *
-     * @param cacheName Name of the cache to use.
-     * @param defaultCacheSize The default size, in bytes, of the cache.
+     * \a cacheName Name of the cache to use.
+     *
+     * \a defaultCacheSize The default size, in bytes, of the cache.
+     *
      *  The actual on-disk size will be slightly larger. If the cache already
      *  exists, it will not be resized. If it is required to resize the
      *  cache then use the deleteCache() function to remove that cache first.
-     * @param expectedItemSize The expected general size of the items to be
+     *
+     * \a expectedItemSize The expected general size of the items to be
      *  added to the image cache, in bytes. Use 0 if you just want a default
      *  item size.
      */
@@ -76,18 +82,21 @@ public:
     {
     }
 
-    /**
-     * Inserts the pixmap given by @p pixmap to the cache, accessible with
-     * @p key. The pixmap must be converted to a QImage in order to be stored
+    /*!
+     * Inserts the pixmap given by \a pixmap to the cache, accessible with
+     * \a key. The pixmap must be converted to a QImage in order to be stored
      * into shared memory. In order to prevent unnecessary conversions from
-     * taking place @p pixmap will also be cached (but not in shared
+     * taking place \a pixmap will also be cached (but not in shared
      * memory) and would be accessible using findPixmap() if pixmap caching is
      * enabled.
      *
-     * @param key Name to access @p pixmap with.
-     * @param pixmap The pixmap to add to the cache.
-     * @return true if the pixmap was successfully cached, false otherwise.
-     * @see setPixmapCaching()
+     * \a key Name to access \a pixmap with.
+     *
+     * \a pixmap The pixmap to add to the cache.
+     *
+     * Returns \c true if the pixmap was successfully cached, \c false otherwise.
+     *
+     * \sa setPixmapCaching()
      */
     bool insertPixmap(const QString &key, const QPixmap &pixmap)
     {
@@ -100,16 +109,18 @@ public:
         return insertImage(key, pixmap.toImage());
     }
 
-    /**
-     * Inserts the @p image into the shared cache, accessible with @p key. This
+    /*!
+     * Inserts the \a image into the shared cache, accessible with \a key. This
      * variant is preferred over insertPixmap() if your source data is already a
      * QImage, if it is essential that the image be in shared memory (such as
      * for SVG icons which have a high render time), or if it will need to be
      * in QImage form after it is retrieved from the cache.
      *
-     * @param key Name to access @p image with.
-     * @param image The image to add to the shared cache.
-     * @return true if the image was successfully cached, false otherwise.
+     * \a key Name to access \a image with.
+     *
+     * \a image The image to add to the shared cache.
+     *
+     * Returns \c true if the image was successfully cached, \c false otherwise.
      */
     bool insertImage(const QString &key, const QImage &image)
     {
@@ -121,12 +132,12 @@ public:
         return false;
     }
 
-    /**
-     * Copies the cached pixmap identified by @p key to @p destination. If no such
-     * pixmap exists @p destination is unchanged.
+    /*!
+     * Copies the cached pixmap identified by \a key to \a destination. If no such
+     * pixmap exists \a destination is unchanged.
      *
-     * @return true if the pixmap identified by @p key existed, false otherwise.
-     * @see setPixmapCaching()
+     * Returns \c true if the pixmap identified by \a key existed, \c false otherwise.
+     * \sa setPixmapCaching()
      */
     bool findPixmap(const QString &key, QPixmap *destination) const
     {
@@ -149,11 +160,11 @@ public:
         return true;
     }
 
-    /**
-     * Copies the cached image identified by @p key to @p destination. If no such
-     * image exists @p destination is unchanged.
+    /*!
+     * Copies the cached image identified by \a key to \a destination. If no such
+     * image exists \a destination is unchanged.
      *
-     * @return true if the image identified by @p key existed, false otherwise.
+     * Returns \c true if the image identified by \a key existed, \c false otherwise.
      */
     bool findImage(const QString &key, QImage *destination) const
     {
@@ -169,7 +180,7 @@ public:
         return true;
     }
 
-    /**
+    /*!
      * Removes all entries from the cache. In addition any cached pixmaps (as per
      * setPixmapCaching()) are also removed.
      */
@@ -179,41 +190,61 @@ public:
         T::clear();
     }
 
-    /**
-     * @return The time that an image or pixmap was last inserted into a cache.
+    /*!
+     * Returns the time that an image or pixmap was last inserted into a cache.
      */
+#ifdef Q_QDOC
+    QDateTime lastModifiedTime() const;
+#else
     using KLocalImageCacheImplementation::lastModifiedTime;
+#endif
 
-    /**
-     * @return if QPixmaps added with insertPixmap() will be stored in a local
+    /*!
+     * Returns if QPixmaps added with insertPixmap() will be stored in a local
      * pixmap cache as well as the shared image cache. The default is to cache
      * pixmaps locally.
      */
+#ifdef Q_QDOC
+    bool pixmapCaching() const;
+#else
     using KLocalImageCacheImplementation::pixmapCaching;
+#endif
 
-    /**
+    /*!
      * Enables or disables local pixmap caching. If it is anticipated that a pixmap
      * will be frequently needed then this can actually save memory overall since the
      * X server or graphics card will not have to store duplicate copies of the same
      * image.
      *
-     * @param enable Enables pixmap caching if true, disables otherwise.
+     * \a enable Enables pixmap caching if true, disables otherwise.
      */
+#ifdef Q_QDOC
+    void setPixmapCaching(bool enable)
+#else
     using KLocalImageCacheImplementation::setPixmapCaching;
+#endif
 
-    /**
-     * @return The highest memory size in bytes to be used by cached pixmaps.
-     * @since 4.6
+    /*!
+     * Returns the highest memory size in bytes to be used by cached pixmaps.
+     * \since 4.6
      */
+#ifdef Q_QDOC
+        int pixmapCacheLimit() const;
+#else
     using KLocalImageCacheImplementation::pixmapCacheLimit;
+#endif
 
-    /**
+    /*!
      * Sets the highest memory size the pixmap cache should use.
      *
-     * @param size The size in bytes
-     * @since 4.6
+     * \a size The size in bytes
+     * \since 4.6
      */
+#ifdef Q_QDOC
+    void setPixmapCacheLimit(int size);
+#else
     using KLocalImageCacheImplementation::setPixmapCacheLimit;
+#endif
 };
 
 #endif /* KIMAGECACHE_H */

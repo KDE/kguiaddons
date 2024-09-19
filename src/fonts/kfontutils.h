@@ -15,42 +15,52 @@ class QPainter;
 class QSizeF;
 class QString;
 
-/**
- * @namespace KFontUtils
- * Provides utility functions for font data.
+/*!
+ * \namespace KFontUtils
+ * \inmodule KGuiAddons
+ * \brief Provides utility functions for font data.
  */
 namespace KFontUtils
 {
-/**
+/*!
  * Modifiers for the adaptFontSize function
- * @see AdaptFontSizeOptions
+ *
+ * \value NoFlags No modifier
+ * \value DoNotAllowWordWrap Do not use word wrapping
+ *
  */
 enum AdaptFontSizeOption {
-    NoFlags = 0x01, ///< No modifier
-    DoNotAllowWordWrap = 0x02, ///< Do not use word wrapping
+    NoFlags = 0x01,
+    DoNotAllowWordWrap = 0x02,
 };
-/**
- * Stores a combination of #AdaptFontSizeOption values.
- */
+
 Q_DECLARE_FLAGS(AdaptFontSizeOptions, AdaptFontSizeOption)
 Q_DECLARE_OPERATORS_FOR_FLAGS(AdaptFontSizeOptions)
 
-/** Helper function that calculates the biggest font size (in points) used
+/*! Helper function that calculates the biggest font size (in points) used
     drawing a centered text using word wrapping.
-    @param painter The painter where the text will be painted. The font set
+
+    \a painter The painter where the text will be painted. The font set
                    in the painter is used for the calculation. Note the
                    painter font size is modified by this call
-    @param text The text you want to draw
-    @param width The available width for drawing
-    @param height The available height for drawing
-    @param maxFontSize The maximum font size (in points) to consider
-    @param minFontSize The minimum font size (in points) to consider
-    @param flags The modifiers for how the text is painted
-    @return The calculated biggest font size (in points) that draws the text
+
+    \a text The text you want to draw
+
+    \a width The available width for drawing
+
+    \a height The available height for drawing
+
+    \a maxFontSize The maximum font size (in points) to consider
+
+    \a minFontSize The minimum font size (in points) to consider
+
+    \a flags The modifiers for how the text is painted
+
+    Returns the calculated biggest font size (in points) that draws the text
             in the given dimensions. Can return smaller than minFontSize,
             that means the text doesn't fit in the given rectangle. Can
             return -1 on error
-    @since 4.7
+    \since 4.7
 */
 qreal KGUIADDONS_EXPORT adaptFontSize(QPainter &painter,
                                       const QString &text,
@@ -60,8 +70,8 @@ qreal KGUIADDONS_EXPORT adaptFontSize(QPainter &painter,
                                       qreal minFontSize = 1.0,
                                       AdaptFontSizeOptions flags = NoFlags);
 
-/** Convenience function for adaptFontSize that accepts a QSizeF instead two qreals
-    @since 4.7
+/*! Convenience function for adaptFontSize that accepts a QSizeF instead two qreals
+    \since 4.7
 */
 qreal KGUIADDONS_EXPORT adaptFontSize(QPainter &painter,
                                       const QString &text,

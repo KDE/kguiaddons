@@ -19,15 +19,13 @@ include(ECMSetupVersion)
 include(ECMGenerateHeaders)
 include(ECMQtDeclareLoggingCategory)
 include(ECMDeprecationSettings)
-include(ECMAddQch)
 include(ECMGenerateExportHeader)
 include(ECMGeneratePkgConfigFile)
 include(ECMMarkNonGuiExecutable)
 include(ECMQmlModule)
 include(CMakeDependentOption)
+include(ECMGenerateQDoc)
 
-option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
-add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
 option(BUILD_GEO_SCHEME_HANDLER "Build the geo: URI scheme handler. Disable this if you are building two major versions for co-installability in the older variant." ON)
 
 if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT HAIKU)
@@ -116,16 +114,6 @@ endif()
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/KF6GuiAddons")
-
-if (BUILD_QCH)
-    ecm_install_qch_export(
-        TARGETS KF6GuiAddons_QCH
-        FILE KF6GuiAddonsQchTargets.cmake
-        DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
-        COMPONENT Devel
-    )
-    set(PACKAGE_INCLUDE_QCHTARGETS "include(\"\${CMAKE_CURRENT_LIST_DIR}/KF6GuiAddonsQchTargets.cmake\")")
-endif()
 
 include(CMakePackageConfigHelpers)
 

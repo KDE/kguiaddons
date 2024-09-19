@@ -14,7 +14,7 @@
 #include <QImage>
 #include <QPixmap>
 
-/**
+/*
  * This is a QObject subclass so we can catch the signal that the application is about
  * to close and properly release any QPixmaps we have cached.
  */
@@ -30,7 +30,7 @@ public:
         QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit, this, &KLocalImageCacheImplementationPrivate::clearPixmaps);
     }
 
-    /**
+    /*
      * Inserts a pixmap into the pixmap cache if the pixmap cache is enabled, with
      * weighting based on image size and bit depth.
      */
@@ -54,7 +54,7 @@ public Q_SLOTS:
 public:
     QDateTime timestamp;
 
-    /**
+    /*
      * This is used to cache pixmaps as they are inserted, instead of always
      * converting to image data and storing that in shared memory.
      */

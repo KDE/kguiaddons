@@ -13,10 +13,10 @@
 #include <QObject>
 #include <QSharedData>
 
-/**
+/*!
  * Background class that implements the behaviour of KModifierKeyInfo for
  * the different supported platforms.
- * @internal
+ * \internal
  */
 class KGUIADDONS_EXPORT KModifierKeyInfoProvider : public QObject, public QSharedData
 {
@@ -35,60 +35,62 @@ public:
     KModifierKeyInfoProvider();
     ~KModifierKeyInfoProvider() override;
 
-    /**
+    /*!
      * Detect if a key is pressed.
-     * @param key Modifier key to query
-     * @return true if the key is pressed, false if it isn't.
+     *
+     * \a key Modifier key to query
+     *
+     * Returns true if the key is pressed, false if it isn't.
      */
     bool isKeyPressed(Qt::Key key) const;
 
-    /**
+    /*!
      * Detect if a key is latched.
-     * @param key Modifier key to query
-     * @return true if the key is latched, false if it isn't.
+     * \a key Modifier key to query
+     * Returns true if the key is latched, false if it isn't.
      */
     bool isKeyLatched(Qt::Key key) const;
 
-    /**
+    /*!
      * Set the latched state of a key.
-     * @param key Modifier to set the latched state for
-     * @param latched true to latch the key, false to unlatch it
-     * @return true if the key is known, false else
+     * \a key Modifier to set the latched state for
+     * \a latched true to latch the key, false to unlatch it
+     * Returns true if the key is known, false else
      */
     virtual bool setKeyLatched(Qt::Key key, bool latched);
 
-    /**
+    /*!
      * Detect if a key is locked.
-     * @param key Modifier key to query
-     * @return true if the key is locked, false if it isn't.
+     * \a key Modifier key to query
+     * Returns true if the key is locked, false if it isn't.
      */
     bool isKeyLocked(Qt::Key key) const;
 
-    /**
+    /*!
      * Set the locked state of a key.
-     * @param key Modifier to set the locked state for
-     * @param latched true to lock the key, false to unlock it
-     * @return true if the key is known, false else
+     * \a key Modifier to set the locked state for
+     * \a latched true to lock the key, false to unlock it
+     * Returns true if the key is known, false else
      */
     virtual bool setKeyLocked(Qt::Key key, bool locked);
 
-    /**
+    /*!
      * Check if a mouse button is pressed.
-     * @param button Mouse button to check
-     * @return true if pressed, false else
+     * \a button Mouse button to check
+     * Returns true if pressed, false else
      */
     bool isButtonPressed(Qt::MouseButton button) const;
 
-    /**
+    /*!
      * Check if a key is known/can be queried
-     * @param key Modifier key to check
-     * @return true if the key is known, false if it isn't.
+     * \a key Modifier key to check
+     * Returns true if the key is known, false if it isn't.
      */
     bool knowsKey(Qt::Key key) const;
 
-    /**
+    /*!
      * Get a list of known keys
-     * @return List of known keys.
+     * Returns List of known keys.
      */
     const QList<Qt::Key> knownKeys() const;
 
