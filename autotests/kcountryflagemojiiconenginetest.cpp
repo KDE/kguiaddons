@@ -29,6 +29,13 @@ private Q_SLOTS:
         auto pixmap = icon.pixmap(16, 16);
         QVERIFY(!pixmap.isNull());
     }
+
+    void testNonCountry()
+    {
+        QIcon icon(new KCountryFlagEmojiIconEngine("LATAM"_L1));
+        auto pixmap = icon.pixmap(16, 16);
+        QVERIFY(!pixmap.isNull());
+    }
 };
 
 QTEST_MAIN(KCountryFlagEmojiIconEngineTest)

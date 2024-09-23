@@ -15,19 +15,26 @@ int main(int argc, char **argv)
 
     QWidget widget;
     widget.setWindowIcon(QIcon(new KCountryFlagEmojiIconEngine("UN")));
-    widget.setLayout(new QVBoxLayout);
+    widget.setLayout(new QHBoxLayout);
 
     {
         auto l = new QLabel(&widget);
-        l->setMinimumSize(512, 512);
-        l->setPixmap(QIcon(new KCountryFlagEmojiIconEngine("GB-SCT")).pixmap(512, 512));
+        l->setMinimumSize(256, 256);
+        l->setPixmap(QIcon(new KCountryFlagEmojiIconEngine("GB-SCT")).pixmap(256, 256));
         widget.layout()->addWidget(l);
     }
 
     {
         auto l = new QLabel(&widget);
-        l->setMinimumSize(512, 512);
-        l->setPixmap(QIcon(new KCountryFlagEmojiIconEngine("AT")).pixmap(512, 512));
+        l->setMinimumSize(256, 256);
+        l->setPixmap(QIcon(new KCountryFlagEmojiIconEngine("AT")).pixmap(256, 256));
+        widget.layout()->addWidget(l);
+    }
+
+    {
+        auto l = new QLabel(&widget);
+        l->setMinimumSize(256, 256);
+        l->setPixmap(QIcon(new KCountryFlagEmojiIconEngine("LATAM")).pixmap(256, 256));
         widget.layout()->addWidget(l);
     }
 
