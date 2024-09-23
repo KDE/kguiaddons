@@ -117,26 +117,24 @@ void KCountryFlagEmojiIconEngine::paint(QPainter *painter, const QRect &rect, QI
 
     QFontMetricsF metrics(font, painter->device());
     QRectF tightRect = metrics.tightBoundingRect(d->m_emoji);
-    while (tightRect.width() > rect.width() || tightRect.height() > rect.height()) {
-        const auto widthDelta = std::floor(tightRect.width() - rect.width());
-        const auto heightDelta = std::floor(tightRect.height() - rect.height());
-        auto delta = std::max(std::max(1.0, widthDelta), std::max(1.0, heightDelta));
-        if (delta >= font.pixelSize()) {
-            // when the delta is too large we'll chop the pixel size in half and hope the delta comes within a more reasonable range the next loop run
-            static constexpr auto halfSize = 2;
-            delta = std::floor(font.pixelSize() / halfSize);
-        }
-        font.setPixelSize(std::floor(font.pixelSize() - delta));
+
+    if (tightRect.width() > rect.width() || tightRect.height() > rect.height()) {
+        const auto ratio = std::max({1.0, tightRect.width() / rect.width(), tightRect.height() / rect.height()});
+        font.setPixelSize(std::max(1.0, std::floor(font.pixelSize() / ratio)));
         metrics = QFontMetricsF(font, painter->device());
         tightRect = metrics.tightBoundingRect(d->m_emoji);
     }
 
-    const QRectF flagBoundingRect = metrics.boundingRect(rect, Qt::AlignCenter, d->m_emoji);
-
     painter->setPen(qGuiApp->palette().color(QPalette::WindowText)); // in case we render the letters in absence of a flag
+
+    QRectF flagBoundingRect = metrics.boundingRect(rect, Qt::AlignCenter, d->m_emoji);
     // Confusingly the pixelSize for drawing must actually be without DPR but the rect calculation above
     // seems to be correct even with DPR in the pixelSize.
-    font.setPixelSize(std::floor(font.pixelSize() / painter->device()->devicePixelRatioF()));
+    const auto dpr = painter->device()->devicePixelRatioF();
+    font.setPixelSize(std::floor(font.pixelSize() / dpr));
+    // The offset of the bounding rect needs to be also adjusted by the DPR
+    flagBoundingRect.moveTopLeft(flagBoundingRect.topLeft() / dpr);
+
     painter->setFont(font);
     painter->drawText(flagBoundingRect, d->m_emoji);
 }
