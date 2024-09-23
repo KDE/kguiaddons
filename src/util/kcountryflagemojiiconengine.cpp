@@ -30,14 +30,19 @@ QString makeCountryEmoji(const QString &country)
     static constexpr auto offsetCodePointA = 'A'_L1.unicode(); // offset from 0, the flag code points have the same offsets
     static constexpr auto basePoint = flagCodePointStart - offsetCodePointA;
 
-    QString emoji;
-    emoji.reserve(2 * country.size());
+    QStringList emojiList;
+    emojiList.reserve(country.size());
     for (const auto &c : country) {
-        emoji.append(QChar(surrogatePairCodePoint));
-        emoji.append(QChar(basePoint + c.toUpper().unicode()));
+        emojiList.append(QChar(surrogatePairCodePoint) + QChar(basePoint + c.toUpper().unicode()));
     }
 
-    return emoji;
+    // Valid flag country codes have only 2 characters.
+    // If we have more, separate the flag codepoints to avoid misrepresentations
+    if (country.size() != 2) {
+        return emojiList.join(QChar(0x200b)); // U+200B Zero-Width Space
+    }
+
+    return emojiList.join(QString());
 }
 
 QString makeRegionEmoji(const QString &region)
