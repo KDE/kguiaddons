@@ -14,6 +14,39 @@
 
 QTEST_MAIN(KIconUtilsTest)
 
+struct ImageInfo {
+    int bluePixels = 0;
+    int redPixels = 0;
+    qreal dpr = 1;
+
+    inline qreal dpr_squared()
+    {
+        return dpr * dpr;
+    }
+};
+
+ImageInfo countRedBluePixels(const QImage &image)
+{
+    ImageInfo info;
+
+    // Get the image DPR
+    info.dpr = image.devicePixelRatio();
+    qDebug() << "Image DPR:" << image.devicePixelRatio() << image.size();
+
+    // Go over the image and count red and blue pixels
+    for (int y = 0; y < image.height(); ++y) {
+        for (int x = 0; x < image.width(); ++x) {
+            if (qRed(image.pixel(x, y)) == 255) {
+                info.redPixels++;
+            } else if (qBlue(image.pixel(x, y)) == 255) {
+                info.bluePixels++;
+            }
+        }
+    }
+
+    return info;
+}
+
 void KIconUtilsTest::addOverlayTest()
 {
     QPixmap rectanglePixmap(32, 32);
@@ -29,23 +62,11 @@ void KIconUtilsTest::addOverlayTest()
     QIcon iconWithOverlay = KIconUtils::addOverlay(icon, overlayIcon, Qt::BottomRightCorner);
     QImage result = iconWithOverlay.pixmap(32, 32).toImage();
 
-    int bluePixels = 0;
-    int redPixels = 0;
-
-    // Go over the image and count red and blue pixels
-    for (int y = 0; y < result.height(); ++y) {
-        for (int x = 0; x < result.width(); ++x) {
-            if (qRed(result.pixel(x, y)) == 255) {
-                redPixels++;
-            } else if (qBlue(result.pixel(x, y)) == 255) {
-                bluePixels++;
-            }
-        }
-    }
+    auto info = countRedBluePixels(result);
 
     // For icon of size 32x32, the overlay should be 16x16 (=256)
-    QCOMPARE(bluePixels, 256);
-    QCOMPARE(redPixels, 768);
+    QCOMPARE(info.bluePixels, 256 * info.dpr_squared());
+    QCOMPARE(info.redPixels, 768 * info.dpr_squared());
 
     // Try different size and position
     rectanglePixmap = rectanglePixmap.scaled(96, 96);
@@ -65,22 +86,11 @@ void KIconUtilsTest::addOverlayTest()
     iconWithOverlay = KIconUtils::addOverlay(icon, overlayIcon, Qt::TopLeftCorner);
     result = iconWithOverlay.pixmap(96, 96).toImage();
 
-    bluePixels = 0;
-    redPixels = 0;
-
-    for (int y = 0; y < result.height(); ++y) {
-        for (int x = 0; x < result.width(); ++x) {
-            if (qRed(result.pixel(x, y)) == 255) {
-                redPixels++;
-            } else if (qBlue(result.pixel(x, y)) == 255) {
-                bluePixels++;
-            }
-        }
-    }
+    info = countRedBluePixels(result);
 
     // 96x96 big icon will have 32x32 big overlay (=1024 blue pixels)
-    QCOMPARE(bluePixels, 1024);
-    QCOMPARE(redPixels, 8192);
+    QCOMPARE(info.bluePixels, 1024 * info.dpr_squared());
+    QCOMPARE(info.redPixels, 8192 * info.dpr_squared());
 
     // Try paint method
     icon = QIcon(rectanglePixmap);
@@ -92,22 +102,11 @@ void KIconUtilsTest::addOverlayTest()
 
     result = a.toImage();
 
-    bluePixels = 0;
-    redPixels = 0;
-
-    for (int y = 0; y < result.height(); ++y) {
-        for (int x = 0; x < result.width(); ++x) {
-            if (qRed(result.pixel(x, y)) == 255) {
-                redPixels++;
-            } else if (qBlue(result.pixel(x, y)) == 255) {
-                bluePixels++;
-            }
-        }
-    }
+    info = countRedBluePixels(result);
 
     // 96x96 big icon will have 32x32 big overlay (=1024 blue pixels)
-    QCOMPARE(bluePixels, 1024);
-    QCOMPARE(redPixels, 8192);
+    QCOMPARE(info.bluePixels, 1024 * info.dpr_squared());
+    QCOMPARE(info.redPixels, 8192 * info.dpr_squared());
 }
 
 void KIconUtilsTest::addOverlaysTest()
@@ -129,24 +128,12 @@ void KIconUtilsTest::addOverlaysTest()
     QIcon iconWithOverlay = KIconUtils::addOverlays(icon, overlays);
     QImage result = iconWithOverlay.pixmap(32, 32).toImage();
 
-    int bluePixels = 0;
-    int redPixels = 0;
-
-    // Go over the image and count red and blue pixels
-    for (int y = 0; y < result.height(); ++y) {
-        for (int x = 0; x < result.width(); ++x) {
-            if (qRed(result.pixel(x, y)) == 255) {
-                redPixels++;
-            } else if (qBlue(result.pixel(x, y)) == 255) {
-                bluePixels++;
-            }
-        }
-    }
+    auto info = countRedBluePixels(result);
 
     // Two blue overlays in icon size 32x32 would intersect with 16 pixels,
     // so the amount of blue pixels should be 2x256-16 = 496
-    QCOMPARE(bluePixels, 496);
-    QCOMPARE(redPixels, 528);
+    QCOMPARE(info.bluePixels, 496 * info.dpr_squared());
+    QCOMPARE(info.redPixels, 528 * info.dpr_squared());
 
     // Try different size
 
@@ -170,22 +157,11 @@ void KIconUtilsTest::addOverlaysTest()
 
     result = a.toImage();
 
-    bluePixels = 0;
-    redPixels = 0;
-
-    for (int y = 0; y < result.height(); ++y) {
-        for (int x = 0; x < result.width(); ++x) {
-            if (qRed(result.pixel(x, y)) == 255) {
-                redPixels++;
-            } else if (qBlue(result.pixel(x, y)) == 255) {
-                bluePixels++;
-            }
-        }
-    }
+    info = countRedBluePixels(result);
 
     // 96x96 big icon will have 32x32 big overlays (=3072 blue pixels)
-    QCOMPARE(bluePixels, 3072);
-    QCOMPARE(redPixels, 6144);
+    QCOMPARE(info.bluePixels, 3072 * info.dpr_squared());
+    QCOMPARE(info.redPixels, 6144 * info.dpr_squared());
 }
 
 #include "moc_kiconutilstest.cpp"
