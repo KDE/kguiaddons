@@ -29,6 +29,7 @@ target_sources(KF6GuiAddons PRIVATE
  util/kcursorsaver.cpp
  util/kcountryflagemojiiconengine.cpp
  util/kjobwindows.cpp
+ util/kblurhash.cpp
  recorder/keyboardgrabber.cpp
  recorder/kkeysequencerecorder.cpp
  systemclipboard/qtclipboard.cpp
@@ -49,6 +50,7 @@ target_sources(KF6GuiAddons PRIVATE
  util/kcursorsaver.h
  util/kcountryflagemojiiconengine.h
  util/kjobwindows.h
+ util/kblurhash.h
  recorder/keyboardgrabber_p.h
  recorder/kkeysequencerecorder.h
  systemclipboard/qtclipboard_p.h
@@ -170,6 +172,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
   KCursorSaver
   KCountryFlagEmojiIconEngine
   KJobWindows
+  KBlurHash
 
   RELATIVE util
   REQUIRED_HEADERS KGuiAddons_HEADERS
