@@ -4,14 +4,13 @@
 
 #pragma once
 
-#include <QQmlExtensionPlugin>
+#include <QQmlEngineExtensionPlugin>
 
-class PrivatePlugin : public QQmlExtensionPlugin
+class PrivatePlugin : public QQmlEngineExtensionPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
+    Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 
 public:
-    void registerTypes(const char *uri) override;
     void initializeEngine(QQmlEngine *engine, const char *) override;
 };

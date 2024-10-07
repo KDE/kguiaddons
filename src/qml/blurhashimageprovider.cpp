@@ -91,7 +91,7 @@ QQuickTextureFactory *AsyncImageResponse::textureFactory() const
 
 QQuickImageResponse *BlurHashImageProvider::requestImageResponse(const QString &id, const QSize &requestedSize)
 {
-    return new AsyncImageResponse(id, requestedSize, &pool);
+    return new AsyncImageResponse(id, requestedSize, &m_pool);
 }
 
 #include "blurhashimageprovider.moc"

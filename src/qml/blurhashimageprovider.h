@@ -21,5 +21,5 @@ public:
     QQuickImageResponse *requestImageResponse(const QString &id, const QSize &requestedSize) override;
 
 private:
-    QThreadPool pool;
+    QThreadPool m_pool;
 };

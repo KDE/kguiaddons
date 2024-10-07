@@ -4,11 +4,6 @@
 #include "privateplugin.h"
 #include "blurhashimageprovider.h"
 
-void PrivatePlugin::registerTypes(const char *uri)
-{
-    Q_UNUSED(uri);
-}
-
 void PrivatePlugin::initializeEngine(QQmlEngine *engine, const char *)
 {
     engine->addImageProvider(QLatin1StringView("blurhash"), new BlurHashImageProvider);

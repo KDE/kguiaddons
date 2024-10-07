@@ -11,7 +11,7 @@ static constexpr QLatin1StringView b83Characters{"0123456789ABCDEFGHIJKLMNOPQRST
 const static auto toLinearSRGB = QColorSpace(QColorSpace::SRgb).transformationToColorSpace(QColorSpace::SRgbLinear);
 const static auto fromLinearSRGB = QColorSpace(QColorSpace::SRgbLinear).transformationToColorSpace(QColorSpace::SRgb);
 
-QImage KBlurHash::decode(const QStringView &blurhash, const QSize &size)
+QImage KBlurHash::decode(QStringView blurhash, const QSize &size)
 {
     // 10 is the minimum length of a blurhash string
     if (blurhash.length() < 10)
@@ -83,7 +83,7 @@ QImage KBlurHash::decode(const QStringView &blurhash, const QSize &size)
     return image;
 }
 
-std::optional<int> KBlurHash::decode83(const QStringView &encodedString)
+std::optional<int> KBlurHash::decode83(QStringView encodedString)
 {
     int temp = 0;
     for (const QChar c : encodedString) {
