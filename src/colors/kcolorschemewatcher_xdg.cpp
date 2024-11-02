@@ -8,6 +8,7 @@
 
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QDBusReply>
 #include <QDBusVariant>
 #include <QDebug>
 
@@ -27,10 +28,12 @@ KColorSchemeWatcherXDG::KColorSchemeWatcherXDG()
                                                     QStringLiteral("Read"));
     m.setArguments({QStringLiteral("org.freedesktop.appearance"), QStringLiteral("color-scheme")});
 
-    auto reply = QDBusConnection::sessionBus().call(m);
+    QDBusReply<QDBusVariant> reply = QDBusConnection::sessionBus().call(m);
 
-    const uint result = reply.arguments().first().value<QDBusVariant>().variant().value<QDBusVariant>().variant().toUInt();
-    m_preference = fdoToInternal(result);
+    if (reply.isValid()) {
+        const uint result = reply.value().variant().toUInt();
+        m_preference = fdoToInternal(result);
+    }
 }
 
 KColorSchemeWatcher::ColorPreference KColorSchemeWatcherXDG::systemPreference() const
