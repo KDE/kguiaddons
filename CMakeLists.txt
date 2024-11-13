@@ -40,7 +40,7 @@ else()
     set(WITH_X11 OFF)
 endif()
 
-set(REQUIRED_QT_VERSION 6.5.0)
+set(REQUIRED_QT_VERSION 6.6.0)
 if (WITH_WAYLAND)
     set(_qtgui_find_components COMPONENTS Private)
 endif()
