@@ -27,7 +27,8 @@
 class KGUIADDONS_EXPORT KBlurHash
 {
 public:
-    /** Decodes the @p blurhash string creating an image of @p size.
+    /** 
+     * @brief Decodes the @p blurhash string creating an image of @p size.
      * @note Returns a null image if decoding failed.
      */
     static QImage decode(QStringView blurhash, const QSize &size);
