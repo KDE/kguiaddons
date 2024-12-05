@@ -24,7 +24,6 @@ include(ECMGenerateExportHeader)
 include(ECMGeneratePkgConfigFile)
 include(ECMMarkNonGuiExecutable)
 include(ECMQmlModule)
-include(CMakeDependentOption)
 
 option(BUILD_QCH "Build API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)" OFF)
 add_feature_info(QCH ${BUILD_QCH} "API documentation in QCH format (for e.g. Qt Assistant, Qt Creator & KDevelop)")
@@ -78,10 +77,20 @@ if (ANDROID)
     find_package(Gradle REQUIRED)
 endif()
 
-# For the Python bindings
-find_package(Python3 3.10 COMPONENTS Interpreter Development)
-find_package(Shiboken6)
-find_package(PySide6)
+option(BUILD_PYTHON_BINDINGS "Build Python bindings" ON)
+
+# Only Linux CI has the relevant packages
+if (NOT LINUX OR NOT BUILD_SHARED_LIBS)
+    set(BUILD_PYTHON_BINDINGS OFF)
+endif()
+
+if (BUILD_PYTHON_BINDINGS)
+    find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter Development)
+    find_package(Shiboken6 REQUIRED)
+    find_package(PySide6 REQUIRED)
+endif()
+
+add_feature_info(PYTHON_BINDINGS ${BUILD_PYTHON_BINDINGS} "Python bindings")
 
 set(kguiaddons_version_header "${CMAKE_CURRENT_BINARY_DIR}/src/kguiaddons_version.h")
 ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS
@@ -92,14 +101,6 @@ ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS
 ecm_set_disabled_deprecation_versions(
     QT 6.8
 )
-
-cmake_dependent_option(BUILD_PYTHON_BINDINGS "Generate Python Bindings" ON "TARGET Shiboken6::libshiboken AND TARGET PySide6::pyside6" OFF)
-add_feature_info(PYTHON_BINDINGS ${BUILD_PYTHON_BINDINGS} "Python bindings")
-
-# FreeBSD CI is missing required packages
-if (CMAKE_SYSTEM_NAME MATCHES FreeBSD)
-    set(BUILD_PYTHON_BINDINGS OFF)
-endif()
 
 add_subdirectory(src)
 if (BUILD_TESTING)
