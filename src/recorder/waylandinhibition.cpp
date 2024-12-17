@@ -5,6 +5,8 @@
 
 #include "waylandinhibition_p.h"
 
+#include "kguiaddons_debug.h"
+
 #include <QDebug>
 #include <QGuiApplication>
 #include <QSharedPointer>
@@ -121,10 +123,17 @@ bool WaylandInhibition::shortcutsAreInhibited() const
 
 void WaylandInhibition::enableInhibition()
 {
+    if (!m_manager->isActive()) {
+        qCInfo(KGUIADDONS_LOG) << "The compositor does not support the keyboard-shortcuts-inhibit-unstable-v1 protocol. Inhibiting shortcuts will not work.";
+        return;
+    }
     m_manager->startInhibition(m_window);
 }
 
 void WaylandInhibition::disableInhibition()
 {
+    if (!m_manager->isActive()) {
+        return;
+    }
     m_manager->stopInhibition(m_window);
 }
