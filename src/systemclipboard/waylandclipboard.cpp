@@ -159,11 +159,16 @@ private:
      */
     static bool readData(int fd, QByteArray &data);
     QStringList m_receivedFormats;
+    mutable QHash<QString, QVariant> m_data;
 };
 
 QVariant DataControlOffer::retrieveData(const QString &mimeType, QMetaType type) const
 {
     Q_UNUSED(type);
+
+    auto it = m_data.constFind(mimeType);
+    if (it != m_data.constEnd())
+        return *it;
 
     QString mime;
     if (!m_receivedFormats.contains(mimeType)) {
@@ -221,6 +226,7 @@ QVariant DataControlOffer::retrieveData(const QString &mimeType, QMetaType type)
             if (mimeType == applicationQtXImageLiteral()) {
                 QImage img = QImage::fromData(data, mime.mid(mime.indexOf(QLatin1Char('/')) + 1).toLatin1().toUpper().data());
                 if (!img.isNull()) {
+                    m_data.insert(mimeType, img);
                     return img;
                 }
             } else if (data.size() > 1 && mimeType == u"text/uri-list") {
@@ -236,12 +242,15 @@ QVariant DataControlOffer::retrieveData(const QString &mimeType, QMetaType type)
                         list.emplace_back(std::move(url));
                     }
                 }
+                m_data.insert(mimeType, list);
                 return list;
             }
+            m_data.insert(mimeType, data);
             return data;
         }
         close(pipeFds[0]);
     }
+
     return QVariant();
 }
 
