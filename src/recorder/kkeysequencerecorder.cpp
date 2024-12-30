@@ -12,6 +12,7 @@
 #include "keyboardgrabber_p.h"
 #include "kguiaddons_debug.h"
 #include "shortcutinhibition_p.h"
+#include "tabletevents.h"
 #include "waylandinhibition_p.h"
 
 #include <QGuiApplication>
@@ -58,6 +59,7 @@ public:
 
     KKeySequenceRecorder *q;
     QKeySequence m_currentKeySequence;
+    TabletPadSequence m_currentTabletPadSequence;
     QKeySequence m_previousKeySequence;
     QPointer<QWindow> m_window;
     KKeySequenceRecorder::Patterns m_patterns;
@@ -71,6 +73,8 @@ public:
     Qt::KeyboardModifiers m_lastPressedModifiers;
     bool m_isReleasingModifierOnly = false;
     std::chrono::nanoseconds m_modifierFirstReleaseTime;
+
+    TabletEvents m_tabletEvents;
 };
 
 constexpr Qt::KeyboardModifiers modifierMask = Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier | Qt::KeypadModifier;
@@ -550,6 +554,18 @@ KKeySequenceRecorder::KKeySequenceRecorder(QWindow *window, QObject *parent)
 
     setWindow(window);
     connect(&d->m_modifierlessTimer, &QTimer::timeout, d.get(), &KKeySequenceRecorderPrivate::finishRecording);
+
+    connect(&d->m_tabletEvents, &TabletEvents::padButtonReceived, this, [this](const QString &path, uint button, bool pressed) {
+        qWarning() << "button" << path << button << pressed;
+
+        if (!d->m_isRecording) {
+            return;
+        }
+
+        if (pressed) {
+            Q_EMIT gotTabletPadSequence({button});
+        }
+    });
 }
 
 KKeySequenceRecorder::~KKeySequenceRecorder() noexcept
@@ -613,6 +629,19 @@ void KKeySequenceRecorder::setCurrentKeySequence(const QKeySequence &sequence)
     }
     d->m_currentKeySequence = sequence;
     Q_EMIT currentKeySequenceChanged();
+}
+
+TabletPadSequence KKeySequenceRecorder::currentTabletPadSequence() const
+{
+    return d->m_currentTabletPadSequence;
+}
+
+void KKeySequenceRecorder::setCurrentTabletPadSequence(const TabletPadSequence &sequence)
+{
+    if (sequence != d->m_currentTabletPadSequence) {
+        d->m_currentTabletPadSequence = sequence;
+        Q_EMIT currentTabletPadSequenceChanged();
+    }
 }
 
 QWindow *KKeySequenceRecorder::window() const

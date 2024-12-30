@@ -19,6 +19,19 @@
 
 class KKeySequenceRecorderPrivate;
 
+class TabletPadSequence
+{
+    Q_GADGET
+    Q_PROPERTY(uint button MEMBER m_button)
+public:
+    bool operator==(const TabletPadSequence &other)
+    {
+        return m_button == other.m_button;
+    }
+
+    uint m_button;
+};
+
 /*!
  * \class KKeySequenceRecorder
  * \inmodule KGuiAddons
@@ -131,6 +144,9 @@ class KGUIADDONS_EXPORT KKeySequenceRecorder : public QObject
      */
     Q_PROPERTY(Patterns patterns READ patterns WRITE setPatterns NOTIFY patternsChanged)
 
+    Q_PROPERTY(
+        TabletPadSequence currentTabletPadSequence READ currentTabletPadSequence WRITE setCurrentTabletPadSequence NOTIFY currentTabletPadSequenceChanged)
+
 public:
     /*!
      * The Pattern type specifies what components the recorded shortcut must have, e.g. modifiers or just a key.
@@ -172,6 +188,9 @@ public:
 
     QKeySequence currentKeySequence() const;
     void setCurrentKeySequence(const QKeySequence &sequence);
+
+    TabletPadSequence currentTabletPadSequence() const;
+    void setCurrentTabletPadSequence(const TabletPadSequence &sequence);
 
     QWindow *window() const;
     void setWindow(QWindow *window);
@@ -223,9 +242,12 @@ Q_SIGNALS:
      */
     void gotKeySequence(const QKeySequence &keySequence);
 
+    void gotTabletPadSequence(const TabletPadSequence &sequence);
+
     void recordingChanged();
     void windowChanged();
     void currentKeySequenceChanged();
+    void currentTabletPadSequenceChanged();
     void multiKeyShortcutsAllowedChanged();
 #if KGUIADDONS_ENABLE_DEPRECATED_SINCE(6, 12)
     KGUIADDONS_DEPRECATED_VERSION(6, 12, "use patternsChanged() instead") void modifierlessAllowedChanged();

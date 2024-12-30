@@ -1,0 +1,23 @@
+/*
+    SPDX-FileCopyrightText: 2022 Aleix Pol Gonzalez <aleixpol@kde.org>
+
+    SPDX-License-Identifier: GPL-2.0-or-later
+*/
+
+#pragma once
+
+#include <QObject>
+
+class TabletEvents : public QObject
+{
+    Q_OBJECT
+public:
+    TabletEvents(QObject *parent = nullptr);
+
+Q_SIGNALS:
+    void padButtonReceived(const QString &path, uint button, bool pressed);
+    void toolButtonReceived(uint32_t hardware_serial_hi, uint32_t hardware_serial_lo, uint button, bool pressed);
+    void toolDown(uint32_t hardware_serial_hi, uint32_t hardware_serial_lo, double x, double y);
+    void toolMotion(uint32_t hardware_serial_hi, uint32_t hardware_serial_lo, double x, double y);
+    void toolUp(uint32_t hardware_serial_hi, uint32_t hardware_serial_lo, double x, double y);
+};

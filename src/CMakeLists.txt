@@ -31,6 +31,7 @@ target_sources(KF6GuiAddons PRIVATE
  util/kjobwindows.cpp
  recorder/keyboardgrabber.cpp
  recorder/kkeysequencerecorder.cpp
+ recorder/tabletevents.cpp
  systemclipboard/qtclipboard.cpp
  systemclipboard/ksystemclipboard.cpp
 
@@ -90,6 +91,7 @@ if(WITH_WAYLAND)
             "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
             "${WaylandProtocols_DATADIR}/staging/ext-data-control/ext-data-control-v1.xml"
             "${Wayland_DATADIR}/wayland.xml"
+            "${WaylandProtocols_DATADIR}/unstable/tablet/tablet-unstable-v2.xml"
         ${private_code_option}
     )
     target_sources(KF6GuiAddons PRIVATE
