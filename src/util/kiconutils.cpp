@@ -34,6 +34,7 @@ public:
 private:
     QIcon m_base;
     QHash<Qt::Corner, QIcon> m_overlays;
+    qreal m_dpr = 1.0;
 };
 
 KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QIcon &overlay, Qt::Corner position)
@@ -117,10 +118,10 @@ void KOverlayIconEngine::virtual_hook(int id, void *data)
         pixmap.setDevicePixelRatio(info->scale);
         pixmap.fill(Qt::transparent);
 
-        QRect rect = pixmap.rect();
-
-        const QRect logicalRect(rect.x() / info->scale, rect.y() / info->scale, rect.width() / info->scale, rect.height() / info->scale);
+        const QRect logicalRect(0, 0, phyiscalSize.width() / info->scale, phyiscalSize.height() / info->scale);
         QPainter p(&pixmap);
+
+        m_dpr = info->scale;
         paint(&p, logicalRect, info->mode, info->state);
 
         info->pixmap = pixmap;
@@ -133,7 +134,18 @@ void KOverlayIconEngine::virtual_hook(int id, void *data)
 void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
 {
     // Paint the base icon as the first layer
-    m_base.paint(painter, rect, Qt::AlignCenter, mode, state);
+    auto rectPhysical = QSize{static_cast<int>(rect.width() * m_dpr), static_cast<int>(rect.height() * m_dpr)};
+    const auto pixSize = m_base.actualSize(rectPhysical, mode, state);
+    QPixmap pix = m_base.pixmap(pixSize, mode, state);
+
+    // in case the output image is too big to fit in logical size or too small
+    // ensure it fits the physicalSize
+    pix = pix.scaled(rectPhysical, Qt::KeepAspectRatio);
+    pix.setDevicePixelRatio(m_dpr);
+
+    // draw the pix in the middle of the output pixmap
+    const auto pixMiddle = pix.size() / pix.devicePixelRatioF() / 2;
+    painter->drawPixmap(QPoint{rect.width() / 2 - pixMiddle.width(), rect.height() / 2 - pixMiddle.height()}, pix);
 
     if (m_overlays.isEmpty()) {
         return;
@@ -161,7 +173,7 @@ void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode
     // Iterate over stored overlays
     QHash<Qt::Corner, QIcon>::const_iterator i = m_overlays.constBegin();
     while (i != m_overlays.constEnd()) {
-        const QPixmap overlayPixmap = i.value().pixmap(overlaySize, overlaySize, mode, state);
+        const QPixmap overlayPixmap = i.value().pixmap(QSize{overlaySize, overlaySize}, m_dpr, mode, state);
         if (overlayPixmap.isNull()) {
             ++i;
             continue;
@@ -217,10 +229,6 @@ QIcon addOverlays(const QString &iconName, const QStringList &overlays)
 {
     const QIcon icon = QIcon::fromTheme(iconName);
 
-    if (overlays.count() == 0) {
-        return icon;
-    }
-
-    return QIcon(new KOverlayIconEngine(icon, overlays));
+    return addOverlays(icon, overlays);
 }
 }

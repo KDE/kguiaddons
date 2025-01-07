@@ -44,8 +44,8 @@ void KIconUtilsTest::addOverlayTest()
     }
 
     // For icon of size 32x32, the overlay should be 16x16 (=256)
-    QCOMPARE(bluePixels, 256);
-    QCOMPARE(redPixels, 768);
+    QCOMPARE(redPixels / (result.devicePixelRatio() * result.devicePixelRatio()), 768);
+    QCOMPARE(bluePixels / (result.devicePixelRatio() * result.devicePixelRatio()), 256);
 
     // Try different size and position
     rectanglePixmap = rectanglePixmap.scaled(96, 96);
@@ -79,8 +79,8 @@ void KIconUtilsTest::addOverlayTest()
     }
 
     // 96x96 big icon will have 32x32 big overlay (=1024 blue pixels)
-    QCOMPARE(bluePixels, 1024);
-    QCOMPARE(redPixels, 8192);
+    QCOMPARE(bluePixels / (result.devicePixelRatio() * result.devicePixelRatio()), 1024);
+    QCOMPARE(redPixels / (result.devicePixelRatio() * result.devicePixelRatio()), 8192);
 
     // Try paint method
     icon = QIcon(rectanglePixmap);
@@ -145,8 +145,8 @@ void KIconUtilsTest::addOverlaysTest()
 
     // Two blue overlays in icon size 32x32 would intersect with 16 pixels,
     // so the amount of blue pixels should be 2x256-16 = 496
-    QCOMPARE(bluePixels, 496);
-    QCOMPARE(redPixels, 528);
+    QCOMPARE(bluePixels / (result.devicePixelRatio() * result.devicePixelRatio()), 496);
+    QCOMPARE(redPixels / (result.devicePixelRatio() * result.devicePixelRatio()), 528);
 
     // Try different size
 
@@ -184,8 +184,8 @@ void KIconUtilsTest::addOverlaysTest()
     }
 
     // 96x96 big icon will have 32x32 big overlays (=3072 blue pixels)
-    QCOMPARE(bluePixels, 3072);
-    QCOMPARE(redPixels, 6144);
+    QCOMPARE(bluePixels / (result.devicePixelRatio() * result.devicePixelRatio()), 3072);
+    QCOMPARE(redPixels / (result.devicePixelRatio() * result.devicePixelRatio()), 6144);
 }
 
 #include "moc_kiconutilstest.cpp"
