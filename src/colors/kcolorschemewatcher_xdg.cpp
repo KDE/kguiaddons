@@ -31,7 +31,7 @@ KColorSchemeWatcherXDG::KColorSchemeWatcherXDG()
     QDBusReply<QDBusVariant> reply = QDBusConnection::sessionBus().call(m);
 
     if (reply.isValid()) {
-        const uint result = reply.value().variant().toUInt();
+        const uint result = reply.value().variant().value<QDBusVariant>().variant().toUInt();
         m_preference = fdoToInternal(result);
     }
 }
