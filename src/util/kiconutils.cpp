@@ -216,6 +216,17 @@ QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays)
     return QIcon(new KOverlayIconEngine(icon, overlays));
 }
 
+QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, QString> &overlays)
+{
+    QHash<Qt::Corner, QIcon> overlayIcons;
+
+    for (const auto &[corner, overlay] : overlays.asKeyValueRange()) {
+        overlayIcons.insert(corner, QIcon::fromTheme(overlay));
+    }
+
+    return QIcon(new KOverlayIconEngine(icon, overlayIcons));
+}
+
 QIcon addOverlays(const QIcon &icon, const QStringList &overlays)
 {
     if (overlays.count() == 0) {

@@ -38,6 +38,18 @@ KGUIADDONS_EXPORT QIcon addOverlay(const QIcon &icon, const QIcon &overlay, Qt::
 KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays);
 
 /**
+ * Adds \a overlays over the \a icon
+ *
+ * The \a overlays is a QHash of Qt::Corner and QString. The Qt::Corner value
+ * decides where the overlay icon will be painted, the QString value
+ * will fetch with `QIcon::fromTheme` passing in the overlays the icon to be painted.
+ *
+ * The overlay icon is scaled down to 1/3 or 1/4 (depending on the icon size)
+ * and placed in one of the corners of the base icon.
+ */
+KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, QString> &overlays);
+
+/**
  * Adds up to four overlays over the @p icon.
  *
  * The @p overlays is a QStringList of icon names (e.g. the emblems that are drawn on
