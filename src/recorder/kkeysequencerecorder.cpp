@@ -47,6 +47,8 @@ public:
 
     KKeySequenceRecorderPrivate(KKeySequenceRecorder *qq);
 
+    bool isKeyCombinationAccepted(QKeyCombination keyCombination) const;
+
     void controlModifierlessTimeout();
     bool eventFilter(QObject *watched, QEvent *event) override;
     void handleKeyPress(QKeyEvent *event);
@@ -58,10 +60,9 @@ public:
     QKeySequence m_currentKeySequence;
     QKeySequence m_previousKeySequence;
     QPointer<QWindow> m_window;
+    KKeySequenceRecorder::Patterns m_patterns;
     bool m_isRecording;
     bool m_multiKeyShortcutsAllowed;
-    bool m_modifierlessAllowed;
-    bool m_modifierOnlyAllowed = false;
 
     Qt::KeyboardModifiers m_currentModifiers;
     QTimer m_modifierlessTimer;
@@ -267,24 +268,34 @@ static bool isShiftAsModifierAllowed(int keyQt)
     }
 }
 
-static bool isOkWhenModifierless(int key)
+bool KKeySequenceRecorderPrivate::isKeyCombinationAccepted(QKeyCombination keyCombination) const
 {
-    // this whole function is a hack, but especially the first line of code
-    if (QKeySequence(key).toString().length() == 1) {
-        return false;
+    const bool inputIncludesModifiers = keyCombination.keyboardModifiers();
+    const bool inputIncludesKey = keyCombination.key();
+
+    const KKeySequenceRecorder::Pattern basePatterns[] = {
+        KKeySequenceRecorder::Key,
+        KKeySequenceRecorder::Modifier,
+        KKeySequenceRecorder::ModifierAndKey,
+    };
+
+    for (const auto &pattern : basePatterns) {
+        if (!(m_patterns & pattern)) {
+            continue;
+        }
+
+        const bool patternIncludesModifiers = pattern & (KKeySequenceRecorder::Modifier | KKeySequenceRecorder::ModifierAndKey);
+        if (inputIncludesModifiers != patternIncludesModifiers) {
+            continue;
+        }
+
+        const bool patternIncludesKey = pattern & (KKeySequenceRecorder::Key | KKeySequenceRecorder::ModifierAndKey);
+        if (inputIncludesKey == patternIncludesKey) {
+            return true;
+        }
     }
 
-    switch (key) {
-    case Qt::Key_Return:
-    case Qt::Key_Space:
-    case Qt::Key_Tab:
-    case Qt::Key_Backtab: // does this ever happen?
-    case Qt::Key_Backspace:
-    case Qt::Key_Delete:
-        return false;
-    default:
-        return true;
-    }
+    return false;
 }
 
 static QKeySequence appendToSequence(const QKeySequence &sequence, int key)
@@ -374,7 +385,7 @@ void KKeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
 {
     m_isReleasingModifierOnly = false;
     m_currentModifiers = event->modifiers() & modifierMask;
-    int key = event->key();
+    const int key = event->key();
     switch (key) {
     case -1:
         qCWarning(KGUIADDONS_LOG) << "Got unknown key";
@@ -398,24 +409,21 @@ void KKeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
         break;
     default:
         m_lastPressedModifiers = Qt::NoModifier;
-        if (m_currentKeySequence.count() == 0 && !(m_currentModifiers & ~Qt::ShiftModifier)) {
-            // It's the first key and no modifier pressed. Check if this is allowed
-            if (!(isOkWhenModifierless(key) || m_modifierlessAllowed)) {
-                // No it's not
-                return;
-            }
-        }
 
-        // We now have a valid key press.
+        QKeyCombination keyCombination;
         if ((key == Qt::Key_Backtab) && (m_currentModifiers & Qt::ShiftModifier)) {
-            key = QKeyCombination(Qt::Key_Tab).toCombined() | m_currentModifiers;
+            keyCombination = QKeyCombination(m_currentModifiers, Qt::Key_Tab);
         } else if (isShiftAsModifierAllowed(key)) {
-            key |= m_currentModifiers;
+            keyCombination = QKeyCombination(m_currentModifiers, Qt::Key(key));
         } else {
-            key |= (m_currentModifiers & ~Qt::ShiftModifier);
+            keyCombination = QKeyCombination(m_currentModifiers & ~Qt::ShiftModifier, Qt::Key(key));
         }
 
-        m_currentKeySequence = appendToSequence(m_currentKeySequence, key);
+        if (!isKeyCombinationAccepted(keyCombination)) {
+            return;
+        }
+
+        m_currentKeySequence = appendToSequence(m_currentKeySequence, keyCombination.toCombined());
         Q_EMIT q->currentKeySequenceChanged();
         // Now we are in a critical region (race), where recording is still
         // ongoing, but key sequence has already changed (potentially) to the
@@ -432,16 +440,17 @@ void KKeySequenceRecorderPrivate::handleKeyPress(QKeyEvent *event)
 
 // Turn a bunch of modifiers into mods + key
 // so that the ordering is always Meta + Ctrl + Alt + Shift
-static int prettifyModifierOnly(Qt::KeyboardModifiers modifier)
+static QKeyCombination prettifyModifierOnly(QKeyCombination modifierOnly)
 {
+    const Qt::KeyboardModifiers modifier = modifierOnly.keyboardModifiers();
     if (modifier & Qt::ShiftModifier) {
-        return (Qt::Key_Shift | (modifier & ~Qt::ShiftModifier)).toCombined();
+        return Qt::Key_Shift | (modifier & ~Qt::ShiftModifier);
     } else if (modifier & Qt::AltModifier) {
-        return (Qt::Key_Alt | (modifier & ~Qt::AltModifier)).toCombined();
+        return Qt::Key_Alt | (modifier & ~Qt::AltModifier);
     } else if (modifier & Qt::ControlModifier) {
-        return (Qt::Key_Control | (modifier & ~Qt::ControlModifier)).toCombined();
+        return Qt::Key_Control | (modifier & ~Qt::ControlModifier);
     } else if (modifier & Qt::MetaModifier) {
-        return (Qt::Key_Meta | (modifier & ~Qt::MetaModifier)).toCombined();
+        return Qt::Key_Meta | (modifier & ~Qt::MetaModifier);
     } else {
         return Qt::Key(0);
     }
@@ -469,9 +478,12 @@ void KKeySequenceRecorderPrivate::handleKeyRelease(QKeyEvent *event)
             m_isReleasingModifierOnly = true;
             m_modifierFirstReleaseTime = currentTime;
         }
-        if (m_modifierOnlyAllowed && !modifiers && (currentTime - m_modifierFirstReleaseTime) < releaseTimeout) {
-            m_currentKeySequence = appendToSequence(m_currentKeySequence, prettifyModifierOnly(m_lastPressedModifiers));
-            m_lastPressedModifiers = Qt::NoModifier;
+        if (!modifiers && (currentTime - m_modifierFirstReleaseTime) < releaseTimeout) {
+            const auto keyCombination = QKeyCombination(m_lastPressedModifiers, Qt::Key(0));
+            if (isKeyCombinationAccepted(keyCombination)) {
+                m_currentKeySequence = appendToSequence(m_currentKeySequence, prettifyModifierOnly(keyCombination).toCombined());
+                m_lastPressedModifiers = Qt::NoModifier;
+            }
         }
         m_currentModifiers = modifiers;
         Q_EMIT q->currentKeySequenceChanged();
@@ -507,7 +519,7 @@ KKeySequenceRecorder::KKeySequenceRecorder(QWindow *window, QObject *parent)
     , d(new KKeySequenceRecorderPrivate(this))
 {
     d->m_isRecording = false;
-    d->m_modifierlessAllowed = false;
+    d->m_patterns = ModifierAndKey;
     d->m_multiKeyShortcutsAllowed = true;
 
     setWindow(window);
@@ -626,30 +638,59 @@ void KKeySequenceRecorder::setMultiKeyShortcutsAllowed(bool allowed)
 
 bool KKeySequenceRecorder::modifierlessAllowed() const
 {
-    return d->m_modifierlessAllowed;
+    return d->m_patterns & Key;
 }
 
 void KKeySequenceRecorder::setModifierlessAllowed(bool allowed)
 {
-    if (allowed == d->m_modifierlessAllowed) {
-        return;
+    if (allowed) {
+        setPatterns(d->m_patterns | Key);
+    } else {
+        setPatterns(d->m_patterns & ~Key);
     }
-    d->m_modifierlessAllowed = allowed;
-    Q_EMIT modifierlessAllowedChanged();
 }
 
 bool KKeySequenceRecorder::modifierOnlyAllowed() const
 {
-    return d->m_modifierOnlyAllowed;
+    return d->m_patterns & Modifier;
 }
 
 void KKeySequenceRecorder::setModifierOnlyAllowed(bool allowed)
 {
-    if (allowed == d->m_modifierOnlyAllowed) {
+    if (allowed) {
+        setPatterns(d->m_patterns | Modifier);
+    } else {
+        setPatterns(d->m_patterns & ~Modifier);
+    }
+}
+
+void KKeySequenceRecorder::setPatterns(Patterns patterns)
+{
+    if (!patterns) {
         return;
     }
-    d->m_modifierOnlyAllowed = allowed;
-    Q_EMIT modifierOnlyAllowedChanged();
+
+    if (patterns == d->m_patterns) {
+        return;
+    }
+
+    const bool oldModifierlessAllowed = modifierlessAllowed();
+    const bool oldModifierOnlyAllowed = modifierOnlyAllowed();
+
+    d->m_patterns = patterns;
+    Q_EMIT patternsChanged();
+
+    if (modifierlessAllowed() != oldModifierlessAllowed) {
+        Q_EMIT modifierlessAllowedChanged();
+    }
+    if (modifierOnlyAllowed() != oldModifierOnlyAllowed) {
+        Q_EMIT modifierOnlyAllowedChanged();
+    }
+}
+
+KKeySequenceRecorder::Patterns KKeySequenceRecorder::patterns() const
+{
+    return d->m_patterns;
 }
 
 #include "kkeysequencerecorder.moc"

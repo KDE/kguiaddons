@@ -70,6 +70,8 @@ class KGUIADDONS_EXPORT KKeySequenceRecorder : public QObject
      * Backspace, Delete). Other keys like F1, Cursor keys, Insert, PageDown will always work.
      *
      * By default this is `false`.
+     *
+     * @deprecated since 6.11, use the patterns property instead.
      */
     Q_PROPERTY(bool modifierlessAllowed READ modifierlessAllowed WRITE setModifierlessAllowed NOTIFY modifierlessAllowedChanged)
     /** Controls the amount of key combinations that are captured until recording stops and gotKeySequence
@@ -91,9 +93,36 @@ class KGUIADDONS_EXPORT KKeySequenceRecorder : public QObject
      * When enabled, it will take the modifier key as the key sequence.
      *
      * By default this is `false`.
+     *
+     * @deprecated since 6.11, use the patterns property instead.
      */
     Q_PROPERTY(bool modifierOnlyAllowed READ modifierOnlyAllowed WRITE setModifierOnlyAllowed NOTIFY modifierOnlyAllowedChanged)
+
+    /**
+     * Specifies what components the recorded shortcut must have, for example whether the shortcut
+     * must contain only modifier keys (`Modifier`) or modifiers keys and a normal key (`ModifierAndKey`).
+     *
+     * The patterns property can contain one or more recording patterns. For example, if the recorder
+     * accepts both normal and modifier only shortcuts, e.g. `Modifier | ModifierAndKey`.
+     *
+     * By default this is `ModifierAndKey`.
+     *
+     * @since 6.11
+     */
+    Q_PROPERTY(Patterns patterns READ patterns WRITE setPatterns NOTIFY patternsChanged)
+
 public:
+    /**
+     * The Pattern type specifies what components the recorded shortcut must have, e.g. modifiers or just a key.
+     */
+    enum Pattern {
+        Modifier = 0x1,
+        Key = 0x2,
+        ModifierAndKey = 0x4,
+    };
+    Q_DECLARE_FLAGS(Patterns, Pattern)
+    Q_FLAG(Patterns)
+
     /**
      * Constructor.
      *
@@ -126,6 +155,9 @@ public:
     void setModifierOnlyAllowed(bool allowed);
     bool modifierOnlyAllowed() const;
 
+    void setPatterns(Patterns patterns);
+    Patterns patterns() const;
+
 public Q_SLOTS:
     /**
      * Stops the recording session
@@ -147,10 +179,13 @@ Q_SIGNALS:
     void multiKeyShortcutsAllowedChanged();
     void modifierlessAllowedChanged();
     void modifierOnlyAllowedChanged();
+    void patternsChanged();
 
 private:
     friend class KKeySequenceRecorderPrivate;
     std::unique_ptr<KKeySequenceRecorderPrivate> const d;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(KKeySequenceRecorder::Patterns)
 
 #endif
