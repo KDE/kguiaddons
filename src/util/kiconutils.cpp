@@ -133,14 +133,8 @@ void KOverlayIconEngine::virtual_hook(int id, void *data)
 
 void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
 {
-    // Paint the base icon as the first layer
-    auto rectPhysical = QSize{static_cast<int>(rect.width() * m_dpr), static_cast<int>(rect.height() * m_dpr)};
-    const auto pixSize = m_base.actualSize(rectPhysical, mode, state);
-    QPixmap pix = m_base.pixmap(pixSize, mode, state);
-
-    // in case the output image is too big to fit in logical size or too small
-    // ensure it fits the physicalSize
-    pix = pix.scaled(rectPhysical, Qt::KeepAspectRatio);
+    // Get the pixel at the needed DPR
+    QPixmap pix = m_base.pixmap(rect.size(), m_dpr, mode, state);
     pix.setDevicePixelRatio(m_dpr);
 
     // draw the pix in the middle of the output pixmap
