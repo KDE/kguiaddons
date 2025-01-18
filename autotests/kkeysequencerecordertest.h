@@ -26,6 +26,8 @@ private Q_SLOTS:
     void testModifierOnlyDisabled();
     void testMultiKeyAllowed();
     void testKeyNonLetterNoModifier();
+    void testPattern_data();
+    void testPattern();
 
 private:
     QWindow *m_window;

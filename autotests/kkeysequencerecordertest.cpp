@@ -290,4 +290,108 @@ void KKeySequenceRecorderTest::testKeyNonLetterNoModifier()
     QCOMPARE(recorder.currentKeySequence(), QKeySequence(Qt::Key_Insert, Qt::Key_Insert));
 }
 
+void KKeySequenceRecorderTest::testPattern_data()
+{
+    QTest::addColumn<KKeySequenceRecorder::Patterns>("patterns");
+    QTest::addColumn<QList<QKeySequence>>("acceptedSequences");
+    QTest::addColumn<QList<QKeySequence>>("rejectedSequences");
+
+    // clang-format off
+    QTest::newRow("key")
+        << KKeySequenceRecorder::Patterns(KKeySequenceRecorder::Pattern::Key)
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_A)
+                << QKeySequence(Qt::Key_Insert))
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_Control)
+                << QKeySequence(Qt::CTRL | Qt::Key_A)
+                << QKeySequence(Qt::CTRL | Qt::Key_Insert));
+
+    QTest::newRow("modifier")
+        << KKeySequenceRecorder::Patterns(KKeySequenceRecorder::Pattern::Modifier)
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_Control))
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_A)
+                << QKeySequence(Qt::Key_Insert)
+                << QKeySequence(Qt::CTRL | Qt::Key_A)
+                << QKeySequence(Qt::CTRL | Qt::Key_Insert));
+
+    QTest::newRow("modifier or key")
+        << KKeySequenceRecorder::Patterns(KKeySequenceRecorder::Pattern::Modifier | KKeySequenceRecorder::Pattern::Key)
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_Control)
+                << QKeySequence(Qt::Key_A)
+                << QKeySequence(Qt::Key_Insert))
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::CTRL | Qt::Key_A)
+                << QKeySequence(Qt::CTRL | Qt::Key_Insert));
+
+    QTest::newRow("modifier and key")
+        << KKeySequenceRecorder::Patterns(KKeySequenceRecorder::Pattern::ModifierAndKey)
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_Insert)
+                << QKeySequence(Qt::CTRL | Qt::Key_A)
+                << QKeySequence(Qt::CTRL | Qt::Key_Insert))
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_A)
+                << QKeySequence(Qt::Key_Control));
+
+    QTest::newRow("key or modifier and key")
+        << KKeySequenceRecorder::Patterns(KKeySequenceRecorder::Pattern::Key | KKeySequenceRecorder::Pattern::ModifierAndKey)
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_A)
+                << QKeySequence(Qt::Key_Insert)
+                << QKeySequence(Qt::CTRL | Qt::Key_A)
+                << QKeySequence(Qt::CTRL | Qt::Key_Insert))
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_Control));
+
+    QTest::newRow("modifier or modifier and key")
+        << KKeySequenceRecorder::Patterns(KKeySequenceRecorder::Pattern::Modifier | KKeySequenceRecorder::Pattern::ModifierAndKey)
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_Control)
+                << QKeySequence(Qt::Key_Insert)
+                << QKeySequence(Qt::CTRL | Qt::Key_A)
+                << QKeySequence(Qt::CTRL | Qt::Key_Insert))
+        << (QList<QKeySequence>()
+                << QKeySequence(Qt::Key_A));
+
+    // clang-format on
+}
+
+void KKeySequenceRecorderTest::testPattern()
+{
+    QFETCH(KKeySequenceRecorder::Patterns, patterns);
+    QFETCH(QList<QKeySequence>, acceptedSequences);
+    QFETCH(QList<QKeySequence>, rejectedSequences);
+
+    for (const QKeySequence &seq : acceptedSequences) {
+        KKeySequenceRecorder recorder(m_window);
+        recorder.setPatterns(patterns);
+
+        QSignalSpy recordingSpy(&recorder, &KKeySequenceRecorder::recordingChanged);
+        recorder.startRecording();
+        QVERIFY(recorder.isRecording());
+
+        QTest::keySequence(m_window, seq);
+        recordingSpy.wait();
+        QVERIFY(!recorder.isRecording());
+        QCOMPARE(recorder.currentKeySequence(), seq);
+    }
+
+    for (const QKeySequence &seq : rejectedSequences) {
+        KKeySequenceRecorder recorder(m_window);
+        recorder.setPatterns(patterns);
+
+        QSignalSpy recordingSpy(&recorder, &KKeySequenceRecorder::recordingChanged);
+        recorder.startRecording();
+        QVERIFY(recorder.isRecording());
+
+        QTest::keySequence(m_window, seq);
+        QTRY_VERIFY_WITH_TIMEOUT(recorder.isRecording(), 800);
+        QCOMPARE(recorder.currentKeySequence(), QKeySequence());
+    }
+}
+
 #include "moc_kkeysequencerecordertest.cpp"

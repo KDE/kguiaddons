@@ -70,6 +70,8 @@ class KGUIADDONS_EXPORT KKeySequenceRecorder : public QObject
      * Backspace, Delete). Other keys like F1, Cursor keys, Insert, PageDown will always work.
      *
      * By default this is `false`.
+     *
+     * @deprecated since 6.12, use the patterns property instead.
      */
     Q_PROPERTY(bool modifierlessAllowed READ modifierlessAllowed WRITE setModifierlessAllowed NOTIFY modifierlessAllowedChanged)
     /** Controls the amount of key combinations that are captured until recording stops and gotKeySequence
@@ -91,9 +93,51 @@ class KGUIADDONS_EXPORT KKeySequenceRecorder : public QObject
      * When enabled, it will take the modifier key as the key sequence.
      *
      * By default this is `false`.
+     *
+     * @deprecated since 6.12, use the patterns property instead.
      */
     Q_PROPERTY(bool modifierOnlyAllowed READ modifierOnlyAllowed WRITE setModifierOnlyAllowed NOTIFY modifierOnlyAllowedChanged)
+
+    /**
+     * Specifies what components the recorded shortcut must have, for example whether the shortcut
+     * must contain only modifier keys (`Modifier`) or modifiers keys and a normal key (`ModifierAndKey`).
+     *
+     * The patterns property can contain one or more recording patterns. For example, if the recorder
+     * accepts both normal and modifier only shortcuts, e.g. `Modifier | ModifierAndKey`.
+     *
+     * By default this is `ModifierAndKey`.
+     *
+     * @since 6.12
+     */
+    Q_PROPERTY(Patterns patterns READ patterns WRITE setPatterns NOTIFY patternsChanged)
+
 public:
+    /**
+     * The Pattern type specifies what components the recorded shortcut must have, e.g. modifiers or just a key.
+     */
+    enum Pattern {
+        /**
+         * The recorded shortcut must contain one or more modifier keys (Meta, Shift, Ctrl, or Alt).
+         */
+        Modifier = 0x1,
+        /**
+         * The recorded shortcut must contain only one regular key, e.g. "A".
+         */
+        Key = 0x2,
+        /**
+         * The recorded shortcut must contain one or more modifier keys followed by a regular key,
+         * e.g. Meta+A.
+         *
+         * Note: with this pattern, special keys like "Insert" without any pressed modifier will be
+         * captured too. Please do not rely on this behavior and instead use `Key | ModifierAndKey`
+         * explicitly. The future versions of KKeySequenceRecorder are expected not to record special
+         * keys in the ModifierAndKey mode.
+         */
+        ModifierAndKey = 0x4,
+    };
+    Q_DECLARE_FLAGS(Patterns, Pattern)
+    Q_FLAG(Patterns)
+
     /**
      * Constructor.
      *
@@ -120,11 +164,30 @@ public:
     bool multiKeyShortcutsAllowed() const;
     void setMultiKeyShortcutsAllowed(bool allowed);
 
-    void setModifierlessAllowed(bool allowed);
-    bool modifierlessAllowed() const;
+#if KGUIADDONS_ENABLE_DEPRECATED_SINCE(6, 12)
+    /**
+     * @deprecated since 6.12, use setPatterns() instead
+     */
+    KGUIADDONS_DEPRECATED_VERSION(6, 12, "use setPatterns() instead") void setModifierlessAllowed(bool allowed);
 
-    void setModifierOnlyAllowed(bool allowed);
-    bool modifierOnlyAllowed() const;
+    /**
+     * @deprecated since 6.12, use patterns() instead
+     */
+    KGUIADDONS_DEPRECATED_VERSION(6, 12, "use patterns() instead") bool modifierlessAllowed() const;
+
+    /**
+     * @deprecated since 6.12, use setPatterns() instead
+     */
+    KGUIADDONS_DEPRECATED_VERSION(6, 12, "use setPatterns() instead") void setModifierOnlyAllowed(bool allowed);
+
+    /**
+     * @deprecated since 6.12, use patterns() instead
+     */
+    KGUIADDONS_DEPRECATED_VERSION(6, 12, "use patterns() instead") bool modifierOnlyAllowed() const;
+#endif
+
+    void setPatterns(Patterns patterns);
+    Patterns patterns() const;
 
 public Q_SLOTS:
     /**
@@ -145,12 +208,17 @@ Q_SIGNALS:
     void windowChanged();
     void currentKeySequenceChanged();
     void multiKeyShortcutsAllowedChanged();
-    void modifierlessAllowedChanged();
-    void modifierOnlyAllowedChanged();
+#if KGUIADDONS_ENABLE_DEPRECATED_SINCE(6, 12)
+    KGUIADDONS_DEPRECATED_VERSION(6, 12, "use patternsChanged() instead") void modifierlessAllowedChanged();
+    KGUIADDONS_DEPRECATED_VERSION(6, 12, "use patternsChanged() instead") void modifierOnlyAllowedChanged();
+#endif
+    void patternsChanged();
 
 private:
     friend class KKeySequenceRecorderPrivate;
     std::unique_ptr<KKeySequenceRecorderPrivate> const d;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(KKeySequenceRecorder::Patterns)
 
 #endif
