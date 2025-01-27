@@ -43,7 +43,7 @@ endif()
 
 set(REQUIRED_QT_VERSION 6.6.0)
 if (WITH_WAYLAND)
-    find_package(Qt6GuiPrivate REQUIRED)
+    find_package(Qt6 REQUIRED COMPONENTS GuiPrivate REQUIRED)
 endif()
 
 if (WITH_X11)
