@@ -43,10 +43,8 @@ endif()
 
 set(REQUIRED_QT_VERSION 6.6.0)
 if (WITH_WAYLAND)
-    set(_qtgui_find_components COMPONENTS Private)
+    find_package(Qt6GuiPrivate REQUIRED)
 endif()
-# QtGui must be found before Qt5WaylandClient
-find_package(Qt6Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE ${_qtgui_find_components})
 
 if (WITH_X11)
     find_package(X11 REQUIRED MODULE)
