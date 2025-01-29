@@ -42,11 +42,17 @@ else()
 endif()
 
 set(REQUIRED_QT_VERSION 6.6.0)
+
+find_package(Qt6Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
+
 if (WITH_WAYLAND)
-    set(_qtgui_find_components COMPONENTS Private)
+    # Qt6GuiPrivate  must be found before Qt6WaylandClient
+    if (Qt6Gui_VERSION VERSION_GREATER_EQUAL "6.10.0")
+        find_package(Qt6GuiPrivate ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
+    else()
+        find_package(Qt6Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE COMPONENTS Private)
+    endif()
 endif()
-# QtGui must be found before Qt5WaylandClient
-find_package(Qt6Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE ${_qtgui_find_components})
 
 if (WITH_X11)
     find_package(X11 REQUIRED MODULE)
