@@ -133,13 +133,7 @@ void KOverlayIconEngine::virtual_hook(int id, void *data)
 
 void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state)
 {
-    // Get the pixel at the needed DPR
-    QPixmap pix = m_base.pixmap(rect.size(), m_dpr, mode, state);
-    pix.setDevicePixelRatio(m_dpr);
-
-    // draw the pix in the middle of the output pixmap
-    const auto pixMiddle = pix.size() / pix.devicePixelRatioF() / 2;
-    painter->drawPixmap(QPoint{rect.width() / 2 - pixMiddle.width(), rect.height() / 2 - pixMiddle.height()}, pix);
+    m_base.paint(painter, rect, Qt::AlignCenter, mode, state);
 
     if (m_overlays.isEmpty()) {
         return;
