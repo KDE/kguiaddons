@@ -96,7 +96,7 @@ ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS
                         SOVERSION 6)
 
 ecm_set_disabled_deprecation_versions(
-    QT 6.8
+    QT 6.9
 )
 
 cmake_dependent_option(BUILD_PYTHON_BINDINGS "Generate Python Bindings" ON "TARGET Shiboken6::libshiboken AND TARGET PySide6::pyside6" OFF)
