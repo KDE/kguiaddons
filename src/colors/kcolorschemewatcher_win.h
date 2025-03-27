@@ -10,6 +10,7 @@
 #include <QAbstractNativeEventFilter>
 #include <QSettings>
 
+#include "kcolorschemewatcher.h"
 #include "kcolorschemewatcherbackend.h"
 
 class KColorSchemeWatcherWin : public KColorSchemeWatcherBackend, public QAbstractNativeEventFilter
@@ -22,8 +23,10 @@ public:
     bool nativeEventFilter(const QByteArray &eventType, void *message, qintptr *) override;
 
 private:
+    KColorSchemeWatcher::ColorPreference getCurrentSystemPreference() const;
+
     QSettings m_settings{QStringLiteral("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize"), QSettings::NativeFormat};
-    bool m_preferDarkMode = false;
+    KColorSchemeWatcher::ColorPreference m_preference = KColorSchemeWatcher::NoPreference;
 };
 
 #endif

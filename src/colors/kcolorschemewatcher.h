@@ -23,10 +23,19 @@ class KGUIADDONS_EXPORT KColorSchemeWatcher : public QObject
 {
     Q_OBJECT
 public:
+    /**
+     * Encodes the color preference of the user to be used by applications
+     * as configured in the system settings. On some systems not all values
+     * are returned, e.g. @c PreferHighContrast is currently only returned
+     * on Windows.
+     * @see systemPreference
+     */
     enum ColorPreference {
         NoPreference = 0, /** No preference available */
         PreferDark, /** The user prefers a dark color scheme */
         PreferLight, /** The user prefers a light color scheme */
+        PreferHighContrast, /** The user prefers a system-provided high-contrast color scheme
+                                @since 6.13 */
     };
     Q_ENUM(ColorPreference)
 
