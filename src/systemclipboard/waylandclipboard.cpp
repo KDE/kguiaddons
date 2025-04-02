@@ -19,6 +19,7 @@
 #include <QtWaylandClientVersion>
 
 #include <errno.h>
+#include <fcntl.h>
 #include <poll.h>
 #include <signal.h>
 #include <string.h>
@@ -369,6 +370,10 @@ void DataControlSource::zwlr_data_control_source_v1_send(const QString &mime_typ
         ba = m_mimeData->data(send_mime_type);
     }
 
+    QFile c;
+    if (!c.open(fd, QFile::WriteOnly, QFile::AutoCloseHandle)) {
+        return;
+    }
     // Create a sigpipe handler that does nothing, or clients may be forced to terminate
     // if the pipe is closed in the other end.
     struct sigaction action, oldAction;
@@ -376,9 +381,13 @@ void DataControlSource::zwlr_data_control_source_v1_send(const QString &mime_typ
     sigemptyset(&action.sa_mask);
     action.sa_flags = 0;
     sigaction(SIGPIPE, &action, &oldAction);
-    write(fd, ba.constData(), ba.size());
+    fcntl(fd, F_SETFL, 0); // Unset O_NONBLOCK
+    const qint64 written = c.write(ba);
     sigaction(SIGPIPE, &oldAction, nullptr);
-    close(fd);
+
+    if (written != ba.size()) {
+        qWarning() << "Failed to send all clipobard data; sent" << written << "bytes out of" << ba.size();
+    }
 }
 
 void DataControlSource::zwlr_data_control_source_v1_cancelled()
