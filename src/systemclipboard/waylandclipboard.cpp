@@ -234,11 +234,7 @@ QVariant DataControlOffer::retrieveData(const QString &mimeType, QMetaType type)
                 QVariantList list;
                 list.reserve(urls.size());
                 for (const QByteArray &s : urls) {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
                     if (QUrl url(QUrl::fromEncoded(QByteArrayView(s).trimmed())); url.isValid()) {
-#else
-                    if (QUrl url(QUrl::fromEncoded(QByteArrayView(s).trimmed().toByteArray())); url.isValid()) {
-#endif
                         list.emplace_back(std::move(url));
                     }
                 }
