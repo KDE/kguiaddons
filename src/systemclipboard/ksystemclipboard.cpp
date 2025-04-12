@@ -9,6 +9,7 @@
 
 #include "qtclipboard_p.h"
 #include "waylandclipboard_p.h"
+#include "wlrwaylandclipboard_p.h"
 
 #include <QDebug>
 #include <QGuiApplication>
@@ -27,6 +28,8 @@ KSystemClipboard *KSystemClipboard::instance()
         s_waylandChecked = true;
 
         if (auto waylandClipboard = WaylandClipboard::create(qApp)) {
+            systemClipboard = waylandClipboard;
+        } else if (auto waylandClipboard = WlrWaylandClipboard::create(qApp)) {
             systemClipboard = waylandClipboard;
         } else {
             qCWarning(KGUIADDONS_LOG) << "Could not init WaylandClipboard, falling back to QtClipboard.";

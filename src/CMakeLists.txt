@@ -86,6 +86,7 @@ if(WITH_WAYLAND)
     qt_generate_wayland_protocol_client_sources(KF6GuiAddons
         FILES
             "${CMAKE_CURRENT_SOURCE_DIR}/recorder/keyboard-shortcuts-inhibit-unstable-v1.xml"
+            "${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard/wlr-data-control-unstable-v1.xml"
             "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
             "${WaylandProtocols_DATADIR}/staging/ext-data-control/ext-data-control-v1.xml"
             "${Wayland_DATADIR}/wayland.xml"
@@ -94,9 +95,11 @@ if(WITH_WAYLAND)
     target_sources(KF6GuiAddons PRIVATE
         recorder/waylandinhibition.cpp
         systemclipboard/waylandclipboard.cpp
+        systemclipboard/wlrwaylandclipboard.cpp
         util/kmodifierkeyinfoprovider_wayland.cpp
         recorder/waylandinhibition_p.h
         systemclipboard/waylandclipboard_p.h
+        systemclipboard/wlrwaylandclipboard_p.h
         util/kmodifierkeyinfoprovider_wayland.h
     )
     target_compile_definitions(KF6GuiAddons PRIVATE WITH_WAYLAND)
