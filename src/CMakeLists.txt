@@ -86,8 +86,8 @@ if(WITH_WAYLAND)
     qt_generate_wayland_protocol_client_sources(KF6GuiAddons
         FILES
             "${CMAKE_CURRENT_SOURCE_DIR}/recorder/keyboard-shortcuts-inhibit-unstable-v1.xml"
-            "${CMAKE_CURRENT_SOURCE_DIR}/systemclipboard/wlr-data-control-unstable-v1.xml"
             "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
+            "${WaylandProtocols_DATADIR}/staging/ext-data-control/ext-data-control-v1.xml"
             "${Wayland_DATADIR}/wayland.xml"
         ${private_code_option}
     )

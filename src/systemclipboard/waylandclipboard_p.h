@@ -18,8 +18,8 @@ class KeyboardFocusWatcher;
 class WaylandClipboard : public KSystemClipboard
 {
 public:
-    WaylandClipboard(QObject *parent);
     ~WaylandClipboard();
+    static WaylandClipboard *create(QObject *parent);
     void setMimeData(QMimeData *mime, QClipboard::Mode mode) override;
     void clear(QClipboard::Mode mode) override;
     const QMimeData *mimeData(QClipboard::Mode mode) const override;
@@ -27,6 +27,7 @@ public:
     bool isValid();
 
 private:
+    WaylandClipboard(QObject *parent);
     void gainedFocus();
     std::unique_ptr<KeyboardFocusWatcher> m_keyboardFocusWatcher;
     std::unique_ptr<DataControlDeviceManager> m_manager;

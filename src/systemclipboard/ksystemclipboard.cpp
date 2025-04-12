@@ -24,13 +24,11 @@ KSystemClipboard *KSystemClipboard::instance()
 #ifdef WITH_WAYLAND
     static bool s_waylandChecked = false;
     if (!systemClipboard && qGuiApp->platformName() == QLatin1String("wayland") && !s_waylandChecked) {
-        WaylandClipboard *waylandClipboard = new WaylandClipboard(qApp);
         s_waylandChecked = true;
 
-        if (waylandClipboard->isValid()) {
+        if (auto waylandClipboard = WaylandClipboard::create(qApp)) {
             systemClipboard = waylandClipboard;
         } else {
-            delete waylandClipboard;
             qCWarning(KGUIADDONS_LOG) << "Could not init WaylandClipboard, falling back to QtClipboard.";
         }
     }

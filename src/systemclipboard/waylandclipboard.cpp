@@ -26,7 +26,7 @@
 #include <unistd.h>
 
 #include "qwayland-wayland.h"
-#include "qwayland-wlr-data-control-unstable-v1.h"
+#include "qwayland-ext-data-control-v1.h"
 
 static inline QString applicationQtXImageLiteral()
 {
@@ -63,12 +63,12 @@ static inline QStringList imageWriteMimeFormats()
 }
 // end copied
 
-class DataControlDeviceManager : public QWaylandClientExtensionTemplate<DataControlDeviceManager>, public QtWayland::zwlr_data_control_manager_v1
+class DataControlDeviceManager : public QWaylandClientExtensionTemplate<DataControlDeviceManager>, public QtWayland::ext_data_control_manager_v1
 {
     Q_OBJECT
 public:
     DataControlDeviceManager()
-        : QWaylandClientExtensionTemplate<DataControlDeviceManager>(2)
+        : QWaylandClientExtensionTemplate<DataControlDeviceManager>(1)
     {
     }
 
@@ -85,12 +85,12 @@ public:
     }
 };
 
-class DataControlOffer : public QMimeData, public QtWayland::zwlr_data_control_offer_v1
+class DataControlOffer : public QMimeData, public QtWayland::ext_data_control_offer_v1
 {
     Q_OBJECT
 public:
-    DataControlOffer(struct ::zwlr_data_control_offer_v1 *id)
-        : QtWayland::zwlr_data_control_offer_v1(id)
+    DataControlOffer(struct ::ext_data_control_offer_v1 *id)
+        : QtWayland::ext_data_control_offer_v1(id)
     {
     }
 
@@ -145,7 +145,7 @@ public:
     }
 
 protected:
-    void zwlr_data_control_offer_v1_offer(const QString &mime_type) override
+    void ext_data_control_offer_v1_offer(const QString &mime_type) override
     {
         if (!m_receivedFormats.contains(mime_type)) {
             m_receivedFormats << mime_type;
@@ -283,11 +283,11 @@ bool DataControlOffer::readData(int fd, QByteArray &data)
     }
 }
 
-class DataControlSource : public QObject, public QtWayland::zwlr_data_control_source_v1
+class DataControlSource : public QObject, public QtWayland::ext_data_control_source_v1
 {
     Q_OBJECT
 public:
-    DataControlSource(struct ::zwlr_data_control_source_v1 *id, QMimeData *mimeData);
+    DataControlSource(struct ::ext_data_control_source_v1 *id, QMimeData *mimeData);
     DataControlSource() = default;
     ~DataControlSource()
     {
@@ -307,15 +307,15 @@ Q_SIGNALS:
     void cancelled();
 
 protected:
-    void zwlr_data_control_source_v1_send(const QString &mime_type, int32_t fd) override;
-    void zwlr_data_control_source_v1_cancelled() override;
+    void ext_data_control_source_v1_send(const QString &mime_type, int32_t fd) override;
+    void ext_data_control_source_v1_cancelled() override;
 
 private:
     std::unique_ptr<QMimeData> m_mimeData;
 };
 
-DataControlSource::DataControlSource(struct ::zwlr_data_control_source_v1 *id, QMimeData *mimeData)
-    : QtWayland::zwlr_data_control_source_v1(id)
+DataControlSource::DataControlSource(struct ::ext_data_control_source_v1 *id, QMimeData *mimeData)
+    : QtWayland::ext_data_control_source_v1(id)
     , m_mimeData(mimeData)
 {
     const auto formats = mimeData->formats();
@@ -337,7 +337,7 @@ DataControlSource::DataControlSource(struct ::zwlr_data_control_source_v1 *id, Q
     }
 }
 
-void DataControlSource::zwlr_data_control_source_v1_send(const QString &mime_type, int32_t fd)
+void DataControlSource::ext_data_control_source_v1_send(const QString &mime_type, int32_t fd)
 {
     QString send_mime_type = mime_type;
     if (send_mime_type == QStringLiteral("text/plain;charset=utf-8")) {
@@ -389,17 +389,17 @@ void DataControlSource::zwlr_data_control_source_v1_send(const QString &mime_typ
     }
 }
 
-void DataControlSource::zwlr_data_control_source_v1_cancelled()
+void DataControlSource::ext_data_control_source_v1_cancelled()
 {
     Q_EMIT cancelled();
 }
 
-class DataControlDevice : public QObject, public QtWayland::zwlr_data_control_device_v1
+class DataControlDevice : public QObject, public QtWayland::ext_data_control_device_v1
 {
     Q_OBJECT
 public:
-    DataControlDevice(struct ::zwlr_data_control_device_v1 *id)
-        : QtWayland::zwlr_data_control_device_v1(id)
+    DataControlDevice(struct ::ext_data_control_device_v1 *id)
+        : QtWayland::ext_data_control_device_v1(id)
     {
     }
 
@@ -436,31 +436,31 @@ Q_SIGNALS:
     void primarySelectionChanged();
 
 protected:
-    void zwlr_data_control_device_v1_data_offer(struct ::zwlr_data_control_offer_v1 *id) override
+    void ext_data_control_device_v1_data_offer(struct ::ext_data_control_offer_v1 *id) override
     {
         // this will become memory managed when we retrieve the selection event
         // a compositor calling data_offer without doing that would be a bug
         new DataControlOffer(id);
     }
 
-    void zwlr_data_control_device_v1_selection(struct ::zwlr_data_control_offer_v1 *id) override
+    void ext_data_control_device_v1_selection(struct ::ext_data_control_offer_v1 *id) override
     {
         if (!id) {
             m_receivedSelection.reset();
         } else {
-            auto derivated = QtWayland::zwlr_data_control_offer_v1::fromObject(id);
+            auto derivated = QtWayland::ext_data_control_offer_v1::fromObject(id);
             auto offer = dynamic_cast<DataControlOffer *>(derivated); // dynamic because of the dual inheritance
             m_receivedSelection.reset(offer);
         }
         Q_EMIT receivedSelectionChanged();
     }
 
-    void zwlr_data_control_device_v1_primary_selection(struct ::zwlr_data_control_offer_v1 *id) override
+    void ext_data_control_device_v1_primary_selection(struct ::ext_data_control_offer_v1 *id) override
     {
         if (!id) {
             m_receivedPrimarySelection.reset();
         } else {
-            auto derivated = QtWayland::zwlr_data_control_offer_v1::fromObject(id);
+            auto derivated = QtWayland::ext_data_control_offer_v1::fromObject(id);
             auto offer = dynamic_cast<DataControlOffer *>(derivated); // dynamic because of the dual inheritance
             m_receivedPrimarySelection.reset(offer);
         }
@@ -493,10 +493,8 @@ void DataControlDevice::setPrimarySelection(std::unique_ptr<DataControlSource> s
         m_primarySelection.reset();
     });
 
-    if (zwlr_data_control_device_v1_get_version(object()) >= ZWLR_DATA_CONTROL_DEVICE_V1_SET_PRIMARY_SELECTION_SINCE_VERSION) {
-        set_primary_selection(m_primarySelection->object());
-        Q_EMIT primarySelectionChanged();
-    }
+    set_primary_selection(m_primarySelection->object());
+    Q_EMIT primarySelectionChanged();
 }
 class Keyboard;
 // We are binding to Seat/Keyboard manually because we want to react to gaining focus but inside Qt the events are Qt and arrive to late
@@ -615,6 +613,16 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
 
 WaylandClipboard::~WaylandClipboard() = default;
 
+WaylandClipboard *WaylandClipboard::create(QObject *parent)
+{
+    auto clipboard = new WaylandClipboard(parent);
+    if (clipboard->isValid()) {
+        return clipboard;
+    }
+    delete clipboard;
+    return nullptr;
+}
+
 bool WaylandClipboard::isValid()
 {
     return m_manager && m_manager->isInitialized();
@@ -634,7 +642,7 @@ void WaylandClipboard::setMimeData(QMimeData *mime, QClipboard::Mode mode)
     // If the application is focused, use the normal mechanism so a future paste will not deadlock itselfs
     if (m_keyboardFocusWatcher->hasFocus()) {
         QGuiApplication::clipboard()->setMimeData(mime, mode);
-        // if we short-circuit the wlr_data_device, when we receive the data
+        // if we short-circuit the ext_data_device, when we receive the data
         // we cannot identify ourselves as the owner
         // because of that we act like it's a synchronous action to not confuse klipper.
         wl_display_roundtrip(display);
@@ -675,10 +683,8 @@ void WaylandClipboard::clear(QClipboard::Mode mode)
         m_device->set_selection(nullptr);
         m_device->m_selection.reset();
     } else if (mode == QClipboard::Selection) {
-        if (zwlr_data_control_device_v1_get_version(m_device->object()) >= ZWLR_DATA_CONTROL_DEVICE_V1_SET_PRIMARY_SELECTION_SINCE_VERSION) {
-            m_device->set_primary_selection(nullptr);
-            m_device->m_primarySelection.reset();
-        }
+        m_device->set_primary_selection(nullptr);
+        m_device->m_primarySelection.reset();
     }
 }
 
