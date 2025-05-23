@@ -31,8 +31,13 @@ qhp.KGuiAddons.virtualFolder       = kguiaddons
 qhp.KGuiAddons.indexTitle          = KGuiAddons
 qhp.KGuiAddons.indexRoot           =
 
-qhp.KGuiAddons.subprojects         = classes
+qhp.KGuiAddons.subprojects         = classes qmltypes
 qhp.KGuiAddons.subprojects.classes.title = C++ Classes
 qhp.KGuiAddons.subprojects.classes.indexTitle = KGuiAddons C++ Classes
 qhp.KGuiAddons.subprojects.classes.selectors = class fake:headerfile
 qhp.KGuiAddons.subprojects.classes.sortPages = true
+
+qhp.KGuiAddons.subprojects.qmltypes.title = QML Types
+qhp.KGuiAddons.subprojects.qmltypes.indexTitle = KGuiAddons QML Types
+qhp.KGuiAddons.subprojects.qmltypes.selectors = qmltype
+qhp.KGuiAddons.subprojects.qmltypes.sortPages = true
