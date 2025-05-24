@@ -7,6 +7,7 @@ Dependencies:
    'require':
     'libraries/plasma-wayland-protocols': '@latest'
     'third-party/wayland': '@latest'
+    'third-party/wayland-protocols': '@latest'
 
 Options:
  test-before-installing: True
