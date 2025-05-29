@@ -41,3 +41,5 @@ qhp.KGuiAddons.subprojects.qmltypes.title = QML Types
 qhp.KGuiAddons.subprojects.qmltypes.indexTitle = KGuiAddons QML Types
 qhp.KGuiAddons.subprojects.qmltypes.selectors = qmltype
 qhp.KGuiAddons.subprojects.qmltypes.sortPages = true
+
+tagfile = kguiaddons.tags
