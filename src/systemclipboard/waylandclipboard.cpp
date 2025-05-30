@@ -478,22 +478,27 @@ private:
 
 void DataControlDevice::setSelection(std::unique_ptr<DataControlSource> selection)
 {
+    set_selection(selection->object());
+
+    // Note the previous selection is destroyed after the set_selection request.
     m_selection = std::move(selection);
     connect(m_selection.get(), &DataControlSource::cancelled, this, [this]() {
         m_selection.reset();
     });
-    set_selection(m_selection->object());
+
     Q_EMIT selectionChanged();
 }
 
 void DataControlDevice::setPrimarySelection(std::unique_ptr<DataControlSource> selection)
 {
+    set_primary_selection(selection->object());
+
+    // Note the previous selection is destroyed after the set_primary_selection request.
     m_primarySelection = std::move(selection);
     connect(m_primarySelection.get(), &DataControlSource::cancelled, this, [this]() {
         m_primarySelection.reset();
     });
 
-    set_primary_selection(m_primarySelection->object());
     Q_EMIT primarySelectionChanged();
 }
 class Keyboard;
