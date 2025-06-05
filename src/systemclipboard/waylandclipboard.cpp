@@ -158,7 +158,7 @@ private:
     /* reads data from a file descriptor with a timeout of 1 second
      *  true if data is read successfully
      */
-    static bool readData(int fd, QByteArray &data);
+    static bool readData(int fd, QByteArray &data, const QString &mimeType);
     QStringList m_receivedFormats;
     mutable QHash<QString, QVariant> m_data;
 };
@@ -221,7 +221,7 @@ QVariant DataControlOffer::retrieveData(const QString &mimeType, QMetaType type)
     QFile readPipe;
     if (readPipe.open(pipeFds[0], QIODevice::ReadOnly)) {
         QByteArray data;
-        if (readData(pipeFds[0], data)) {
+        if (readData(pipeFds[0], data, mime)) {
             close(pipeFds[0]);
 
             if (mimeType == applicationQtXImageLiteral()) {
@@ -251,7 +251,7 @@ QVariant DataControlOffer::retrieveData(const QString &mimeType, QMetaType type)
     return QVariant();
 }
 
-bool DataControlOffer::readData(int fd, QByteArray &data)
+bool DataControlOffer::readData(int fd, QByteArray &data, const QString &mimeType)
 {
     pollfd pfds[1];
     pfds[0].fd = fd;
@@ -261,18 +261,18 @@ bool DataControlOffer::readData(int fd, QByteArray &data)
         const int ready = poll(pfds, 1, 1000);
         if (ready < 0) {
             if (errno != EINTR) {
-                qWarning("DataControlOffer: poll() failed: %s", strerror(errno));
+                qWarning("DataControlOffer: poll() failed for mimeType %s: %s", qPrintable(mimeType), strerror(errno));
                 return false;
             }
         } else if (ready == 0) {
-            qWarning("DataControlOffer: timeout reading from pipe");
+            qWarning("DataControlOffer: timeout reading from pipe for mimeType %s", qPrintable(mimeType));
             return false;
         } else {
             char buf[4096];
             int n = read(fd, buf, sizeof buf);
 
             if (n < 0) {
-                qWarning("DataControlOffer: read() failed: %s", strerror(errno));
+                qWarning("DataControlOffer: read() failed for mimeType %s: %s", qPrintable(mimeType), strerror(errno));
                 return false;
             } else if (n == 0) {
                 return true;
