@@ -103,7 +103,7 @@ ecm_setup_version(PROJECT VARIABLE_PREFIX KGUIADDONS
                         SOVERSION 6)
 
 ecm_set_disabled_deprecation_versions(
-    QT 6.9
+    QT 6.10
 )
 
 add_subdirectory(src)
