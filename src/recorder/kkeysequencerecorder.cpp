@@ -261,6 +261,8 @@ static bool isShiftAsModifierAllowed(int keyQt)
     case Qt::Key_Alt:
     case Qt::Key_Super_L:
     case Qt::Key_Super_R:
+    // Copilot key reports as Meta+Shift+TouchpadOff...
+    case Qt::Key_TouchpadOff:
         return true;
 
     default:
