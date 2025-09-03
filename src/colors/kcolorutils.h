@@ -15,6 +15,8 @@
 
 class QColor;
 
+// TODO KF7: turn this into a Q_GADGET class with static members to avoid the need for the KColorUtilsSingleton QML wrapper
+
 /*!
  * \namespace KColorUtils
  * \inmodule KGuiAddons
