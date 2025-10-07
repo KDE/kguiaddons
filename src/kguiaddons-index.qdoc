@@ -2,8 +2,8 @@
     \page kguiaddons-index.html
     \title KGuiAddons
 
-    KGuiAddons are addons to QtCore. They provide utilities for graphical user interfaces in the areas
-    of colors, fonts, text, images, keyboard input.
+    KGuiAddons are addons to QtGui. They provide utilities for graphical user interfaces in the areas
+    of colors, fonts, text, images, and keyboard input.
 
     \section1 Color utilities
 
