@@ -46,3 +46,4 @@ Icon=map-globe
 MimeType=x-scheme-handler/geo;
 Terminal=false
 NoDisplay=true
+StartupNotify=true
