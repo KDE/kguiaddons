@@ -322,7 +322,7 @@ WlrDataControlSource::WlrDataControlSource(struct ::zwlr_data_control_source_v1 
     for (const QString &format : formats) {
         offer(format);
     }
-    if (mimeData->hasText()) {
+    if (mimeData->hasText() && !formats.contains(utf8Text())) {
         // ensure GTK applications get this mimetype to avoid them discarding the offer
         offer(QStringLiteral("text/plain;charset=utf-8"));
     }
