@@ -478,23 +478,30 @@ private:
 
 void WlrDataControlDevice::setSelection(std::unique_ptr<WlrDataControlSource> selection)
 {
+    set_selection(selection->object());
+
+    // Note the previous selection is destroyed after the set_selection request.
     m_selection = std::move(selection);
     connect(m_selection.get(), &WlrDataControlSource::cancelled, this, [this]() {
         m_selection.reset();
     });
-    set_selection(m_selection->object());
+
     Q_EMIT selectionChanged();
 }
 
 void WlrDataControlDevice::setPrimarySelection(std::unique_ptr<WlrDataControlSource> selection)
 {
+    if (zwlr_data_control_device_v1_get_version(object()) >= ZWLR_DATA_CONTROL_DEVICE_V1_SET_PRIMARY_SELECTION_SINCE_VERSION) {
+        set_primary_selection(m_primarySelection->object());
+    }
+
+    // Note the previous selection is destroyed after the set_primary_selection request.
     m_primarySelection = std::move(selection);
     connect(m_primarySelection.get(), &WlrDataControlSource::cancelled, this, [this]() {
         m_primarySelection.reset();
     });
 
     if (zwlr_data_control_device_v1_get_version(object()) >= ZWLR_DATA_CONTROL_DEVICE_V1_SET_PRIMARY_SELECTION_SINCE_VERSION) {
-        set_primary_selection(m_primarySelection->object());
         Q_EMIT primarySelectionChanged();
     }
 }
