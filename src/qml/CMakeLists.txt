@@ -6,6 +6,8 @@ target_sources(kguiaddonsqml PRIVATE
     kcolorutilssingleton.cpp
     kguiaddonsplugin.cpp
     types.h
+    systeminhibitor.cpp
 )
-target_link_libraries(kguiaddonsqml PRIVATE KF6GuiAddons Qt6::Qml)
+# Quick is needed for type information on (e.g.) QWindow
+target_link_libraries(kguiaddonsqml PRIVATE KF6GuiAddons Qt6::Qml Qt6::Quick)
 ecm_finalize_qml_module(kguiaddonsqml EXPORT KF6GuiAddonsTargets)
