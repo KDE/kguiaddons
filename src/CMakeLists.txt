@@ -29,6 +29,7 @@ target_sources(KF6GuiAddons PRIVATE
  util/kcursorsaver.cpp
  util/kcountryflagemojiiconengine.cpp
  util/kjobwindows.cpp
+ util/ksysteminhibitor.cpp
  recorder/keyboardgrabber.cpp
  recorder/kkeysequencerecorder.cpp
  systemclipboard/qtclipboard.cpp
@@ -77,6 +78,7 @@ endif()
 if(WITH_DBUS)
     target_sources(KF6GuiAddons PRIVATE colors/kcolorschemewatcher_xdg.cpp)
     target_link_libraries(KF6GuiAddons PRIVATE Qt6::DBus)
+    target_compile_definitions(KF6GuiAddons PRIVATE WITH_DBUS)
 endif()
 
 if(WITH_WAYLAND)
@@ -173,6 +175,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
   KCursorSaver
   KCountryFlagEmojiIconEngine
   KJobWindows
+  KSystemInhibitor
 
   RELATIVE util
   REQUIRED_HEADERS KGuiAddons_HEADERS
