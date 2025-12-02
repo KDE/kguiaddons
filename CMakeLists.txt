@@ -66,6 +66,10 @@ if (WITH_WAYLAND)
     find_package(Wayland 1.9 REQUIRED Client)
 endif()
 
+if(TARGET Qt6::Qml)
+    find_package(Qt6Quick ${REQUIRED_QT_VERSION} REQUIRED CONFIG)
+endif()
+
 # shall we use DBus?
 # enabled per default on Linux & BSD systems
 set(USE_DBUS_DEFAULT OFF)
