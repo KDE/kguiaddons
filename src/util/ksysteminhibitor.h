@@ -40,9 +40,13 @@ public:
 
     /*!
         Claim inhibition.
+
         \a reason is the user-visible reason for the inhibition.
+
         \a types is a combination of inhibition types.
+
         \a window is the window for which to apply the inhibition. May be null in which case possible user queries will not be associated with any window.
+
         \a parent is the parent QObject.
     */
     KSystemInhibitor(const QString &reason, Types types, QWindow *window, QObject *parent = nullptr);

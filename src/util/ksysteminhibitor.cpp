@@ -13,6 +13,8 @@
 #include <qpa/qplatformintegration.h>
 #endif
 
+#include "kguiaddons_debug.h"
+
 using namespace Qt::StringLiterals;
 
 #if defined(WITH_DBUS)
@@ -63,7 +65,7 @@ KSystemInhibitor::KSystemInhibitor(const QString &reason, Types types, QWindow *
                          watcher->deleteLater();
                          QDBusPendingReply<QDBusObjectPath> reply = *watcher;
                          if (reply.isError()) {
-                             qWarning() << "KSystemInhibitor Error: " << reply.error().message();
+                             qCWarning(KGUIADDONS_LOG) << "KSystemInhibitor Error: " << reply.error().message();
                          } else if (that) {
                              that->d->m_inhibition.emplace(reply.value());
                          } else { // KSystemInhibitor got deleted before we could store the inhibition, release it immediately.
