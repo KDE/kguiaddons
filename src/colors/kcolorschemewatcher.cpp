@@ -6,6 +6,8 @@
 
 #include "kcolorschemewatcher.h"
 
+#if KGUIADDONS_BUILD_DEPRECATED_SINCE(6, 22)
+
 #include "kcolorschemewatcher_qt.h"
 #include "kcolorschemewatcherbackend.h"
 
@@ -63,3 +65,5 @@ KColorSchemeWatcher::ColorPreference KColorSchemeWatcher::systemPreference() con
 }
 
 #include "moc_kcolorschemewatcher.cpp"
+
+#endif

@@ -15,11 +15,15 @@
 
 class KColorSchemeWatcherPrivate;
 
+#if KGUIADDONS_ENABLE_DEPRECATED_SINCE(6, 22)
+
 /*!
  * \class KColorSchemeWatcher
  * \inmodule KGuiAddons
  * \brief Information about system-wide color preferences.
  * \since 5.100
+ * \deprecated[6.22]
+ * Use QStyleHints and QAccessibilityHints instead
  */
 class KGUIADDONS_EXPORT KColorSchemeWatcher : public QObject
 {
@@ -49,6 +53,7 @@ public:
     /*!
      *
      */
+    KGUIADDONS_DEPRECATED_VERSION(6, 22, "Use Qt API instead")
     KColorSchemeWatcher(QObject *parent = nullptr);
     ~KColorSchemeWatcher() override;
 
@@ -66,5 +71,7 @@ Q_SIGNALS:
 private:
     std::unique_ptr<KColorSchemeWatcherPrivate> const d;
 };
+
+#endif
 
 #endif
