@@ -653,28 +653,28 @@ const QMimeData *WaylandClipboard::mimeData(QClipboard::Mode mode) const
     // return our locally set selection if it's not cancelled to avoid copying data to ourselves
     if (mode == QClipboard::Clipboard) {
         // This application owns the clipboard via the regular data_device, use it so we don't block ourselves
-        if (QGuiApplication::clipboard()->ownsClipboard()) {
-            return QGuiApplication::clipboard()->mimeData(mode);
-        }
-
-        lockWithUnlockLater(m_device->m_selectionLock);
-
+        QMutexLocker lock(&m_device->m_selectionLock);
         if (m_device->selection()) {
             return m_device->selection();
         }
+
+        if (QGuiApplication::clipboard()->ownsClipboard()) {
+            return QGuiApplication::clipboard()->mimeData(mode);
+        }
+        lockWithUnlockLater(m_device->m_selectionLock);
         return m_device->receivedSelection();
     } else if (mode == QClipboard::Selection) {
         // This application owns the primary selection via the regular primary_selection_device, use it so we don't block ourselves
+        QMutexLocker lock(&m_device->m_selectionLock);
+        if (m_device->primarySelection()) {
+            return m_device->primarySelection();
+        }
+
         if (QGuiApplication::clipboard()->ownsSelection()) {
             return QGuiApplication::clipboard()->mimeData(mode);
         }
 
         lockWithUnlockLater(m_device->m_primarySelectionLock);
-
-        if (m_device->primarySelection()) {
-            return m_device->primarySelection();
-        }
-
         return m_device->receivedPrimarySelection();
     }
     return nullptr;
