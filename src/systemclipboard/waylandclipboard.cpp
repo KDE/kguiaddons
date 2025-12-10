@@ -298,10 +298,6 @@ public:
     {
         return m_mimeData.get();
     }
-    std::unique_ptr<QMimeData> releaseMimeData()
-    {
-        return std::move(m_mimeData);
-    }
 
 Q_SIGNALS:
     void cancelled();
@@ -501,78 +497,9 @@ void DataControlDevice::setPrimarySelection(std::unique_ptr<DataControlSource> s
 
     Q_EMIT primarySelectionChanged();
 }
-class Keyboard;
-// We are binding to Seat/Keyboard manually because we want to react to gaining focus but inside Qt the events are Qt and arrive to late
-class KeyboardFocusWatcher : public QWaylandClientExtensionTemplate<KeyboardFocusWatcher>, public QtWayland::wl_seat
-{
-    Q_OBJECT
-public:
-    KeyboardFocusWatcher()
-        : QWaylandClientExtensionTemplate(5)
-    {
-        initialize();
-        auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
-        auto display = waylandApp->display();
-        // so we get capabilities
-        wl_display_roundtrip(display);
-    }
-    ~KeyboardFocusWatcher() override
-    {
-        if (isActive()) {
-            release();
-        }
-    }
-    void seat_capabilities(uint32_t capabilities) override
-    {
-        const bool hasKeyboard = capabilities & capability_keyboard;
-        if (hasKeyboard && !m_keyboard) {
-            m_keyboard = std::make_unique<Keyboard>(get_keyboard(), *this);
-        } else if (!hasKeyboard && m_keyboard) {
-            m_keyboard.reset();
-        }
-    }
-    bool hasFocus() const
-    {
-        return m_focus;
-    }
-Q_SIGNALS:
-    void keyboardEntered();
-
-private:
-    friend Keyboard;
-    bool m_focus = false;
-    std::unique_ptr<Keyboard> m_keyboard;
-};
-
-class Keyboard : public QtWayland::wl_keyboard
-{
-public:
-    Keyboard(::wl_keyboard *keyboard, KeyboardFocusWatcher &seat)
-        : wl_keyboard(keyboard)
-        , m_seat(seat)
-    {
-    }
-    ~Keyboard()
-    {
-        release();
-    }
-
-private:
-    void keyboard_enter([[maybe_unused]] uint32_t serial, [[maybe_unused]] wl_surface *surface, [[maybe_unused]] wl_array *keys) override
-    {
-        m_seat.m_focus = true;
-        Q_EMIT m_seat.keyboardEntered();
-    }
-    void keyboard_leave([[maybe_unused]] uint32_t serial, [[maybe_unused]] wl_surface *surface) override
-    {
-        m_seat.m_focus = false;
-    }
-    KeyboardFocusWatcher &m_seat;
-};
 
 WaylandClipboard::WaylandClipboard(QObject *parent)
     : KSystemClipboard(parent)
-    , m_keyboardFocusWatcher(new KeyboardFocusWatcher)
     , m_manager(new DataControlDeviceManager)
 {
     connect(m_manager.get(), &DataControlDeviceManager::activeChanged, this, [this]() {
@@ -639,43 +566,11 @@ void WaylandClipboard::setMimeData(QMimeData *mime, QClipboard::Mode mode)
         return;
     }
 
-    // roundtrip to have accurate focus state when losing focus but setting mime data before processing wayland events.
-    auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
-    auto display = waylandApp->display();
-    wl_display_roundtrip(display);
-
-    // If the application is focused, use the normal mechanism so a future paste will not deadlock itselfs
-    if (m_keyboardFocusWatcher->hasFocus()) {
-        QGuiApplication::clipboard()->setMimeData(mime, mode);
-        // if we short-circuit the ext_data_device, when we receive the data
-        // we cannot identify ourselves as the owner
-        // because of that we act like it's a synchronous action to not confuse klipper.
-        wl_display_roundtrip(display);
-        return;
-    }
-    // If not, set the clipboard once the app receives focus to avoid the deadlock
-    connect(m_keyboardFocusWatcher.get(), &KeyboardFocusWatcher::keyboardEntered, this, &WaylandClipboard::gainedFocus, Qt::UniqueConnection);
     auto source = std::make_unique<DataControlSource>(m_manager->create_data_source(), mime);
     if (mode == QClipboard::Clipboard) {
         m_device->setSelection(std::move(source));
     } else if (mode == QClipboard::Selection) {
         m_device->setPrimarySelection(std::move(source));
-    }
-}
-
-void WaylandClipboard::gainedFocus()
-{
-    disconnect(m_keyboardFocusWatcher.get(), &KeyboardFocusWatcher::keyboardEntered, this, nullptr);
-    // QClipboard takes ownership of the QMimeData so we need to transfer and unset our selections
-    if (auto &selection = m_device->m_selection) {
-        std::unique_ptr<QMimeData> data = selection->releaseMimeData();
-        selection.reset();
-        QGuiApplication::clipboard()->setMimeData(data.release(), QClipboard::Clipboard);
-    }
-    if (auto &primarySelection = m_device->m_primarySelection) {
-        std::unique_ptr<QMimeData> data = primarySelection->releaseMimeData();
-        primarySelection.reset();
-        QGuiApplication::clipboard()->setMimeData(data.release(), QClipboard::Selection);
     }
 }
 
