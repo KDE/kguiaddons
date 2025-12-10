@@ -1,7 +1,6 @@
 /*
     SPDX-FileCopyrightText: 2020 David Edmundson <davidedmundson@kde.org>
     SPDX-FileCopyrightText: 2021 Méven Car <meven.car@enioka.com>
-
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
@@ -13,7 +12,10 @@
 #include <QImageReader>
 #include <QImageWriter>
 #include <QMimeData>
+#include <QMutex>
 #include <QPointer>
+#include <QThread>
+#include <QTimer>
 #include <QWaylandClientExtension>
 #include <QWindow>
 #include <QtWaylandClientVersion>
@@ -27,6 +29,14 @@
 
 #include "qwayland-wayland.h"
 #include "qwayland-ext-data-control-v1.h"
+
+/**
+ * Wayland clipboard wraps ext_data_control an additional is used as we need to avoid
+ * deadlocks if an application tries to read the normal clipboard whilst it owns the data control.
+ *
+ * To solve this all ext_data_control classes live on another thread which dispatches events on a separate
+ * queue. A recursive mutex allows the main thread to read mimedata and no wayland events which change the mimedata process until this is complete.
+ */
 
 static inline QString applicationQtXImageLiteral()
 {
@@ -441,6 +451,7 @@ protected:
 
     void ext_data_control_device_v1_selection(struct ::ext_data_control_offer_v1 *id) override
     {
+        QMutexLocker locker(&m_selectionLock);
         if (!id) {
             m_receivedSelection.reset();
         } else {
@@ -453,6 +464,7 @@ protected:
 
     void ext_data_control_device_v1_primary_selection(struct ::ext_data_control_offer_v1 *id) override
     {
+        QMutexLocker locker(&m_primarySelectionLock);
         if (!id) {
             m_receivedPrimarySelection.reset();
         } else {
@@ -464,9 +476,11 @@ protected:
     }
 
 private:
+    QRecursiveMutex m_selectionLock;
     std::unique_ptr<DataControlSource> m_selection; // selection set locally
     std::unique_ptr<DataControlOffer> m_receivedSelection; // latest selection set from externally to here
 
+    QRecursiveMutex m_primarySelectionLock;
     std::unique_ptr<DataControlSource> m_primarySelection; // selection set locally
     std::unique_ptr<DataControlOffer> m_receivedPrimarySelection; // latest selection set from externally to here
     friend WaylandClipboard;
@@ -474,37 +488,92 @@ private:
 
 void DataControlDevice::setSelection(std::unique_ptr<DataControlSource> selection)
 {
-    set_selection(selection->object());
+    {
+        QMutexLocker locker(&m_selectionLock);
+        set_selection(selection->object());
 
-    // Note the previous selection is destroyed after the set_selection request.
-    m_selection = std::move(selection);
-    connect(m_selection.get(), &DataControlSource::cancelled, this, [this]() {
-        m_selection.reset();
-    });
+        // Note the previous selection is destroyed after the set_selection request.
+        m_selection = std::move(selection);
+        connect(m_selection.get(), &DataControlSource::cancelled, this, [this]() {
+            m_selection.reset();
+        });
+    }
 
     Q_EMIT selectionChanged();
 }
 
 void DataControlDevice::setPrimarySelection(std::unique_ptr<DataControlSource> selection)
 {
-    set_primary_selection(selection->object());
+    {
+        QMutexLocker locker(&m_primarySelectionLock);
+        set_primary_selection(selection->object());
 
-    // Note the previous selection is destroyed after the set_primary_selection request.
-    m_primarySelection = std::move(selection);
-    connect(m_primarySelection.get(), &DataControlSource::cancelled, this, [this]() {
-        m_primarySelection.reset();
-    });
+        // Note the previous selection is destroyed after the set_primary_selection request.
+        m_primarySelection = std::move(selection);
+        connect(m_primarySelection.get(), &DataControlSource::cancelled, this, [this]() {
+            m_primarySelection.reset();
+        });
+    }
 
     Q_EMIT primarySelectionChanged();
 }
+
+class ClipboardThread : public QThread
+{
+public:
+    ClipboardThread(wl_display *display)
+        : m_display(display)
+    {
+        m_queue = wl_display_create_queue_with_name(m_display, "ksystemclipboard queue");
+    }
+
+    ~ClipboardThread()
+    {
+        if (m_callback) {
+            wl_callback_destroy(m_callback);
+        }
+        wl_event_queue_destroy(m_queue);
+    }
+
+    void syncQueue()
+    {
+        // wl_display_dispatch_queue will block until it gets an event, as KSystemClipboard
+        // has the lifespan of the QApplication and the QPA is still alive
+        // we need something to explicitly wake up the event queue up before the main thread
+        // blocks waiting for this thread.
+        auto wrapped_display = wl_proxy_create_wrapper(m_display);
+        wl_proxy_set_queue(static_cast<wl_proxy *>(wrapped_display), m_queue);
+        m_callback = wl_display_sync(static_cast<struct wl_display *>(wrapped_display));
+        wl_display_flush(m_display);
+        wl_proxy_wrapper_destroy(wrapped_display);
+    }
+
+    void run() override
+    {
+        int ret = 0;
+        while (ret >= 0 && !qGuiApp->closingDown()) {
+            ret = wl_display_dispatch_queue(m_display, m_queue);
+        }
+    }
+    wl_callback *m_callback = nullptr;
+    wl_event_queue *m_queue = nullptr;
+    wl_display *m_display = nullptr;
+};
 
 WaylandClipboard::WaylandClipboard(QObject *parent)
     : KSystemClipboard(parent)
     , m_manager(new DataControlDeviceManager)
 {
+    auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+    if (!waylandApp) {
+        return;
+    }
+
     connect(m_manager.get(), &DataControlDeviceManager::activeChanged, this, [this]() {
         if (m_manager->isActive()) {
             auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+            m_thread = std::make_unique<ClipboardThread>(waylandApp->display());
+
             if (!waylandApp) {
                 return;
             }
@@ -513,7 +582,9 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
             if (!seat) {
                 return;
             }
+            wl_proxy_set_queue(reinterpret_cast<wl_proxy *>(m_manager->object()), m_thread->m_queue);
             m_device.reset(new DataControlDevice(m_manager->get_data_device(seat)));
+            m_device->moveToThread(m_thread.get());
 
             connect(m_device.get(), &DataControlDevice::receivedSelectionChanged, this, [this]() {
                 // When our source is still valid, so the offer is for setting it or we emit changed when it is cancelled
@@ -534,16 +605,25 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
             connect(m_device.get(), &DataControlDevice::primarySelectionChanged, this, [this]() {
                 Q_EMIT changed(QClipboard::Selection);
             });
+            m_thread->start();
 
         } else {
             m_device.reset();
+            m_thread->wait();
+            m_thread.reset();
         }
     });
 
     m_manager->instantiate();
 }
 
-WaylandClipboard::~WaylandClipboard() = default;
+WaylandClipboard::~WaylandClipboard()
+{
+    if (m_thread->isRunning()) {
+        m_thread->syncQueue();
+        m_thread->wait();
+    }
+}
 
 WaylandClipboard *WaylandClipboard::create(QObject *parent)
 {
@@ -567,6 +647,7 @@ void WaylandClipboard::setMimeData(QMimeData *mime, QClipboard::Mode mode)
     }
 
     auto source = std::make_unique<DataControlSource>(m_manager->create_data_source(), mime);
+    source->moveToThread(m_thread.get());
     if (mode == QClipboard::Clipboard) {
         m_device->setSelection(std::move(source));
     } else if (mode == QClipboard::Selection) {
@@ -579,10 +660,13 @@ void WaylandClipboard::clear(QClipboard::Mode mode)
     if (!m_device) {
         return;
     }
+
     if (mode == QClipboard::Clipboard) {
+        QMutexLocker locker(&m_device->m_selectionLock);
         m_device->set_selection(nullptr);
         m_device->m_selection.reset();
     } else if (mode == QClipboard::Selection) {
+        QMutexLocker locker(&m_device->m_primarySelectionLock);
         m_device->set_primary_selection(nullptr);
         m_device->m_primarySelection.reset();
     }
@@ -594,24 +678,42 @@ const QMimeData *WaylandClipboard::mimeData(QClipboard::Mode mode) const
         return nullptr;
     }
 
+    // WaylandClipboard owns the mimedata, but the caller can read it until the next event loop runs.
+    auto lockWithUnlockLater = [this](QRecursiveMutex &mutex) {
+        mutex.lock();
+        QTimer::singleShot(0, this, [&mutex, guard = QPointer<DataControlDevice>(m_device.get())] {
+            if (!guard) {
+                return;
+            }
+            mutex.unlock();
+        });
+    };
+
     // return our locally set selection if it's not cancelled to avoid copying data to ourselves
     if (mode == QClipboard::Clipboard) {
+        QMutexLocker lock(&m_device->m_selectionLock);
         if (m_device->selection()) {
             return m_device->selection();
         }
+
         // This application owns the clipboard via the regular data_device, use it so we don't block ourselves
         if (QGuiApplication::clipboard()->ownsClipboard()) {
             return QGuiApplication::clipboard()->mimeData(mode);
         }
+        lockWithUnlockLater(m_device->m_selectionLock);
         return m_device->receivedSelection();
     } else if (mode == QClipboard::Selection) {
+        QMutexLocker lock(&m_device->m_primarySelectionLock);
         if (m_device->primarySelection()) {
             return m_device->primarySelection();
         }
+
         // This application owns the primary selection via the regular primary_selection_device, use it so we don't block ourselves
         if (QGuiApplication::clipboard()->ownsSelection()) {
             return QGuiApplication::clipboard()->mimeData(mode);
         }
+
+        lockWithUnlockLater(m_device->m_primarySelectionLock);
         return m_device->receivedPrimarySelection();
     }
     return nullptr;

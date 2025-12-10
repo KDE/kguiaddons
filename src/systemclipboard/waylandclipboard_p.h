@@ -13,9 +13,11 @@
 
 class DataControlDevice;
 class DataControlDeviceManager;
+class ClipboardThread;
 
 class WaylandClipboard : public KSystemClipboard
 {
+    Q_OBJECT
 public:
     ~WaylandClipboard();
     static WaylandClipboard *create(QObject *parent);
@@ -27,6 +29,7 @@ public:
 
 private:
     WaylandClipboard(QObject *parent);
+    std::unique_ptr<ClipboardThread> m_thread;
     std::unique_ptr<DataControlDeviceManager> m_manager;
     std::unique_ptr<DataControlDevice> m_device;
 };
