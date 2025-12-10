@@ -469,11 +469,11 @@ protected:
     }
 
 private:
-    QMutex m_selectionLock;
+    QRecursiveMutex m_selectionLock;
     std::unique_ptr<DataControlSource> m_selection; // selection set locally
     std::unique_ptr<DataControlOffer> m_receivedSelection; // latest selection set from externally to here
 
-    QMutex m_primarySelectionLock;
+    QRecursiveMutex m_primarySelectionLock;
     std::unique_ptr<DataControlSource> m_primarySelection; // selection set locally
     std::unique_ptr<DataControlOffer> m_receivedPrimarySelection; // latest selection set from externally to here
     friend WaylandClipboard;
@@ -643,7 +643,7 @@ const QMimeData *WaylandClipboard::mimeData(QClipboard::Mode mode) const
         return nullptr;
     }
 
-    auto lockWithUnlockLater = [this](QMutex &mutex) {
+    auto lockWithUnlockLater = [this](QRecursiveMutex &mutex) {
         mutex.lock();
         QTimer::singleShot(0, this, [&mutex] {
             mutex.unlock();
