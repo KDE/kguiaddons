@@ -20,4 +20,5 @@ kguiaddons_executable_tests(
   kcursorsavergui_test
   kcolorschemewatchertest
   kcountryflagemojiiconenginedemo
+  clipboardtest
 )
