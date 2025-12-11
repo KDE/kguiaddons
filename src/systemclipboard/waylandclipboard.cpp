@@ -82,7 +82,7 @@ public:
 
     ~DataControlDeviceManager()
     {
-        if (isInitialized()) {
+        if (isInitialized() && !qGuiApp->closingDown()) {
             destroy();
         }
     }
@@ -99,7 +99,9 @@ public:
 
     ~DataControlOffer()
     {
-        destroy();
+        if (!qGuiApp->closingDown()) {
+            destroy();
+        }
     }
 
     QStringList formats() const override
@@ -294,7 +296,9 @@ public:
     DataControlSource() = default;
     ~DataControlSource()
     {
-        destroy();
+        if (!qGuiApp->closingDown()) {
+            destroy();
+        }
     }
 
     QMimeData *mimeData()
@@ -404,7 +408,8 @@ public:
 
     ~DataControlDevice()
     {
-        destroy();
+        if (!qGuiApp->closingDown())
+            destroy();
     }
 
     void setSelection(std::unique_ptr<DataControlSource> selection);
@@ -518,6 +523,10 @@ public:
         : m_queue(queue)
         , m_display(display)
     {
+        connect(qApp, &QGuiApplication::aboutToQuit, this, [this]() {
+            qDebug() << "about to quit";
+            wl_display_roundtrip(m_display);
+        });
     }
 
 private:
@@ -527,6 +536,7 @@ private:
         while (ret >= 0 || !qGuiApp->closingDown()) {
             ret = wl_display_dispatch_queue(m_display, m_queue);
         }
+        qDebug() << "thread quit";
     }
     wl_event_queue *m_queue;
     wl_display *m_display;
