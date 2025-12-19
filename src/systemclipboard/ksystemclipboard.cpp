@@ -24,7 +24,7 @@ KSystemClipboard *KSystemClipboard::instance()
 
 #ifdef WITH_WAYLAND
     static bool s_waylandChecked = false;
-    if (!systemClipboard && qGuiApp->platformName() == QLatin1String("wayland") && !s_waylandChecked) {
+    if (!systemClipboard && qGuiApp->platformName().startsWith(QLatin1String("wayland")) && !s_waylandChecked) {
         s_waylandChecked = true;
 
         if (auto waylandClipboard = WaylandClipboard::create(qApp)) {
