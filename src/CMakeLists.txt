@@ -29,6 +29,7 @@ target_sources(KF6GuiAddons PRIVATE
  util/kcursorsaver.cpp
  util/kcountryflagemojiiconengine.cpp
  util/kjobwindows.cpp
+ util/ktabletpadcontroller.cpp
  recorder/keyboardgrabber.cpp
  recorder/kkeysequencerecorder.cpp
  recorder/tabletevents.cpp
@@ -91,7 +92,7 @@ if(WITH_WAYLAND)
             "${PLASMA_WAYLAND_PROTOCOLS_DIR}/keystate.xml"
             "${WaylandProtocols_DATADIR}/staging/ext-data-control/ext-data-control-v1.xml"
             "${Wayland_DATADIR}/wayland.xml"
-            "${WaylandProtocols_DATADIR}/unstable/tablet/tablet-unstable-v2.xml"
+            "${WaylandProtocols_DATADIR}/stable/tablet/tablet-v2.xml"
         ${private_code_option}
     )
     target_sources(KF6GuiAddons PRIVATE

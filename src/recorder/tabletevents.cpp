@@ -45,57 +45,6 @@ public:
     uint m_buttons = 0;
 };
 
-class Tool : public QObject, public QtWayland::zwp_tablet_tool_v2
-{
-public:
-    Tool(TabletEvents *const events, ::zwp_tablet_tool_v2 *t)
-        : QObject(events)
-        , QtWayland::zwp_tablet_tool_v2(t)
-        , m_events(events)
-    {
-    }
-
-    ~Tool()
-    {
-        destroy();
-    }
-
-    void zwp_tablet_tool_v2_hardware_serial(uint32_t hardware_serial_hi, uint32_t hardware_serial_lo) override
-    {
-        m_hardware_serial_hi = hardware_serial_hi;
-        m_hardware_serial_lo = hardware_serial_lo;
-    }
-
-    void zwp_tablet_tool_v2_button(uint32_t /*serial*/, uint32_t button, uint32_t state) override
-    {
-        Q_EMIT m_events->toolButtonReceived(m_hardware_serial_hi, m_hardware_serial_lo, button, state);
-    }
-
-    void zwp_tablet_tool_v2_motion(wl_fixed_t x, wl_fixed_t y) override
-    {
-        m_tool_x = x;
-        m_tool_y = y;
-        Q_EMIT m_events->toolMotion(m_hardware_serial_hi, m_hardware_serial_lo, wl_fixed_to_double(m_tool_x), wl_fixed_to_double(m_tool_y));
-    }
-
-    void zwp_tablet_tool_v2_down(uint32_t serial) override
-    {
-        Q_UNUSED(serial)
-        Q_EMIT m_events->toolDown(m_hardware_serial_hi, m_hardware_serial_lo, wl_fixed_to_double(m_tool_x), wl_fixed_to_double(m_tool_y));
-    }
-
-    void zwp_tablet_tool_v2_up() override
-    {
-        Q_EMIT m_events->toolUp(m_hardware_serial_hi, m_hardware_serial_lo, wl_fixed_to_double(m_tool_x), wl_fixed_to_double(m_tool_y));
-    }
-
-    uint32_t m_hardware_serial_hi = 0;
-    uint32_t m_hardware_serial_lo = 0;
-    uint32_t m_tool_x = 0;
-    uint32_t m_tool_y = 0;
-    TabletEvents *const m_events;
-};
-
 class TabletManager : public QWaylandClientExtensionTemplate<TabletManager>, public QtWayland::zwp_tablet_manager_v2
 {
 public:
@@ -157,11 +106,6 @@ public:
     void zwp_tablet_seat_v2_tablet_added(struct ::zwp_tablet_v2 *id) override
     {
         new Tablet(m_events, id);
-    }
-
-    void zwp_tablet_seat_v2_tool_added(struct ::zwp_tablet_tool_v2 *id) override
-    {
-        new Tool(m_events, id);
     }
 
     void zwp_tablet_seat_v2_pad_added(struct ::zwp_tablet_pad_v2 *id) override

@@ -541,7 +541,12 @@ void KKeySequenceRecorderPrivate::receivedRecording()
 void KKeySequenceRecorderPrivate::finishRecording()
 {
     receivedRecording();
-    Q_EMIT q->gotKeySequence(m_currentKeySequence);
+
+    if (!m_currentKeySequence.isEmpty()) {
+        Q_EMIT q->gotKeySequence(m_currentKeySequence);
+    } else {
+        Q_EMIT q->gotTabletPadSequence(m_currentTabletPadSequence);
+    }
 }
 
 KKeySequenceRecorder::KKeySequenceRecorder(QWindow *window, QObject *parent)
@@ -563,7 +568,10 @@ KKeySequenceRecorder::KKeySequenceRecorder(QWindow *window, QObject *parent)
         }
 
         if (pressed) {
-            Q_EMIT gotTabletPadSequence({button});
+            d->m_currentTabletPadSequence = {.m_button = button};
+            // Q_EMIT gotTabletPadSequence({button});
+            Q_EMIT currentTabletPadSequenceChanged();
+            d->finishRecording();
         }
     });
 }
@@ -597,6 +605,7 @@ void KKeySequenceRecorder::startRecording()
     }
     Q_EMIT recordingChanged();
     Q_EMIT currentKeySequenceChanged();
+    Q_EMIT currentTabletPadSequenceChanged();
 }
 
 void KKeySequenceRecorder::cancelRecording()

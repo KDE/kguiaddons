@@ -19,7 +19,7 @@
 
 class KKeySequenceRecorderPrivate;
 
-class TabletPadSequence
+class KGUIADDONS_EXPORT TabletPadSequence
 {
     Q_GADGET
     Q_PROPERTY(uint button MEMBER m_button)
@@ -29,7 +29,12 @@ public:
         return m_button == other.m_button;
     }
 
-    uint m_button;
+    int m_button = -1;
+
+    bool isEmpty() const
+    {
+        return m_button == -1;
+    }
 };
 
 /*!
