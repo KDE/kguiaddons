@@ -11,8 +11,8 @@
 
 #include "keyboardgrabber_p.h"
 #include "kguiaddons_debug.h"
+#include "ktabletpadcontroller.h"
 #include "shortcutinhibition_p.h"
-#include "tabletevents.h"
 #include "waylandinhibition_p.h"
 
 #include <QGuiApplication>
@@ -74,7 +74,7 @@ public:
     bool m_isReleasingModifierOnly = false;
     std::chrono::nanoseconds m_modifierFirstReleaseTime;
 
-    TabletEvents m_tabletEvents;
+    KTabletPadController m_tabletEvents;
 };
 
 constexpr Qt::KeyboardModifiers modifierMask = Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier | Qt::KeypadModifier;
@@ -560,15 +560,15 @@ KKeySequenceRecorder::KKeySequenceRecorder(QWindow *window, QObject *parent)
     setWindow(window);
     connect(&d->m_modifierlessTimer, &QTimer::timeout, d.get(), &KKeySequenceRecorderPrivate::finishRecording);
 
-    connect(&d->m_tabletEvents, &TabletEvents::padButtonReceived, this, [this](const QString &path, uint button, bool pressed) {
-        qWarning() << "button" << path << button << pressed;
+    connect(&d->m_tabletEvents, &KTabletPadController::buttonEvent, this, [this](const KTabletPadController::PadEvent &event) {
+        qWarning() << "button" << event.button;
 
         if (!d->m_isRecording) {
             return;
         }
 
-        if (pressed) {
-            d->m_currentTabletPadSequence = {.m_button = button};
+        if (event.state == KTabletPadController::PadEvent::Pressed) {
+            d->m_currentTabletPadSequence = {.m_button = event.button};
             // Q_EMIT gotTabletPadSequence({button});
             Q_EMIT currentTabletPadSequenceChanged();
             d->finishRecording();

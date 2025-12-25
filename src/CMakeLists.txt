@@ -32,7 +32,6 @@ target_sources(KF6GuiAddons PRIVATE
  util/ktabletpadcontroller.cpp
  recorder/keyboardgrabber.cpp
  recorder/kkeysequencerecorder.cpp
- recorder/tabletevents.cpp
  systemclipboard/qtclipboard.cpp
  systemclipboard/ksystemclipboard.cpp
 
@@ -176,6 +175,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
   KCursorSaver
   KCountryFlagEmojiIconEngine
   KJobWindows
+  KTabletPadController
 
   RELATIVE util
   REQUIRED_HEADERS KGuiAddons_HEADERS
