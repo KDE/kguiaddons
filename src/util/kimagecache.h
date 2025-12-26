@@ -151,7 +151,7 @@ public:
         }
 
         if (destination) {
-            destination->loadFromData(cachedData, "PNG");
+            destination->loadFromData(cachedData, "PNG", Qt::NoOpaqueDetection);
 
             // Manually re-insert to pixmap cache if we'll be using this one.
             insertLocalPixmap(key, *destination);
