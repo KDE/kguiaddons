@@ -719,4 +719,5 @@ const QMimeData *WaylandClipboard::mimeData(QClipboard::Mode mode) const
     return nullptr;
 }
 
+#include "moc_waylandclipboard_p.cpp"
 #include "waylandclipboard.moc"
