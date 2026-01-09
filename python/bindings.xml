@@ -4,6 +4,7 @@
 SPDX-FileCopyrightText: 2024 Manuel Alcaraz Zambrano <manuelalcarazzam@gmail.com>
 SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 -->
+    <load-typesystem name="typesystem_core.xml" generate="no"/> <!--QMimeData-->
     <load-typesystem name="typesystem_gui.xml" generate="no"/>
 
     <namespace-type name="KColorMimeData" />
@@ -23,7 +24,13 @@ SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accept
         <enum-type name="Pattern" flags="yes" />
     </object-type>
     <object-type name="KModifierKeyInfo" />
-    <object-type name="KSystemClipboard" />
+    <object-type name="KSystemClipboard">
+        <modify-function signature="setMimeData(QMimeData *, QClipboard::Mode)">
+            <modify-argument index="1">
+                <define-ownership class="target" owner="c++" />
+            </modify-argument>
+        </modify-function>
+    </object-type>
     <object-type name="KWordWrap" />
 
 </typesystem>
