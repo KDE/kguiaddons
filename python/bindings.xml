@@ -19,7 +19,9 @@ SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accept
     </namespace-type>
     <namespace-type name="KIconUtils" />
     <namespace-type name="KJobWindows" />
-    <object-type name="KKeySequenceRecorder" />
+    <object-type name="KKeySequenceRecorder">
+        <enum-type name="Pattern" flags="yes" />
+    </object-type>
     <object-type name="KModifierKeyInfo" />
     <object-type name="KSystemClipboard" />
     <object-type name="KWordWrap" />
