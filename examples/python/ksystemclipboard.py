@@ -1,0 +1,1 @@
+../../tests/clipboardtest.py
