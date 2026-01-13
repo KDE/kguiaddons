@@ -18,6 +18,7 @@ target_sources(KF6GuiAddons PRIVATE
  colors/kcolorschemewatcherbackend.cpp
  colors/kcolorschemewatcher_qt.cpp
  colors/kwindowinsetscontroller.cpp
+ colors/kcolormanipulation.cpp
  text/kdatevalidator.cpp
  text/kwordwrap.cpp
  fonts/kfontutils.cpp
@@ -36,6 +37,7 @@ target_sources(KF6GuiAddons PRIVATE
 
  colors/kcolorspaces_p.h
  colors/kcolorutils.h
+ colors/kcolormanipulation.h
  colors/kcolorcollection.h
  colors/kcolormimedata.h
  text/kdatevalidator.h
@@ -146,6 +148,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
   KColorMimeData
   KColorSchemeWatcher
   KWindowInsetsController
+  KColorManipulation
 
   RELATIVE colors
   REQUIRED_HEADERS KGuiAddons_HEADERS
