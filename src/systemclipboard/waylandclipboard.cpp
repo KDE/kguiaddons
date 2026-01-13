@@ -619,7 +619,7 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
 
 WaylandClipboard::~WaylandClipboard()
 {
-    if (m_thread->isRunning()) {
+    if (m_thread && m_thread->isRunning()) {
         m_thread->syncQueue();
         m_thread->wait();
     }
