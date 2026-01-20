@@ -218,6 +218,12 @@ static bool isShiftAsModifierAllowed(int keyQt)
     case Qt::Key_Xfer:
     case Qt::Key_ZoomIn:
     case Qt::Key_ZoomOut:
+    case Qt::Key_Cancel:
+    case Qt::Key_New:
+    case Qt::Key_Open:
+    case Qt::Key_Find:
+    case Qt::Key_Undo:
+    case Qt::Key_Redo:
     case Qt::Key_Away:
     case Qt::Key_Messenger:
     case Qt::Key_WebCam:
