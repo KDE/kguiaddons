@@ -524,7 +524,11 @@ public:
     ClipboardThread(wl_display *display)
         : m_display(display)
     {
+#if QT_VERSION_CHECK(WAYLAND_VERSION_MAJOR, WAYLAND_VERSION_MINOR, WAYLAND_VERSION_MICRO) >= QT_VERSION_CHECK(1, 23, 0)
         m_queue = wl_display_create_queue_with_name(m_display, "ksystemclipboard queue");
+#else
+        m_queue = wl_display_create_queue(m_display);
+#endif
     }
 
     ~ClipboardThread()
