@@ -16,7 +16,7 @@ void KUrlHandlerTest::testOpeningDocsUrls_data()
     QTest::addColumn<QString>("helpUrl");
     QTest::addColumn<QString>("expected");
 
-    const QString common = "https://docs.kde.org/index.php?branch=stable5&language=" + QLocale().name();
+    const QString common = "https://docs.kde.org/index.php?branch=stable_kf6&language=" + QLocale().name();
 
     QTest::newRow("okular-help-handbook") << "okular"
                                           << "help:/" << common + "&application=okular&path=index.html";

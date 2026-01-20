@@ -65,7 +65,7 @@ QUrl KUrlHandler::concatDocsUrl(const QUrl &url) const
 
     QString path = url.path();
     const QString fragment = url.fragment();
-    const QString common = QLatin1String("https://docs.kde.org/index.php?branch=stable5&language=") + QLocale().name();
+    const QString common = QLatin1String("https://docs.kde.org/index.php?branch=stable_kf6&language=") + QLocale().name();
 
     const QString appName = QCoreApplication::applicationName();
 
@@ -73,7 +73,7 @@ QUrl KUrlHandler::concatDocsUrl(const QUrl &url) const
     if (appName == QLatin1String("systemsettings") && path.startsWith(QLatin1String("/kcontrol"))) {
         // E.g. change "/kcontrol/fonts/index.html" to "&application=kcontrol/fonts&path=index.html"
         // docs.kde.org will resolve the url and add the proper package name, e.g. plasma-workspace:
-        // https://docs.kde.org/stable5/en/plasma-workspace/kcontrol/fonts/index.html
+        // https://docs.kde.org/stable_kf6/en/plasma-workspace/kcontrol/fonts/index.html
         QString kcmAppName(path);
         kcmAppName.remove(0, 1); // Remove leading "/"
         const int idx = kcmAppName.indexOf(QLatin1String("/index.html"));
