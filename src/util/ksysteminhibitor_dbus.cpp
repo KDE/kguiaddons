@@ -3,7 +3,6 @@
 
 #include "ksysteminhibitor.h"
 
-#if defined(WITH_DBUS)
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDBusPendingCall>
@@ -11,13 +10,11 @@
 #include <private/qdesktopunixservices_p.h>
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
-#endif
 
 #include "kguiaddons_debug.h"
 
 using namespace Qt::StringLiterals;
 
-#if defined(WITH_DBUS)
 namespace
 {
 void release(const QDBusObjectPath &path)
@@ -26,21 +23,17 @@ void release(const QDBusObjectPath &path)
     QDBusConnection::sessionBus().asyncCall(message);
 };
 } // namespace
-#endif
 
 class KSystemInhibitorPrivate
 {
 public:
-#if defined(WITH_DBUS)
     std::optional<QDBusObjectPath> m_inhibition;
-#endif
 };
 
 KSystemInhibitor::KSystemInhibitor(const QString &reason, Types types, QWindow *window, QObject *parent)
     : QObject(parent)
     , d(std::make_unique<KSystemInhibitorPrivate>())
 {
-#if defined(WITH_DBUS)
     QDBusMessage message = QDBusMessage::createMethodCall(u"org.freedesktop.portal.Desktop"_s,
                                                           u"/org/freedesktop/portal/desktop"_s,
                                                           u"org.freedesktop.portal.Inhibit"_s,
@@ -72,14 +65,13 @@ KSystemInhibitor::KSystemInhibitor(const QString &reason, Types types, QWindow *
                              release(reply.value());
                          }
                      });
-#endif
 }
 
 KSystemInhibitor::~KSystemInhibitor()
 {
-#if defined(WITH_DBUS)
     if (d->m_inhibition.has_value()) {
         release(d->m_inhibition.value());
     }
-#endif
 }
+
+#include "moc_ksysteminhibitor.cpp"

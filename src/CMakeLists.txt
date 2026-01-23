@@ -29,7 +29,6 @@ target_sources(KF6GuiAddons PRIVATE
  util/kcursorsaver.cpp
  util/kcountryflagemojiiconengine.cpp
  util/kjobwindows.cpp
- util/ksysteminhibitor.cpp
  recorder/keyboardgrabber.cpp
  recorder/kkeysequencerecorder.cpp
  systemclipboard/qtclipboard.cpp
@@ -76,7 +75,10 @@ if(APPLE)
 endif()
 
 if(WITH_DBUS)
-    target_sources(KF6GuiAddons PRIVATE colors/kcolorschemewatcher_xdg.cpp)
+    target_sources(KF6GuiAddons PRIVATE
+        colors/kcolorschemewatcher_xdg.cpp
+        util/ksysteminhibitor_dbus.cpp
+    )
     target_link_libraries(KF6GuiAddons PRIVATE Qt6::DBus)
     target_compile_definitions(KF6GuiAddons PRIVATE WITH_DBUS)
 endif()
@@ -114,7 +116,16 @@ if(WITH_X11)
 endif()
 
 if(ANDROID)
+    target_sources(KF6GuiAddons PRIVATE
+        util/ksysteminhibitor_android.cpp
+    )
     add_subdirectory(android)
+endif()
+
+if (NOT WITH_DBUS AND NOT ANDROID)
+    target_sources(KF6GuiAddons PRIVATE
+        util/ksysteminhibitor_dummy.cpp
+    )
 endif()
 
 ecm_generate_export_header(KF6GuiAddons
