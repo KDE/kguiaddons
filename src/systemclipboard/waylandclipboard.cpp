@@ -352,23 +352,21 @@ void DataControlSource::ext_data_control_source_v1_send(const QString &mime_type
     }
 
     QByteArray ba;
-    if (m_mimeData->hasImage()) {
-        // adapted from QInternalMimeData::renderDataHelper
-        if (mime_type == applicationQtXImageLiteral()) {
-            QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
-            QBuffer buf(&ba);
-            buf.open(QBuffer::WriteOnly);
-            // would there not be PNG ??
-            image.save(&buf, "PNG");
 
-        } else if (mime_type.startsWith(QLatin1String("image/"))) {
-            QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
+    // adapted from QInternalMimeData::renderDataHelper
+    if (mime_type == applicationQtXImageLiteral() || mime_type.startsWith(QLatin1String("image/"))) {
+        if (m_mimeData->hasImage()) {
+            const QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
             QBuffer buf(&ba);
             buf.open(QBuffer::WriteOnly);
-            image.save(&buf, mime_type.mid(mime_type.indexOf(QLatin1Char('/')) + 1).toLatin1().toUpper().data());
+            if (mime_type == applicationQtXImageLiteral()) {
+                // would there not be PNG ??
+                image.save(&buf, "PNG");
+            } else {
+                image.save(&buf, mime_type.mid(mime_type.indexOf(QLatin1Char('/')) + 1).toLatin1().toUpper().data());
+            }
         }
-        // end adapted
-    } else {
+    } else { // end adapted
         ba = m_mimeData->data(send_mime_type);
     }
 
