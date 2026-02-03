@@ -493,6 +493,7 @@ void DataControlDevice::setSelection(std::unique_ptr<DataControlSource> selectio
         // Note the previous selection is destroyed after the set_selection request.
         m_selection = std::move(selection);
         connect(m_selection.get(), &DataControlSource::cancelled, this, [this]() {
+            QMutexLocker locker(&m_selectionLock);
             m_selection.reset();
         });
     }
@@ -509,6 +510,7 @@ void DataControlDevice::setPrimarySelection(std::unique_ptr<DataControlSource> s
         // Note the previous selection is destroyed after the set_primary_selection request.
         m_primarySelection = std::move(selection);
         connect(m_primarySelection.get(), &DataControlSource::cancelled, this, [this]() {
+            QMutexLocker locker(&m_primarySelectionLock);
             m_primarySelection.reset();
         });
     }
