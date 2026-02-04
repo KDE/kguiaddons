@@ -73,6 +73,10 @@ static inline QStringList imageWriteMimeFormats()
 }
 // end copied
 
+// The mutex will be held before dispatching any wayland events on our queue which could modify or use the clipboard
+// it should also be held if the main thread access the clipboard
+static QRecursiveMutex s_clipboardLock;
+
 class DataControlDeviceManager : public QWaylandClientExtensionTemplate<DataControlDeviceManager>, public QtWayland::ext_data_control_manager_v1
 {
     Q_OBJECT
@@ -449,7 +453,6 @@ protected:
 
     void ext_data_control_device_v1_selection(struct ::ext_data_control_offer_v1 *id) override
     {
-        QMutexLocker locker(&m_selectionLock);
         if (!id) {
             m_receivedSelection.reset();
         } else {
@@ -462,7 +465,6 @@ protected:
 
     void ext_data_control_device_v1_primary_selection(struct ::ext_data_control_offer_v1 *id) override
     {
-        QMutexLocker locker(&m_primarySelectionLock);
         if (!id) {
             m_receivedPrimarySelection.reset();
         } else {
@@ -474,11 +476,9 @@ protected:
     }
 
 private:
-    QRecursiveMutex m_selectionLock;
     std::unique_ptr<DataControlSource> m_selection; // selection set locally
     std::unique_ptr<DataControlOffer> m_receivedSelection; // latest selection set from externally to here
 
-    QRecursiveMutex m_primarySelectionLock;
     std::unique_ptr<DataControlSource> m_primarySelection; // selection set locally
     std::unique_ptr<DataControlOffer> m_receivedPrimarySelection; // latest selection set from externally to here
     friend WaylandClipboard;
@@ -487,7 +487,7 @@ private:
 void DataControlDevice::setSelection(std::unique_ptr<DataControlSource> selection)
 {
     {
-        QMutexLocker locker(&m_selectionLock);
+        QMutexLocker locker(&s_clipboardLock);
         set_selection(selection->object());
 
         // Note the previous selection is destroyed after the set_selection request.
@@ -503,7 +503,7 @@ void DataControlDevice::setSelection(std::unique_ptr<DataControlSource> selectio
 void DataControlDevice::setPrimarySelection(std::unique_ptr<DataControlSource> selection)
 {
     {
-        QMutexLocker locker(&m_primarySelectionLock);
+        QMutexLocker locker(&s_clipboardLock);
         set_primary_selection(selection->object());
 
         // Note the previous selection is destroyed after the set_primary_selection request.
@@ -552,9 +552,26 @@ public:
 
     void run() override
     {
-        int ret = 0;
-        while (ret >= 0 && !qGuiApp->closingDown()) {
-            ret = wl_display_dispatch_queue(m_display, m_queue);
+        while (!qGuiApp->closingDown()) {
+            while (wl_display_prepare_read_queue(m_display, m_queue) != 0) {
+                QMutexLocker lock(&s_clipboardLock);
+                wl_display_dispatch_queue_pending(m_display, m_queue);
+            }
+            wl_display_flush(m_display);
+
+            struct pollfd pfd[1];
+            pfd[0].fd = wl_display_get_fd(m_display);
+            pfd[0].events = POLLIN;
+            int pollRet = poll(pfd, 1, -1);
+            if (pollRet < 0 && errno != EPIPE) {
+                wl_display_cancel_read(m_display);
+                break;
+            } else {
+                wl_display_read_events(m_display);
+            }
+
+            QMutexLocker lock(&s_clipboardLock);
+            wl_display_dispatch_queue_pending(m_display, m_queue);
         }
     }
     wl_callback *m_callback = nullptr;
@@ -664,11 +681,11 @@ void WaylandClipboard::clear(QClipboard::Mode mode)
     }
 
     if (mode == QClipboard::Clipboard) {
-        QMutexLocker locker(&m_device->m_selectionLock);
+        QMutexLocker locker(&s_clipboardLock);
         m_device->set_selection(nullptr);
         m_device->m_selection.reset();
     } else if (mode == QClipboard::Selection) {
-        QMutexLocker locker(&m_device->m_primarySelectionLock);
+        QMutexLocker locker(&s_clipboardLock);
         m_device->set_primary_selection(nullptr);
         m_device->m_primarySelection.reset();
     }
@@ -681,20 +698,18 @@ const QMimeData *WaylandClipboard::mimeData(QClipboard::Mode mode) const
     }
 
     // WaylandClipboard owns the mimedata, but the caller can read it until the next event loop runs.
-    auto lockWithUnlockLater = [this](QRecursiveMutex &mutex) {
-        mutex.lock();
-        QTimer::singleShot(0, this, [&mutex, guard = QPointer<DataControlDevice>(m_device.get())] {
-            if (!guard) {
-                return;
-            }
-            mutex.unlock();
+    auto lockWithUnlockLater = [this]() {
+        s_clipboardLock.lock();
+        QTimer::singleShot(0, this, [] {
+            s_clipboardLock.unlock();
         });
     };
 
     // return our locally set selection if it's not cancelled to avoid copying data to ourselves
     if (mode == QClipboard::Clipboard) {
-        QMutexLocker lock(&m_device->m_selectionLock);
+        QMutexLocker lock(&s_clipboardLock);
         if (m_device->selection()) {
+            lockWithUnlockLater();
             return m_device->selection();
         }
 
@@ -702,11 +717,13 @@ const QMimeData *WaylandClipboard::mimeData(QClipboard::Mode mode) const
         if (QGuiApplication::clipboard()->ownsClipboard()) {
             return QGuiApplication::clipboard()->mimeData(mode);
         }
-        lockWithUnlockLater(m_device->m_selectionLock);
+
+        lockWithUnlockLater();
         return m_device->receivedSelection();
     } else if (mode == QClipboard::Selection) {
-        QMutexLocker lock(&m_device->m_primarySelectionLock);
+        QMutexLocker lock(&s_clipboardLock);
         if (m_device->primarySelection()) {
+            lockWithUnlockLater();
             return m_device->primarySelection();
         }
 
@@ -715,7 +732,7 @@ const QMimeData *WaylandClipboard::mimeData(QClipboard::Mode mode) const
             return QGuiApplication::clipboard()->mimeData(mode);
         }
 
-        lockWithUnlockLater(m_device->m_primarySelectionLock);
+        lockWithUnlockLater();
         return m_device->receivedPrimarySelection();
     }
     return nullptr;
