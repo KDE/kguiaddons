@@ -10,9 +10,7 @@
 
 #include <QHash>
 #include <QIconEngine>
-#include <QLibraryInfo>
 #include <QPainter>
-#include <QVersionNumber>
 
 class KOverlayIconEngine : public QIconEngine
 {
@@ -108,12 +106,8 @@ void KOverlayIconEngine::virtual_hook(int id, void *data)
     if (id == QIconEngine::ScaledPixmapHook) {
         auto *info = reinterpret_cast<ScaledPixmapArgument *>(data);
 
-        QSize phyiscalSize = info->size;
         // Since https://codereview.qt-project.org/c/qt/qtbase/+/563553 size is in logical pixels
-        if (QLibraryInfo::version() >= QVersionNumber(6, 8, 0)) {
-            phyiscalSize *= info->scale;
-        }
-
+        QSize phyiscalSize = info->size * info->scale;
         QPixmap pixmap(phyiscalSize);
         pixmap.setDevicePixelRatio(info->scale);
         pixmap.fill(Qt::transparent);
