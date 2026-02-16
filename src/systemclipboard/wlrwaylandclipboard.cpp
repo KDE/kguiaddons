@@ -583,9 +583,6 @@ WlrWaylandClipboard::WlrWaylandClipboard(QObject *parent)
     connect(m_manager.get(), &WlrDataControlDeviceManager::activeChanged, this, [this]() {
         if (m_manager->isActive()) {
             auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
-            if (!waylandApp) {
-                return;
-            }
             auto seat = waylandApp->seat();
 
             if (!seat) {

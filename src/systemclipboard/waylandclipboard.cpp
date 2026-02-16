@@ -582,19 +582,10 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
     : KSystemClipboard(parent)
     , m_manager(new DataControlDeviceManager)
 {
-    auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
-    if (!waylandApp) {
-        return;
-    }
-
     connect(m_manager.get(), &DataControlDeviceManager::activeChanged, this, [this]() {
         if (m_manager->isActive()) {
             auto waylandApp = qGuiApp->nativeInterface<QNativeInterface::QWaylandApplication>();
             m_thread = std::make_unique<ClipboardThread>(waylandApp->display());
-
-            if (!waylandApp) {
-                return;
-            }
             auto seat = waylandApp->seat();
 
             if (!seat) {
