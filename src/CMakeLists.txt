@@ -79,7 +79,7 @@ if(WITH_DBUS)
         colors/kcolorschemewatcher_xdg.cpp
         util/ksysteminhibitor_dbus.cpp
     )
-    target_link_libraries(KF6GuiAddons PRIVATE Qt6::DBus)
+    target_link_libraries(KF6GuiAddons PRIVATE Qt6::DBus Qt6::GuiPrivate)
     target_compile_definitions(KF6GuiAddons PRIVATE WITH_DBUS)
 endif()
 
