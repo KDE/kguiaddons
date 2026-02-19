@@ -15,7 +15,7 @@
 class KWindowInsetsControllerPrivate;
 
 /*!
- * \qmltype WindowInsetsController
+ * \qmlsingletontype WindowInsetsController
  * \inqmlmodule org.kde.guiaddons
  * \nativetype KWindowInsetsController
  *
