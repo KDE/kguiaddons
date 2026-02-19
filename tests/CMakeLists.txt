@@ -21,4 +21,5 @@ kguiaddons_executable_tests(
   kcolorschemewatchertest
   kcountryflagemojiiconenginedemo
   clipboardtest
+  clipboardpixmaptest
 )
