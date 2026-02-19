@@ -34,6 +34,7 @@ target_sources(KF6GuiAddons PRIVATE
  recorder/kkeysequencerecorder.cpp
  systemclipboard/qtclipboard.cpp
  systemclipboard/ksystemclipboard.cpp
+ systemclipboard/qwaylandpipewritehelper.cpp
 
  colors/kcolorspaces_p.h
  colors/kcolorutils.h

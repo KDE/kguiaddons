@@ -22,13 +22,18 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <linux/limits.h>
 #include <poll.h>
 #include <signal.h>
 #include <string.h>
 #include <unistd.h>
 
+#include "qwaylandpipewritehelper_p.h"
+
 #include "qwayland-wayland.h"
 #include "qwayland-ext-data-control-v1.h"
+
+using namespace std::chrono;
 
 /**
  * Wayland clipboard wraps ext_data_control an additional is used as we need to avoid
@@ -272,7 +277,7 @@ bool DataControlOffer::readData(int fd, QByteArray &data, const QString &mimeTyp
     pfds[0].events = POLLIN;
 
     while (true) {
-        const int ready = poll(pfds, 1, 1000);
+        const int ready = poll(pfds, 1, 100000);
         if (ready < 0) {
             if (errno != EINTR) {
                 qWarning("DataControlOffer: poll() failed for mimeType %s: %s", qPrintable(mimeType), strerror(errno));
@@ -374,27 +379,21 @@ void DataControlSource::ext_data_control_source_v1_send(const QString &mime_type
         ba = m_mimeData->data(send_mime_type);
     }
 
-    QFile c;
-    if (!c.open(fd, QFile::WriteOnly, QFile::AutoCloseHandle)) {
-        return;
+    auto rc = QWaylandPipeWriteHelper::safeWriteWithTimeout(fd, ba.constData(), ba.size(), PIPE_BUF, 5s);
+    switch (rc) {
+    case QWaylandPipeWriteHelper::SafeWriteResult::Ok:
+        break;
+    case QWaylandPipeWriteHelper::SafeWriteResult::Timeout:
+        qWarning() << "QWaylandDataSource: timeout writing to pipe";
+        break;
+    case QWaylandPipeWriteHelper::SafeWriteResult::Closed:
+        qWarning() << "QWaylandDataSource: peer closed pipe";
+        break;
+    case QWaylandPipeWriteHelper::SafeWriteResult::Error:
+        qWarning() << "QWaylandDataSource: write() failed";
+        break;
     }
-    // Create a sigpipe handler that does nothing, or clients may be forced to terminate
-    // if the pipe is closed in the other end.
-    struct sigaction action, oldAction;
-    action.sa_handler = SIG_IGN;
-    sigemptyset(&action.sa_mask);
-    action.sa_flags = 0;
-    sigaction(SIGPIPE, &action, &oldAction);
-    const int flags = fcntl(fd, F_GETFL, 0);
-    if (flags & O_NONBLOCK) {
-        fcntl(fd, F_SETFL, flags & ~O_NONBLOCK); // Unset O_NONBLOCK to fix pasting to XWayland windows
-    }
-    const qint64 written = c.write(ba);
-    sigaction(SIGPIPE, &oldAction, nullptr);
-
-    if (written != ba.size()) {
-        qWarning() << "Failed to send all clipobard data; sent" << written << "bytes out of" << ba.size();
-    }
+    close(fd);
 }
 
 void DataControlSource::ext_data_control_source_v1_cancelled()
