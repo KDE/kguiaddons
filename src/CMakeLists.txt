@@ -103,6 +103,7 @@ if(WITH_WAYLAND)
         util/kmodifierkeyinfoprovider_wayland.cpp
         recorder/waylandinhibition_p.h
         systemclipboard/waylandclipboard_p.h
+        systemclipboard/waylandpipewriterhelper.cpp
         systemclipboard/wlrwaylandclipboard_p.h
         util/kmodifierkeyinfoprovider_wayland.h
     )
