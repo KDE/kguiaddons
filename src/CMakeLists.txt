@@ -64,7 +64,10 @@ ecm_qt_declare_logging_category(KF6GuiAddons
 )
 
 if(WIN32)
-    target_sources(KF6GuiAddons PRIVATE colors/kcolorschemewatcher_win.cpp)
+    target_sources(KF6GuiAddons PRIVATE
+        colors/kcolorschemewatcher_win.cpp
+        util/ksysteminhibitor_windows.cpp
+    )
     target_link_libraries(KF6GuiAddons PRIVATE advapi32)
 endif()
 
@@ -122,7 +125,7 @@ if(ANDROID)
     add_subdirectory(android)
 endif()
 
-if (NOT WITH_DBUS AND NOT ANDROID)
+if (NOT WITH_DBUS AND NOT ANDROID AND NOT WIN32)
     target_sources(KF6GuiAddons PRIVATE
         util/ksysteminhibitor_dummy.cpp
     )
