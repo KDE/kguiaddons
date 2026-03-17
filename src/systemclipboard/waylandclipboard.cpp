@@ -551,7 +551,7 @@ public:
 
     void run() override
     {
-        while (!qGuiApp->closingDown()) {
+        while (!isInterruptionRequested()) {
             while (wl_display_prepare_read_queue(m_display, m_queue) != 0) {
                 QMutexLocker lock(&s_clipboardLock);
                 wl_display_dispatch_queue_pending(m_display, m_queue);
@@ -618,6 +618,7 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
 
         } else {
             m_device.reset();
+            m_thread->requestInterruption();
             m_thread->wait();
             m_thread.reset();
         }
@@ -629,6 +630,7 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
 WaylandClipboard::~WaylandClipboard()
 {
     if (m_thread && m_thread->isRunning()) {
+        m_thread->requestInterruption();
         m_thread->syncQueue();
         m_thread->wait();
     }
