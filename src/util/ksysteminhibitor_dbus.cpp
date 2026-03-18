@@ -7,7 +7,11 @@
 #include <QDBusMessage>
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
-#include <private/qdesktopunixservices_p.h>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
+#include <QtGui/private/qdesktopunixservices_p.h>
+#else
+#include <QtGui/private/qgenericunixservices_p.h>
+#endif
 #include <private/qguiapplication_p.h>
 #include <qpa/qplatformintegration.h>
 
@@ -42,7 +46,11 @@ KSystemInhibitor::KSystemInhibitor(const QString &reason, Types types, QWindow *
     const QString windowIdentifier = [window] {
         if (window) {
             auto services = QGuiApplicationPrivate::platformIntegration()->services();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 9, 0)
             if (auto unixServices = dynamic_cast<QDesktopUnixServices *>(services)) {
+#else
+            if (auto unixServices = dynamic_cast<QGenericUnixServices *>(services)) {
+#endif
                 return unixServices->portalWindowIdentifier(window);
             }
         }
