@@ -277,7 +277,7 @@ bool DataControlOffer::readData(int fd, QByteArray &data, const QString &mimeTyp
     pfds[0].events = POLLIN;
 
     while (true) {
-        const int ready = poll(pfds, 1, 100000);
+        const int ready = poll(pfds, 1, 1000);
         if (ready < 0) {
             if (errno != EINTR) {
                 qWarning("DataControlOffer: poll() failed for mimeType %s: %s", qPrintable(mimeType), strerror(errno));
