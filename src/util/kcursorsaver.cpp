@@ -15,29 +15,24 @@ public:
 };
 
 KCursorSaver::KCursorSaver(Qt::CursorShape shape)
-    : d(new KCursorSaverPrivate)
+    : d(std::make_unique<KCursorSaverPrivate>())
 {
     QGuiApplication::setOverrideCursor(QCursor(shape));
     d->ownsCursor = true;
 }
 
-KCursorSaver::KCursorSaver(KCursorSaver &&other)
-    : d(other.d)
-{
-    *this = std::move(other);
-}
+KCursorSaver::KCursorSaver(KCursorSaver &&other) = default;
 
 KCursorSaver::~KCursorSaver()
 {
-    if (d->ownsCursor) {
+    if (d && d->ownsCursor) {
         QGuiApplication::restoreOverrideCursor();
-        delete d;
     }
 }
 
 void KCursorSaver::restoreCursor()
 {
-    if (!d->ownsCursor) {
+    if (!d || !d->ownsCursor) {
         qCWarning(KGUIADDONS_LOG) << "This KCursorSaver doesn't own the cursor anymore, invalid call to restoreCursor().";
         return;
     }
@@ -45,10 +40,4 @@ void KCursorSaver::restoreCursor()
     QGuiApplication::restoreOverrideCursor();
 }
 
-KCursorSaver &KCursorSaver::operator=(KCursorSaver &&other)
-{
-    if (this != &other) {
-        d->ownsCursor = false;
-    }
-    return *this;
-}
+KCursorSaver &KCursorSaver::operator=(KCursorSaver &&other) = default;

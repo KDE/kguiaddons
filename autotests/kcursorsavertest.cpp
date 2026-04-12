@@ -28,7 +28,7 @@ void KCursorSaverTest::ignoreWarning()
         KCursorSaver saverB = std::move(saverA);
         QTest::ignoreMessage(QtWarningMsg, "This KCursorSaver doesn't own the cursor anymore, invalid call to restoreCursor().");
         saverA.restoreCursor();
-        QTest::ignoreMessage(QtWarningMsg, "This KCursorSaver doesn't own the cursor anymore, invalid call to restoreCursor().");
+        QTest::failOnWarning("This KCursorSaver doesn't own the cursor anymore, invalid call to restoreCursor().");
         saverB.restoreCursor();
     }
 }

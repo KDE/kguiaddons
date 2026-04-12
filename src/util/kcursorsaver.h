@@ -49,9 +49,9 @@ public:
     KCursorSaver &operator=(KCursorSaver &&other);
 
 private:
-    KCursorSaver(KCursorSaver &other) = delete;
+    KCursorSaver(const KCursorSaver &other) = delete;
     void operator=(const KCursorSaver &rhs) = delete;
-    KCursorSaverPrivate *const d;
+    std::unique_ptr<KCursorSaverPrivate> d;
 };
 
 #endif
