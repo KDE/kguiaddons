@@ -151,7 +151,12 @@ target_include_directories(KF6GuiAddons INTERFACE "$<INSTALL_INTERFACE:${KDE_INS
 target_compile_definitions(KF6GuiAddons INTERFACE "$<INSTALL_INTERFACE:KGUIADDONS_LIB>")
 target_link_libraries(KF6GuiAddons PUBLIC Qt6::Gui)
 
-qt_extract_metatypes(KF6GuiAddons)
+qt_extract_metatypes(KF6GuiAddons OUTPUT_FILES METATYPES_FILE)
+
+# see https://qt-project.atlassian.net/browse/QTBUG-123052
+# might be replaced with proper Qt API once that exists
+get_filename_component(METATYPES_FILE_NAME ${METATYPES_FILE} NAME)
+target_sources(KF6GuiAddons INTERFACE $<INSTALL_INTERFACE:${KDE_INSTALL_QTMETATYPESDIR}/${METATYPES_FILE_NAME}>)
 
 ecm_generate_headers(KGuiAddons_HEADERS
   HEADER_NAMES
@@ -227,6 +232,8 @@ ecm_qt_install_logging_categories(
     FILE kguiaddons.categories
     DESTINATION "${KDE_INSTALL_LOGGINGCATEGORIESDIR}"
 )
+
+install(FILES ${METATYPES_FILE} DESTINATION ${KDE_INSTALL_QTMETATYPESDIR})
 
 if(BUILD_TESTING)
     add_executable(pasteclient systemclipboard/tests/paste.cpp)
