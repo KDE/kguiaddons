@@ -20,6 +20,10 @@ static const char s_khelpcenter_exec[] = "khelpcenter";
 
 static bool openWithKHelpCenter(const QUrl &url)
 {
+#if defined(Q_OS_IOS)
+    Q_UNUSED(url)
+    return false;
+#else
     const QString helpcenter = QStandardPaths::findExecutable(QString::fromLatin1(s_khelpcenter_exec));
     if (!helpcenter.isEmpty()) {
         QUrl u(url);
@@ -33,6 +37,7 @@ static bool openWithKHelpCenter(const QUrl &url)
     }
 
     return false;
+#endif
 }
 
 KUrlHandler::KUrlHandler(QObject *parent)

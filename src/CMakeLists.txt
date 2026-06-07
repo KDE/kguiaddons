@@ -71,7 +71,7 @@ if(WIN32)
     target_link_libraries(KF6GuiAddons PRIVATE advapi32)
 endif()
 
-if(APPLE)
+if(APPLE AND NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
     find_library(APPKIT_LIBRARY AppKit)
     target_sources(KF6GuiAddons PRIVATE colors/kcolorschemewatcher_mac.mm)
     target_link_libraries(KF6GuiAddons PRIVATE ${APPKIT_LIBRARY})
