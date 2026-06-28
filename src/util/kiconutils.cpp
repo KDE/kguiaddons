@@ -32,7 +32,6 @@ public:
 private:
     QIcon m_base;
     QHash<Qt::Corner, QIcon> m_overlays;
-    qreal m_dpr = 1.0;
 };
 
 KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QIcon &overlay, Qt::Corner position)
@@ -115,7 +114,6 @@ void KOverlayIconEngine::virtual_hook(int id, void *data)
         const QRect logicalRect(0, 0, phyiscalSize.width() / info->scale, phyiscalSize.height() / info->scale);
         QPainter p(&pixmap);
 
-        m_dpr = info->scale;
         paint(&p, logicalRect, info->mode, info->state);
 
         info->pixmap = pixmap;
@@ -133,8 +131,20 @@ void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode
         return;
     }
 
-    const int width = rect.width();
-    const int height = rect.height();
+    // Use the painter's device pixel ratio so the overlays are sharp regardless of
+    // how the engine is painted (QIcon::paint(), pixmap() or the scaled-pixmap hook).
+    const qreal dpr = painter->device() ? painter->device()->devicePixelRatioF() : 1.0;
+
+    // Anchor the overlays to the base icon as it is actually painted (centered and
+    // aspect-ratio-preserving within rect) rather than to rect, so they stay in the
+    // corners of the icon for non-square or smaller-than-rect icons.
+    QRect iconRect(QPoint(0, 0), m_base.actualSize(rect.size(), mode, state).boundedTo(rect.size()));
+    iconRect.moveCenter(rect.center());
+
+    const int left = iconRect.left();
+    const int top = iconRect.top();
+    const int width = iconRect.width();
+    const int height = iconRect.height();
     const int iconSize = qMin(width, height);
     // Determine the overlay icon size
     int overlaySize;
@@ -151,11 +161,13 @@ void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode
     } else {
         overlaySize = (int)(iconSize / 4);
     }
+    // Never let the overlay be larger than the icon it is drawn on.
+    overlaySize = qMin(overlaySize, iconSize);
 
     // Iterate over stored overlays
     QHash<Qt::Corner, QIcon>::const_iterator i = m_overlays.constBegin();
     while (i != m_overlays.constEnd()) {
-        const QPixmap overlayPixmap = i.value().pixmap(QSize{overlaySize, overlaySize}, m_dpr, mode, state);
+        const QPixmap overlayPixmap = i.value().pixmap(QSize{overlaySize, overlaySize}, dpr, mode, state);
         if (overlayPixmap.isNull()) {
             ++i;
             continue;
@@ -164,16 +176,16 @@ void KOverlayIconEngine::paint(QPainter *painter, const QRect &rect, QIcon::Mode
         QPoint startPoint;
         switch (i.key()) {
         case Qt::BottomLeftCorner:
-            startPoint = QPoint(2, height - overlaySize - 2);
+            startPoint = QPoint(left + 2, top + height - overlaySize - 2);
             break;
         case Qt::BottomRightCorner:
-            startPoint = QPoint(width - overlaySize - 2, height - overlaySize - 2);
+            startPoint = QPoint(left + width - overlaySize - 2, top + height - overlaySize - 2);
             break;
         case Qt::TopRightCorner:
-            startPoint = QPoint(width - overlaySize - 2, 2);
+            startPoint = QPoint(left + width - overlaySize - 2, top + 2);
             break;
         case Qt::TopLeftCorner:
-            startPoint = QPoint(2, 2);
+            startPoint = QPoint(left + 2, top + 2);
             break;
         }
 

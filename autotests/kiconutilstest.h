@@ -15,6 +15,7 @@ class KIconUtilsTest : public QObject
 private Q_SLOTS:
     void addOverlayTest();
     void addOverlaysTest();
+    void addOverlayNonSquareTest();
 };
 
 #endif // KICONUTILSTEST_H

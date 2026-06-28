@@ -188,4 +188,54 @@ void KIconUtilsTest::addOverlaysTest()
     QCOMPARE(redPixels / (result.devicePixelRatio() * result.devicePixelRatio()), 6144);
 }
 
+void KIconUtilsTest::addOverlayNonSquareTest()
+{
+    // A non-square base icon is painted centered and aspect-ratio-preserving, so it
+    // does not fill the (square) requested rect. The overlay must hug the icon's
+    // corner, not the corner of the rect, otherwise it detaches from the icon.
+    QPixmap tall(64, 256);
+    tall.fill(Qt::red);
+    const QIcon icon(tall);
+
+    QPixmap overlay(64, 64);
+    overlay.fill(Qt::blue);
+    const QIcon overlayIcon(overlay);
+
+    const QIcon iconWithOverlay = KIconUtils::addOverlay(icon, overlayIcon, Qt::BottomRightCorner);
+
+    QPixmap target(64, 64);
+    target.fill(Qt::transparent);
+    QPainter p(&target);
+    iconWithOverlay.paint(&p, target.rect(), Qt::AlignCenter, QIcon::Normal, QIcon::Off);
+    p.end();
+
+    const QImage result = target.toImage();
+
+    // Bounding boxes of the base icon (red) and the overlay (blue).
+    QRect redBox;
+    QRect blueBox;
+    for (int y = 0; y < result.height(); ++y) {
+        for (int x = 0; x < result.width(); ++x) {
+            const QRgb px = result.pixel(x, y);
+            if (qBlue(px) == 255 && qRed(px) == 0) {
+                blueBox = blueBox.isNull() ? QRect(x, y, 1, 1) : blueBox.united(QRect(x, y, 1, 1));
+            } else if (qRed(px) == 255 && qBlue(px) == 0) {
+                redBox = redBox.isNull() ? QRect(x, y, 1, 1) : redBox.united(QRect(x, y, 1, 1));
+            }
+        }
+    }
+
+    QVERIFY(!redBox.isNull());
+    QVERIFY(!blueBox.isNull());
+
+    // The base icon is narrower than the rect (tall aspect ratio, centered).
+    QVERIFY(redBox.width() < result.width());
+
+    // The bottom-right overlay must sit at the icon's corner, i.e. within the
+    // icon's horizontal span, not detached towards an edge of the rect.
+    QVERIFY(blueBox.left() >= redBox.left());
+    QVERIFY(blueBox.right() <= redBox.right());
+    QVERIFY(blueBox.bottom() <= redBox.bottom());
+}
+
 #include "moc_kiconutilstest.cpp"
