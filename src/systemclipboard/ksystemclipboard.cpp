@@ -53,6 +53,40 @@ QString KSystemClipboard::text(QClipboard::Mode mode)
     return QString();
 }
 
+bool KSystemClipboard::ownsSelection() const
+{
+    // This is a fake virtual, but we're limited due to ABI concerns.
+    // In hindsight I should have added a facade
+#ifdef WITH_WAYLAND
+    if (const auto waylandClipboard = qobject_cast<const WaylandClipboard *>(this)) {
+        return waylandClipboard->ownsSelection();
+    }
+    if (const auto wlrWaylandClipboard = qobject_cast<const WlrWaylandClipboard *>(this)) {
+        return wlrWaylandClipboard->ownsSelection();
+    }
+#endif
+    if (const auto qtClipboard = qobject_cast<const QtClipboard *>(this)) {
+        return qtClipboard->ownsSelection();
+    }
+    return false;
+}
+
+bool KSystemClipboard::ownsClipboard() const
+{
+#ifdef WITH_WAYLAND
+    if (const auto waylandClipboard = qobject_cast<const WaylandClipboard *>(this)) {
+        return waylandClipboard->ownsClipboard();
+    }
+    if (const auto wlrWaylandClipboard = qobject_cast<const WlrWaylandClipboard *>(this)) {
+        return wlrWaylandClipboard->ownsClipboard();
+    }
+#endif
+    if (const auto qtClipboard = qobject_cast<const QtClipboard *>(this)) {
+        return qtClipboard->ownsClipboard();
+    }
+    return false;
+}
+
 KSystemClipboard::KSystemClipboard(QObject *parent)
     : QObject(parent)
 {

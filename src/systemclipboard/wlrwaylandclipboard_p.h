@@ -17,12 +17,15 @@ class WlrKeyboardFocusWatcher;
 
 class WlrWaylandClipboard : public KSystemClipboard
 {
+    Q_OBJECT
 public:
     ~WlrWaylandClipboard();
     static WlrWaylandClipboard *create(QObject *parent);
     void setMimeData(QMimeData *mime, QClipboard::Mode mode) override;
     void clear(QClipboard::Mode mode) override;
     const QMimeData *mimeData(QClipboard::Mode mode) const override;
+    bool ownsSelection() const;
+    bool ownsClipboard() const;
 
     bool isValid();
 

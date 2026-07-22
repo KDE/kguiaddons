@@ -29,3 +29,13 @@ const QMimeData *QtClipboard::mimeData(QClipboard::Mode mode) const
 {
     return qGuiApp->clipboard()->mimeData(mode);
 }
+
+bool QtClipboard::ownsSelection() const
+{
+    return qGuiApp->clipboard()->ownsSelection();
+}
+
+bool QtClipboard::ownsClipboard() const
+{
+    return qGuiApp->clipboard()->ownsClipboard();
+}

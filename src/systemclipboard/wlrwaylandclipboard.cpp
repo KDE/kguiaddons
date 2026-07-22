@@ -726,4 +726,20 @@ const QMimeData *WlrWaylandClipboard::mimeData(QClipboard::Mode mode) const
     return nullptr;
 }
 
+bool WlrWaylandClipboard::ownsSelection() const
+{
+    if (!m_device) {
+        return false;
+    }
+    return m_device->primarySelection();
+}
+
+bool WlrWaylandClipboard::ownsClipboard() const
+{
+    if (!m_device) {
+        return false;
+    }
+    return m_device->selection();
+}
+
 #include "wlrwaylandclipboard.moc"

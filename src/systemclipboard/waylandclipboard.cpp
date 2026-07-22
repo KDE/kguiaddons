@@ -731,5 +731,15 @@ const QMimeData *WaylandClipboard::mimeData(QClipboard::Mode mode) const
     return nullptr;
 }
 
+bool WaylandClipboard::ownsSelection() const
+{
+    return m_device && m_device->primarySelection();
+}
+
+bool WaylandClipboard::ownsClipboard() const
+{
+    return m_device && m_device->selection();
+}
+
 #include "moc_waylandclipboard_p.cpp"
 #include "waylandclipboard.moc"
