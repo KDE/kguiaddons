@@ -22,6 +22,7 @@ target_sources(KF6GuiAddons PRIVATE
  text/kwordwrap.cpp
  fonts/kfontutils.cpp
  util/kiconutils.cpp
+ util/kdragutils.cpp
  util/klocalimagecacheimpl.cpp
  util/kmodifierkeyinfo.cpp
  util/kmodifierkeyinfoprovider.cpp
@@ -41,6 +42,7 @@ target_sources(KF6GuiAddons PRIVATE
  text/kdatevalidator.h
  text/kwordwrap.h
  fonts/kfontutils.h
+ util/kdragutils.h
  util/kiconutils.h
  util/klocalimagecacheimpl.h
  util/kmodifierkeyinfo.h
@@ -186,6 +188,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
 )
 ecm_generate_headers(KGuiAddons_HEADERS
   HEADER_NAMES
+  KDragUtils
   KIconUtils
   KImageCache
   KModifierKeyInfo
