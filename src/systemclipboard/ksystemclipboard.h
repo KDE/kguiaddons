@@ -56,10 +56,14 @@ public:
     QString text(QClipboard::Mode mode);
     /*!
      * Returns true if this process owns the current primary selection.
+     *
+     * \since 6.29
      */
     bool ownsSelection() const;
     /*!
      * Returns true if this process owns the current clipboard selection.
+     *
+     * \since 6.29
      */
     bool ownsClipboard() const;
 Q_SIGNALS:
