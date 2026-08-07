@@ -161,40 +161,6 @@ public:
     }
 
     /*!
-     * Copies the cached pixmap identified by \a key to \a destination. If no such
-     * pixmap exists \a destination is unchanged.
-     *
-     * Returns \c true if the pixmap identified by \a key existed, \c false otherwise.
-     *
-     * The resulting pixmap will have its devicePixelRatio set to \a devicePixelRatio
-     *
-     * \sa setPixmapCaching()
-     * \since 6.29
-     */
-    bool findPixmapWithDevicePixelRatio(const QString &key, QPixmap *destination, qreal devicePixelRatio) const
-    {
-        if (findLocalPixmap(key, destination)) {
-            destination->setDevicePixelRatio(devicePixelRatio);
-            return true;
-        }
-
-        QByteArray cachedData;
-        if (!this->find(key, &cachedData) || cachedData.isNull()) {
-            return false;
-        }
-
-        if (destination) {
-            destination->loadFromData(cachedData, "PNG", Qt::NoOpaqueDetection);
-            destination->setDevicePixelRatio(devicePixelRatio);
-
-            // Manually re-insert to pixmap cache if we'll be using this one.
-            insertLocalPixmap(key, *destination);
-        }
-
-        return true;
-    }
-
-    /*!
      * Copies the cached image identified by \a key to \a destination. If no such
      * image exists \a destination is unchanged.
      *
