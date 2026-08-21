@@ -344,26 +344,19 @@ void WlrDataControlSource::zwlr_data_control_source_v1_send(const QString &mime_
         // if we get a request on the fallback mime, send the data from the original mime type
         send_mime_type = QStringLiteral("text/plain");
     }
+    if (mime_type == applicationQtXImageLiteral()) {
+        send_mime_type = QStringLiteral("image/png");
+    }
 
+    const auto formats = m_mimeData->formats();
     QByteArray ba;
-    if (m_mimeData->hasImage()) {
-        // adapted from QInternalMimeData::renderDataHelper
-        if (mime_type == applicationQtXImageLiteral()) {
-            QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
-            QBuffer buf(&ba);
-            buf.open(QBuffer::WriteOnly);
-            // would there not be PNG ??
-            image.save(&buf, "PNG");
-
-        } else if (mime_type.startsWith(QLatin1String("image/"))) {
-            QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
-            QBuffer buf(&ba);
-            buf.open(QBuffer::WriteOnly);
-            image.save(&buf, mime_type.mid(mime_type.indexOf(QLatin1Char('/')) + 1).toLatin1().toUpper().data());
-        }
-        // end adapted
-    } else {
+    if (formats.contains(send_mime_type)) {
         ba = m_mimeData->data(send_mime_type);
+    } else if (m_mimeData->hasImage() && send_mime_type.startsWith(QLatin1String("image/"))) {
+        const QImage image = qvariant_cast<QImage>(m_mimeData->imageData());
+        QBuffer buf(&ba);
+        buf.open(QBuffer::WriteOnly);
+        image.save(&buf, send_mime_type.mid(send_mime_type.indexOf(QLatin1Char('/')) + 1).toLatin1().toUpper().data());
     }
 
     QFile c;
