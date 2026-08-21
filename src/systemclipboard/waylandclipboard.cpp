@@ -626,9 +626,10 @@ WaylandClipboard::WaylandClipboard(QObject *parent)
             m_thread->start();
 
         } else {
-            m_device.reset();
             m_thread->requestInterruption();
             m_thread->wait();
+            m_device.reset();
+            m_manager->destroy();
             m_thread.reset();
         }
     });
