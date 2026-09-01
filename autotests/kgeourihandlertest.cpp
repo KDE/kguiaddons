@@ -7,6 +7,8 @@
 
 #include <QTest>
 
+using namespace Qt::Literals;
+
 class KGeoUriHandlerTest : public QObject
 {
     Q_OBJECT
@@ -35,6 +37,8 @@ private Q_SLOTS:
 
         QTest::newRow("query") << QStringLiteral("geo:0,0?q=Randa") << QStringLiteral("https://www.openstreetmap.org/search?query=Randa");
         QTest::newRow("query-with-coord") << QStringLiteral("geo:46.1,7.783?q=Randa") << QStringLiteral("https://www.openstreetmap.org/search?query=Randa");
+
+        QTest::newRow("query-encoding") << u"geo:0,0?q=Food%20%26%20Drinks"_s << u"https://www.openstreetmap.org/search?query=Food%20%26%20Drinks"_s;
 
         // explicit coordinate reference systems
         QTest::newRow("WGS84") << QStringLiteral("geo:37.78,-122.4;u=35;crs=wgs84") << QStringLiteral("https://www.openstreetmap.org/#map=18/37.78/-122.4");

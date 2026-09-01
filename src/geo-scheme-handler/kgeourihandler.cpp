@@ -63,7 +63,7 @@ QString KGeoUriHandler::handleUri(const QUrl &geoUri)
 
     tmpl.replace(QLatin1String("<LAT>"), QString::number(lat));
     tmpl.replace(QLatin1String("<LON>"), QString::number(lon));
-    tmpl.replace(QLatin1String("<Q>"), query);
+    tmpl.replace(QLatin1String("<Q>"), QString::fromUtf8(QUrl::toPercentEncoding(query)));
     tmpl.replace(QLatin1String("<Z>"), QString::number(zoom));
     return tmpl;
 }
