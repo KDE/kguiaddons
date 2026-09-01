@@ -65,5 +65,6 @@ QString KGeoUriHandler::handleUri(const QUrl &geoUri)
     tmpl.replace(QLatin1String("<LON>"), QString::number(lon));
     tmpl.replace(QLatin1String("<Q>"), QString::fromUtf8(QUrl::toPercentEncoding(query)));
     tmpl.replace(QLatin1String("<Z>"), QString::number(zoom));
+    tmpl.replace(QLatin1String("<URI>"), QString::fromUtf8(QUrl::toPercentEncoding(geoUri.toString(QUrl::FullyEncoded))));
     return tmpl;
 }

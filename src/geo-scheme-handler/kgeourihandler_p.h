@@ -22,6 +22,7 @@ class QUrl;
  *  - LON - the longitude
  *  - Q - the query string
  *  - Z - the zoom level for a Web Mercator map projection
+ *  - URI - the verbatim input geo: URI
  *
  *  \sa https://en.wikipedia.org/wiki/Geo_URI_scheme
  *  \sa https://datatracker.ietf.org/doc/html/rfc5870
