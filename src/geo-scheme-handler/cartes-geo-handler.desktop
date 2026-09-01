@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Exec=kde-geo-uri-handler --coordinate-template "https://cartes.app/?geo=<URI>" --query-template "https://cartes.app/?geo=<URI>" --fallback "https://cartes.app" %u
+Name=Cartes
+Icon=map-globe
+MimeType=x-scheme-handler/geo;
+Terminal=false
+NoDisplay=true
+StartupNotify=true
