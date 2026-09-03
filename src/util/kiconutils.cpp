@@ -53,10 +53,10 @@ KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QStringList &ove
     , m_base(icon)
 {
     const std::array<Qt::Corner, 4> indexToCorner{
-        Qt::BottomRightCorner,
         Qt::BottomLeftCorner,
         Qt::TopLeftCorner,
         Qt::TopRightCorner,
+        Qt::BottomRightCorner,
     };
 
     // static_cast becaue size() returns a qsizetype in Qt6

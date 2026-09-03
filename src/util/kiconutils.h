@@ -47,10 +47,10 @@ KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, Q
  *
  * Overlays are added in this order:
  * \list
- * \li first icon is used to paint an overlay on the bottom-right corner
- * \li second icon on the bottom-left corner
- * \li third icon on the top-left corner
- * \li fourth icon on the top-right corner
+ * \li first icon is used to paint an overlay on the bottom-left corner
+ * \li second icon on the top-left corner
+ * \li third icon on the top-right corner
+ * \li fourth icon on the bottom-right corner
  * \endlist
  *
  * Each overlay icon is scaled down to 1/3 or 1/4 (depending on the icon size).
@@ -67,10 +67,10 @@ KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QStringList &overla
  *
  * Overlays are added in this order:
  * \list
- * \li first icon is used to paint an overlay on the bottom-right corner
- * \li second icon on the bottom-left corner
- * \li third icon on the top-left corner
- * \li fourth icon on the top-right corner
+ * \li first icon is used to paint an overlay on the bottom-left corner
+ * \li second icon on the top-left corner
+ * \li third icon on the top-right corner
+ * \li fourth icon on the bottom-right corner
  * \endlist
  *
  * Each overlay icon is scaled down to 1/3 or 1/4 (depending on the icon size).
