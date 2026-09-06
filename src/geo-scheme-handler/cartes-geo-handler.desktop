@@ -3,10 +3,13 @@ Type=Application
 Exec=kde-geo-uri-handler --coordinate-template "https://cartes.app/?geo=<URI>" --query-template "https://cartes.app/?geo=<URI>" --fallback "https://cartes.app" %u
 Name=Cartes
 Name[ca]=Cartes
+Name[ca@valencia]=Cartes
 Name[cs]=Mapy
 Name[es]=Mapas
+Name[fr]=Cartes
 Name[he]=Cartes
 Name[ka]=Cartes
+Name[lt]=Cartes
 Name[nl]=Cartes
 Name[pt_BR]=Cartes
 Name[sl]=Cartes
