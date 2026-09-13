@@ -158,7 +158,7 @@ qt_extract_metatypes(KF6GuiAddons OUTPUT_FILES METATYPES_FILE)
 get_filename_component(METATYPES_FILE_NAME ${METATYPES_FILE} NAME)
 target_sources(KF6GuiAddons INTERFACE $<INSTALL_INTERFACE:${KDE_INSTALL_QTMETATYPESDIR}/${METATYPES_FILE_NAME}>)
 
-ecm_generate_headers(KGuiAddons_HEADERS
+ecm_generate_headers(KGuiAddons_CamelCase_HEADERS
   HEADER_NAMES
   KColorUtils
   KColorCollection
@@ -169,7 +169,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
   RELATIVE colors
   REQUIRED_HEADERS KGuiAddons_HEADERS
 )
-ecm_generate_headers(KGuiAddons_HEADERS
+ecm_generate_headers(KGuiAddons_CamelCase_HEADERS
   HEADER_NAMES
   KDateValidator
   KWordWrap
@@ -177,14 +177,14 @@ ecm_generate_headers(KGuiAddons_HEADERS
   RELATIVE text
   REQUIRED_HEADERS KGuiAddons_HEADERS
 )
-ecm_generate_headers(KGuiAddons_HEADERS
+ecm_generate_headers(KGuiAddons_CamelCase_HEADERS
   HEADER_NAMES
   KFontUtils
 
   RELATIVE fonts
   REQUIRED_HEADERS KGuiAddons_HEADERS
 )
-ecm_generate_headers(KGuiAddons_HEADERS
+ecm_generate_headers(KGuiAddons_CamelCase_HEADERS
   HEADER_NAMES
   KIconUtils
   KImageCache
@@ -198,7 +198,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
   REQUIRED_HEADERS KGuiAddons_HEADERS
 )
 
-ecm_generate_headers(KGuiAddons_HEADERS
+ecm_generate_headers(KGuiAddons_CamelCase_HEADERS
     HEADER_NAMES
     KKeySequenceRecorder
 
@@ -208,7 +208,7 @@ ecm_generate_headers(KGuiAddons_HEADERS
 
 #add_subdirectory(systemclipboard)
 
-ecm_generate_headers(KGuiAddons_HEADERS
+ecm_generate_headers(KGuiAddons_CamelCase_HEADERS
     HEADER_NAMES
     KSystemClipboard
 
@@ -222,6 +222,7 @@ install(FILES
   util/kmodifierkeyinfoprovider_p.h
   util/klocalimagecacheimpl.h # implementation detail, no forwarding header
   ${KGuiAddons_HEADERS}
+  ${KGuiAddons_CamelCase_HEADERS}
   DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF}/KGuiAddons COMPONENT Devel
 )
 
@@ -234,6 +235,22 @@ ecm_qt_install_logging_categories(
 )
 
 install(FILES ${METATYPES_FILE} DESTINATION ${KDE_INSTALL_QTMETATYPESDIR})
+
+ecm_add_installed_library_check(KF6GuiAddons
+    PACKAGE_NAME "KF6GuiAddons"
+    PACKAGE_TARGET_NAMESPACE "KF6::"
+)
+# KImageCache depends on KCoreAddons's KSharedDataCache
+# KCoreAddons not part of public link interface
+list(FILTER KGuiAddons_CamelCase_HEADERS EXCLUDE REGEX KImageCache)
+
+ecm_installed_library_check_include_strings(KF6GuiAddons
+    HEADERS ${KGuiAddons_CamelCase_HEADERS}
+)
+
+ecm_installed_library_check_version_preprocessor_macros(KF6GuiAddons
+    PREFIX KGUIADDONS
+)
 
 if(BUILD_TESTING)
     add_executable(pasteclient systemclipboard/tests/paste.cpp)
