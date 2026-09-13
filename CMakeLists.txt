@@ -24,6 +24,7 @@ include(ECMGeneratePkgConfigFile)
 include(ECMMarkNonGuiExecutable)
 include(ECMQmlModule)
 include(ECMGenerateQDoc)
+include(ECMInstalledLibraryCheck)
 
 option(BUILD_GEO_SCHEME_HANDLER "Build the geo: URI scheme handler. Disable this if you are building two major versions for co-installability in the older variant." ON)
 
