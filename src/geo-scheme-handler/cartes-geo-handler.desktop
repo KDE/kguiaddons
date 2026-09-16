@@ -24,6 +24,7 @@ Name[sv]=Cartes
 Name[tr]=Cartes
 Name[uk]=Cartes
 Name[zh_CN]=Cartes
+Name[zh_TW]=Cartes
 Icon=map-globe
 MimeType=x-scheme-handler/geo;
 Terminal=false
