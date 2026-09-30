@@ -39,7 +39,7 @@ else()
     set(WITH_X11 OFF)
 endif()
 
-set(REQUIRED_QT_VERSION 6.9.0)
+set(REQUIRED_QT_VERSION 6.10.0)
 
 find_package(Qt6Gui ${REQUIRED_QT_VERSION} REQUIRED NO_MODULE)
 
