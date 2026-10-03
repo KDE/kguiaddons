@@ -128,12 +128,6 @@ void KCountryFlagEmojiIconEngine::paint(QPainter *painter, const QRect &rect, QI
     painter->setPen(qGuiApp->palette().color(QPalette::WindowText)); // in case we render the letters in absence of a flag
 
     QRectF flagBoundingRect = metrics.boundingRect(rect, Qt::AlignCenter, d->m_emoji);
-    // Confusingly the pixelSize for drawing must actually be without DPR but the rect calculation above
-    // seems to be correct even with DPR in the pixelSize.
-    const auto dpr = painter->device()->devicePixelRatioF();
-    font.setPixelSize(std::floor(font.pixelSize() / dpr));
-    // The offset of the bounding rect needs to be also adjusted by the DPR
-    flagBoundingRect.moveTopLeft(flagBoundingRect.topLeft() / dpr);
 
     painter->setFont(font);
     painter->drawText(flagBoundingRect, d->m_emoji);
@@ -146,7 +140,7 @@ QPixmap KCountryFlagEmojiIconEngine::pixmap(const QSize &size, QIcon::Mode mode,
 
 QPixmap KCountryFlagEmojiIconEngine::scaledPixmap(const QSize &size, QIcon::Mode mode, QIcon::State state, qreal scale)
 {
-    QPixmap pixmap(size);
+    QPixmap pixmap((QSizeF(size) * scale).toSize());
     pixmap.setDevicePixelRatio(scale);
     pixmap.fill(Qt::transparent);
     {
