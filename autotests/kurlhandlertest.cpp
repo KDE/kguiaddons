@@ -40,6 +40,13 @@ void KUrlHandlerTest::testOpeningDocsUrls_data()
     QTest::newRow("with-fragment-2") << "okular"
                                      << "help:/okular/signatures.html#adding_digital_signatures"
                                      << common + "&application=okular&path=signatures.html#adding_digital_signatures";
+
+    QTest::newRow("other-docname") << "kontact"
+                                   << "help:/kmail2/configure-identity.html" << common + "&application=kmail2&path=configure-identity.html";
+
+    QTest::newRow("anchor-query") << "kmail2"
+                                  << "help:/kmail2/configure-identity.html?anchor=configure-identity-newidentitydialog"
+                                  << common + "&application=kmail2&path=configure-identity.html#configure-identity-newidentitydialog";
 }
 
 void KUrlHandlerTest::testOpeningDocsUrls()

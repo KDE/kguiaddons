@@ -15,6 +15,7 @@
 #include <QProcess>
 #include <QStandardPaths>
 #include <QUrl>
+#include <QUrlQuery>
 
 static const char s_khelpcenter_exec[] = "khelpcenter";
 
@@ -69,7 +70,8 @@ QUrl KUrlHandler::concatDocsUrl(const QUrl &url) const
     // with the default web browser on the system
 
     QString path = url.path();
-    const QString fragment = url.fragment();
+    // KHelpClient::invokeHelp() passes the anchor as an "anchor" query item
+    const QString fragment = url.hasFragment() ? url.fragment() : QUrlQuery(url).queryItemValue(QStringLiteral("anchor"));
     const QString common = QLatin1String("https://docs.kde.org/index.php?branch=stable5&language=") + QLocale().name();
 
     const QString appName = QCoreApplication::applicationName();
@@ -98,16 +100,19 @@ QUrl KUrlHandler::concatDocsUrl(const QUrl &url) const
     }
 
     // E.g. "help:/okular/configure.html", don't repeat "appName"; e.g. clicking Help button in
-    // the "Settings -> Configure Okular" dialog
-    const QString redundant = QLatin1Char('/') + appName + QLatin1Char('/');
-    if (path.startsWith(redundant)) {
-        path.remove(0, redundant.size());
+    // the "Settings -> Configure Okular" dialog.
+    // The first path component is the documentation name, which can differ from appName,
+    // e.g. "help:/kmail2/configure-identity.html" opened from Kontact
+    const int docNameEnd = path.indexOf(QLatin1Char('/'), 1);
+    if (path.startsWith(QLatin1Char('/')) && docNameEnd > 1) {
+        const QString docName = path.mid(1, docNameEnd - 1);
+        path.remove(0, docNameEnd + 1);
 
         if (!fragment.isEmpty()) {
             // E.g. "help:/kinfocenter/index.html#kcm_memory", it's actually "kinfocenter/kcm_memory.html"
             if (path == QLatin1String("index.html")) {
-                qCWarning(KGUIADDONS_LOG) << "X-DocPath entry in a .desktop file in" << appName << "is:" << appName + QLatin1String("/index.html#") + fragment
-                                          << ", however it should be:" << appName + QLatin1Char('/') + fragment + QLatin1String(".html");
+                qCWarning(KGUIADDONS_LOG) << "X-DocPath entry in a .desktop file in" << appName << "is:" << docName + QLatin1String("/index.html#") + fragment
+                                          << ", however it should be:" << docName + QLatin1Char('/') + fragment + QLatin1String(".html");
 
                 path = fragment + QLatin1String(".html");
             } else {
@@ -116,7 +121,7 @@ QUrl KUrlHandler::concatDocsUrl(const QUrl &url) const
             }
         }
 
-        return QUrl(common + QLatin1String("&application=") + appName + QLatin1String("&path=") + path);
+        return QUrl(common + QLatin1String("&application=") + docName + QLatin1String("&path=") + path);
     }
 
     return {};
