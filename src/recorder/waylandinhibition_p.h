@@ -11,7 +11,6 @@
 #include <memory>
 
 class ShortcutsInhibitManager;
-class ShortcutsInhibitor;
 
 class WaylandInhibition : public ShortcutInhibition
 {
