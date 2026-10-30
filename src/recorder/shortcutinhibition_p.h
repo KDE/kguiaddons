@@ -6,8 +6,6 @@
 #ifndef SHORTCUTINHIBITION_H
 #define SHORTCUTINHIBITION_H
 
-class QWindow;
-
 class ShortcutInhibition
 {
 public:
