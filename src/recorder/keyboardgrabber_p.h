@@ -7,7 +7,7 @@
 #define GRABBINGINHIBITION_H
 
 #include "shortcutinhibition_p.h"
-
+class QWindow;
 class KeyboardGrabber : public ShortcutInhibition
 {
 public:
