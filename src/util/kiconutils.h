@@ -59,6 +59,24 @@ KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, Q
  */
 KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QStringList &overlays);
 
+// BCI: merge with Qt::Corner startPosition = Qt::BottomRightCorner
+/*!
+ * \overload addOverlays(const QIcon &icon, const QStringList &overlays)
+ *
+ * The \a startPosition specifies the corner for the first overlay.
+ * Each following overlay is placed in the next corner, following the order below.
+ * After the top-right corner, the order continues at the bottom-right corner.
+ * \list
+ * \li bottom-right corner
+ * \li bottom-left corner
+ * \li top-left corner
+ * \li top-right corner
+ * \endlist
+ *
+ * \since 6.33
+ */
+KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QStringList &overlays, Qt::Corner startPosition);
+
 /*!
  * Adds up to four overlays on the icon constructed from \a iconName.
  *
@@ -80,6 +98,24 @@ KGUIADDONS_EXPORT QIcon addOverlays(const QIcon &icon, const QStringList &overla
  * \since 5.82
  */
 KGUIADDONS_EXPORT QIcon addOverlays(const QString &iconName, const QStringList &overlays);
+
+// BCI: merge with Qt::Corner startPosition = Qt::BottomRightCorner
+/*!
+ * \overload addOverlays(const QString &iconName, const QStringList &overlays)
+ *
+ * The \a startPosition specifies the corner for the first overlay.
+ * Each following overlay is placed in the next corner, following the order below.
+ * After the top-right corner, the order continues at the bottom-right corner.
+ * \list
+ * \li bottom-right corner
+ * \li bottom-left corner
+ * \li top-left corner
+ * \li top-right corner
+ * \endlist
+ *
+ * \since 6.33
+ */
+KGUIADDONS_EXPORT QIcon addOverlays(const QString &iconName, const QStringList &overlays, Qt::Corner startPosition);
 }
 
 #endif // KICONUTILS_H
