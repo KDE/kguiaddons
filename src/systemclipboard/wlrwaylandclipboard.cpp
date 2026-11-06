@@ -517,7 +517,11 @@ public:
     ~WlrKeyboardFocusWatcher() override
     {
         if (isActive()) {
-            release();
+            if (wl_seat_get_version(object()) >= WL_SEAT_RELEASE_SINCE_VERSION) {
+                release();
+            } else {
+                wl_seat_destroy(object());
+            }
         }
     }
     void seat_capabilities(uint32_t capabilities) override
@@ -552,7 +556,11 @@ public:
     }
     ~WlrKeyboard()
     {
-        release();
+        if (wl_keyboard_get_version(object()) >= WL_KEYBOARD_RELEASE_SINCE_VERSION) {
+            release();
+        } else {
+            wl_keyboard_destroy(object());
+        }
     }
 
 private:
