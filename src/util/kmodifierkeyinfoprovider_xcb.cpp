@@ -327,13 +327,13 @@ void KModifierKeyInfoProviderXcb::xkbUpdateModifierMapping()
     }
 
     // remove modifiers which are no longer available
-    QMutableHashIterator<Qt::Key, ModifierStates> i(m_modifierStates);
-    while (i.hasNext()) {
-        i.next();
-        if (!m_xkbModifiers.contains(i.key())) {
-            Qt::Key key = i.key();
-            i.remove();
+    for (auto it = m_modifierStates.begin(); it != m_modifierStates.end();) {
+        if (!m_xkbModifiers.contains(it.key())) {
+            const Qt::Key key = it.key();
+            it = m_modifierStates.erase(it);
             Q_EMIT keyRemoved(key);
+        } else {
+            ++it;
         }
     }
 
