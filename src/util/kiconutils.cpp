@@ -4,7 +4,9 @@
     SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
 */
 
+#include <algorithm>
 #include <array>
+#include <iterator>
 
 #include "kiconutils.h"
 
@@ -17,7 +19,7 @@ class KOverlayIconEngine : public QIconEngine
 public:
     KOverlayIconEngine(const QIcon &icon, const QIcon &overlay, Qt::Corner position);
     KOverlayIconEngine(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays);
-    KOverlayIconEngine(const QIcon &icon, const QStringList &overlays);
+    KOverlayIconEngine(const QIcon &icon, const QStringList &overlays, Qt::Corner startPosition);
     void paint(QPainter *painter, const QRect &rect, QIcon::Mode mode, QIcon::State state) override;
     QIconEngine *clone() const override;
 
@@ -48,7 +50,7 @@ KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QHash<Qt::Corner
 {
 }
 
-KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QStringList &overlays)
+KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QStringList &overlays, Qt::Corner startPosition)
     : QIconEngine()
     , m_base(icon)
 {
@@ -59,13 +61,17 @@ KOverlayIconEngine::KOverlayIconEngine(const QIcon &icon, const QStringList &ove
         Qt::TopRightCorner,
     };
 
+    const auto startPositionIt = std::find(indexToCorner.begin(), indexToCorner.end(), startPosition);
+    const int startPositionIndex = std::distance(indexToCorner.begin(), startPositionIt);
+
     // static_cast becaue size() returns a qsizetype in Qt6
     const int count = std::min(4, static_cast<int>(overlays.size()));
 
     m_overlays.reserve(count);
 
     for (int i = 0; i < count; i++) {
-        m_overlays.insert(indexToCorner[i], QIcon::fromTheme(overlays.at(i)));
+        const auto corner = indexToCorner[(startPositionIndex + i) % indexToCorner.size()];
+        m_overlays.insert(corner, QIcon::fromTheme(overlays.at(i)));
     }
 }
 
@@ -210,19 +216,29 @@ QIcon addOverlays(const QIcon &icon, const QHash<Qt::Corner, QIcon> &overlays)
     return QIcon(new KOverlayIconEngine(icon, overlays));
 }
 
-QIcon addOverlays(const QIcon &icon, const QStringList &overlays)
+QIcon addOverlays(const QIcon &icon, const QStringList &overlays, Qt::Corner startPosition)
 {
     if (overlays.count() == 0) {
         return icon;
     }
 
-    return QIcon(new KOverlayIconEngine(icon, overlays));
+    return QIcon(new KOverlayIconEngine(icon, overlays, startPosition));
+}
+
+QIcon addOverlays(const QIcon &icon, const QStringList &overlays)
+{
+    return addOverlays(icon, overlays, Qt::BottomRightCorner);
+}
+
+QIcon addOverlays(const QString &iconName, const QStringList &overlays, Qt::Corner startPosition)
+{
+    const QIcon icon = QIcon::fromTheme(iconName);
+
+    return addOverlays(icon, overlays, startPosition);
 }
 
 QIcon addOverlays(const QString &iconName, const QStringList &overlays)
 {
-    const QIcon icon = QIcon::fromTheme(iconName);
-
-    return addOverlays(icon, overlays);
+    return addOverlays(iconName, overlays, Qt::BottomRightCorner);
 }
 }
